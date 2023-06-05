@@ -1,4 +1,5 @@
 (function (Scratch) {
+  'use strict'
   //!Why can't I draw lines and tris at the same time?
   //*But I can draw tris stamps and sprites at the same time? WHY
 
@@ -248,7 +249,7 @@
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
   //?Override pen Clear with pen+
-
+  let wrapType = gl.CLAMP_TO_EDGE;
   renderer.penClear = (penSkinID) => {
     //Pen+ Overrides default pen Clearing
     gl.clear(gl.DEPTH_BUFFER_BIT);
@@ -271,7 +272,7 @@
   //?Have this here for ez pz tri drawing on the canvas
   const drawTri = (curProgram, x1, y1, x2, y2, x3, y3, penColor, targetID) => {
     //? get triangle attributes for current sprite.
-    triAttribs = triangleAttributesOfAllSprites[targetID];
+    const triAttribs = triangleAttributesOfAllSprites[targetID];
 
     if (triAttribs) {
       vertexBufferData = new Float32Array([
@@ -373,7 +374,7 @@
     texture
   ) => {
     //? get triangle attributes for current sprite.
-    triAttribs = triangleAttributesOfAllSprites[targetID];
+    const triAttribs = triangleAttributesOfAllSprites[targetID];
 
     if (triAttribs) {
       vertexBufferData = new Float32Array([
@@ -481,6 +482,8 @@
 
     if (gl.getParameter(gl.TEXTURE_BINDING_2D) != texture) {
       gl.bindTexture(gl.TEXTURE_2D, texture);
+      /*gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrapType);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrapType);*/
       gl.uniform1i(u_texture_Location_text, 0);
     }
 
@@ -632,6 +635,15 @@
     true
   );
 
+  extension.addMenu(
+    "wrapMenu",
+    [
+      "clamp",
+      "repeat",
+    ],
+    true
+  );
+
   //? Seperate blocks from the rest of the code to just clean up the workspace a bit
   const addBlocks = () => {
     extension.addLabel("Made by ObviousAlexC");
@@ -742,7 +754,6 @@
       Scratch.BlockType.COMMAND,
       (arg, util) => {
         //Just a simple thing to allow for pen drawing
-        checkForPen(util);
         const curTarget = util.target;
 
         const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
@@ -774,13 +785,13 @@
           ? 2 * ((canvas.width + canvas.height) / (typSize[0] + typSize[1]))
           : 2;
         //Paratheses because I know some obscure browser will screw this up.
-        x1 = Scratch.Cast.toNumber(spritex - 0.5 * diam) * dWidth * mul;
-        x2 = Scratch.Cast.toNumber(spritex + 0.5 * diam) * dWidth * mul;
-        x3 = Scratch.Cast.toNumber(spritex + 0.5 * diam) * dWidth * mul;
+        let x1 = Scratch.Cast.toNumber(spritex - 0.5 * diam) * dWidth * mul;
+        let x2 = Scratch.Cast.toNumber(spritex + 0.5 * diam) * dWidth * mul;
+        let x3 = Scratch.Cast.toNumber(spritex + 0.5 * diam) * dWidth * mul;
 
-        y1 = Scratch.Cast.toNumber(spritey + 0.5 * diam) * dHeight * mul;
-        y2 = Scratch.Cast.toNumber(spritey + 0.5 * diam) * dHeight * mul;
-        y3 = Scratch.Cast.toNumber(spritey - 0.5 * diam) * dHeight * mul;
+        let y1 = Scratch.Cast.toNumber(spritey + 0.5 * diam) * dHeight * mul;
+        let y2 = Scratch.Cast.toNumber(spritey + 0.5 * diam) * dHeight * mul;
+        let y3 = Scratch.Cast.toNumber(spritey - 0.5 * diam) * dHeight * mul;
 
         drawTri(
           gl.getParameter(gl.CURRENT_PROGRAM),
@@ -866,9 +877,9 @@
           if (!triangleAttributesOfAllSprites[targetId]) {
             triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
           }
-          let value = triangleAttributesOfAllSprites[targetId][trianglePointStart+attribute];
+          let value = triangleAttributesOfAllSprites[targetId][trianglePointStart + attribute];
 
-          if((attribute >= 2 && attribute <= 4) || attribute == 7){
+          if ((attribute >= 2 && attribute <= 4) || attribute == 7){
             value *= 100;
           }
           return value;
@@ -884,10 +895,8 @@
         "drawSolidTri",
         Scratch.BlockType.COMMAND,
         ({ x1, y1, x2, y2, x3, y3 }, util) => {
-          //Just a simple thing to allow for pen drawing
-          checkForPen(util);
           const curTarget = util.target;
-
+          checkForPen(util);
           const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
 
           const nativeSize = renderer.useHighQualityRender
@@ -904,7 +913,7 @@
           }
 
           //?Renderer Freaks out if we don't do this so do it.
-          lilPenDabble(nativeSize, curTarget, util);
+          lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
 
           //trying my best to reduce memory usage
           gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
@@ -963,8 +972,7 @@
             : renderer._nativeSize;
 
           //?Renderer Freaks out if we don't do this so do it.
-          checkForPen(util);
-          lilPenDabble(nativeSize, curTarget, util);
+          lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
 
           if (
             !allowZbufferMod &&
@@ -1017,6 +1025,34 @@
       .addArgument("y3", 0)
       .addArgument("tex", null, Scratch.ArgumentType.COSTUME)
       .setFilter();
+
+    /*extension.addBlock(
+      "Set [tex]'s wrap mode to [wrapMode]",
+      "setWrapMode",
+      Scratch.BlockType.COMMAND,
+      ({ tex , wrapMode }, util) => {
+        const curTarget = util.target;
+        const curCostume = curTarget.sprite.costumes_[
+          curTarget.getCostumeIndexByName(Scratch.Cast.toString(tex))
+        ];
+        const currentTexture = renderer._allSkins[curCostume.skinId]._texture;
+
+        if (currentTexture) {
+          if (gl.getParameter(gl.TEXTURE_BINDING_2D) != currentTexture) {
+            gl.bindTexture(gl.TEXTURE_2D, currentTexture);
+            if (wrapMode == "clamp"){
+              wrapType = gl.CLAMP_TO_EDGE;
+            }
+            else {
+              wrapType = gl.REPEAT;
+            }
+          }
+        }
+      }
+    )
+    .addArgument("tex", null, Scratch.ArgumentType.COSTUME)
+    .addArgument("wrapMode", null, Scratch.ArgumentType.STRING, "wrapMenu")
+    .setFilter();*/
   };
 
   addBlocks();
