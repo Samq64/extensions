@@ -1,5 +1,5 @@
 (function (Scratch) {
-  'use strict'
+  'use strict';
   //!Why can't I draw lines and tris at the same time?
   //*But I can draw tris stamps and sprites at the same time? WHY
 
