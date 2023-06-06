@@ -276,8 +276,8 @@
 
     if (triAttribs) {
       vertexBufferData = new Float32Array([
-        x1 * triAttribs[6],
-        -y1 * triAttribs[6],
+        x1,
+        -y1,
         -triAttribs[5],
         triAttribs[6],
         penColor[0] * triAttribs[2],
@@ -285,8 +285,8 @@
         penColor[2] * triAttribs[4],
         penColor[3] * triAttribs[9],
 
-        x2 * triAttribs[14],
-        -y2 * triAttribs[14],
+        x2,
+        -y2,
         -triAttribs[13],
         triAttribs[14],
         penColor[0] * triAttribs[10],
@@ -294,8 +294,8 @@
         penColor[2] * triAttribs[12],
         penColor[3] * triAttribs[15],
 
-        x3 * triAttribs[22],
-        -y3 * triAttribs[22],
+        x3,
+        -y3,
         -triAttribs[21],
         triAttribs[22],
         penColor[0] * triAttribs[18],
@@ -378,8 +378,8 @@
 
     if (triAttribs) {
       vertexBufferData = new Float32Array([
-        x1 * triAttribs[6],
-        -y1 * triAttribs[6],
+        x1,
+        -y1,
         -triAttribs[5],
         triAttribs[6],
         triAttribs[2],
@@ -389,8 +389,8 @@
         triAttribs[0],
         triAttribs[1],
 
-        x2 * triAttribs[14],
-        -y2 * triAttribs[14],
+        x2,
+        -y2,
         -triAttribs[13],
         triAttribs[14],
         triAttribs[10],
@@ -400,8 +400,8 @@
         triAttribs[8],
         triAttribs[9],
 
-        x3 * triAttribs[22],
-        -y3 * triAttribs[22],
+        x3,
+        -y3,
         -triAttribs[21],
         triAttribs[22],
         triAttribs[18],
