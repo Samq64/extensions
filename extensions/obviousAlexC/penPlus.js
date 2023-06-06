@@ -586,32 +586,32 @@
     "triAttribute",
     [
       {
-         "text":"U value",
-         "value":0
+        "text":"U value",
+        "value":0
       },
       {
-         "text":"V value",
-         "value":1
+        "text":"V value",
+        "value":1
       },
       {
-         "text":"red tint",
-         "value":2
+        "text":"red tint",
+        "value":2
       },
       {
-         "text":"green tint",
-         "value":3
+        "text":"green tint",
+        "value":3
       },
       {
-         "text":"blue tint",
-         "value":4
+        "text":"blue tint",
+        "value":4
       },
       {
-         "text":"transparency",
-         "value":7
+        "text":"transparency",
+        "value":7
       },
       {
-         "text":"corner pinch",
-         "value":6
+        "text":"corner pinch",
+        "value":6
       }
    ],
     true
