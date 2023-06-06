@@ -1,5 +1,5 @@
 (function (Scratch) {
-  'use strict';
+  "use strict";
   //!Why can't I draw lines and tris at the same time?
   //*But I can draw tris stamps and sprites at the same time? WHY
 
@@ -586,34 +586,34 @@
     "triAttribute",
     [
       {
-        "text":"U value",
-        "value":0
+        text: "U value",
+        value: 0,
       },
       {
-        "text":"V value",
-        "value":1
+        text: "V value",
+        value: 1,
       },
       {
-        "text":"red tint",
-        "value":2
+        text: "red tint",
+        value: 2,
       },
       {
-        "text":"green tint",
-        "value":3
+        text: "green tint",
+        value: 3,
       },
       {
-        "text":"blue tint",
-        "value":4
+        text: "blue tint",
+        value: 4,
       },
       {
-        "text":"transparency",
-        "value":7
+        text: "transparency",
+        value: 7,
       },
       {
-        "text":"corner pinch",
-        "value":6
-      }
-   ],
+        text: "corner pinch",
+        value: 6,
+      },
+    ],
     true
   );
 
@@ -624,19 +624,12 @@
       {
         text: "additive",
         value: gl.ONE_MINUS_SRC_ALPHA,
-      }
+      },
     ],
     true
   );
 
-  extension.addMenu(
-    "wrapMenu",
-    [
-      "clamp",
-      "repeat"
-    ],
-    true
-  );
+  extension.addMenu("wrapMenu", ["clamp", "repeat"], true);
 
   //? Seperate blocks from the rest of the code to just clean up the workspace a bit
   const addBlocks = () => {
@@ -662,8 +655,9 @@
         ({ HSV }, util) => {
           checkForPen(util);
           const curTarget = util.target;
-          if (HSV == "size"){
-            return curTarget["_customState"]["Scratch.pen"].penAttributes.diameter;
+          if (HSV == "size") {
+            return curTarget["_customState"]["Scratch.pen"].penAttributes
+              .diameter;
           }
           return curTarget["_customState"]["Scratch.pen"][HSV];
         }
@@ -851,7 +845,7 @@
       .addArgument("value", 1)
       .setFilter();
 
-      extension.addBlock(
+    extension.addBlock(
         "Get triangle point [point]'s [attribute]",
         "getTrianglePointAttribute",
         Scratch.BlockType.REPORTER,
@@ -861,11 +855,15 @@
           const targetId = util.target.id;
 
           if (!triangleAttributesOfAllSprites[targetId]) {
-            triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
+            triangleAttributesOfAllSprites[targetId] =
+              triangleDefaultAttributes;
           }
-          let value = triangleAttributesOfAllSprites[targetId][trianglePointStart + attribute];
+          let value =
+            triangleAttributesOfAllSprites[targetId][
+              trianglePointStart + attribute
+            ];
 
-          if ((attribute >= 2 && attribute <= 4) || attribute == 7){
+          if ((attribute >= 2 && attribute <= 4) || attribute == 7) {
             value *= 100;
           }
           return value;
