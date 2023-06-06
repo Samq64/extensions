@@ -285,8 +285,8 @@
         penColor[2] * triAttribs[4],
         penColor[3] * triAttribs[9],
 
-        x2,
-        -y2,
+        x2 * triAttribs[14],
+        -y2 * triAttribs[14],
         -triAttribs[13],
         triAttribs[14],
         penColor[0] * triAttribs[10],
@@ -294,8 +294,8 @@
         penColor[2] * triAttribs[12],
         penColor[3] * triAttribs[15],
 
-        x3,
-        -y3,
+        x3 * triAttribs[22],
+        -y3 * triAttribs[22],
         -triAttribs[21],
         triAttribs[22],
         penColor[0] * triAttribs[18],
@@ -389,8 +389,8 @@
         triAttribs[0],
         triAttribs[1],
 
-        x2,
-        -y2,
+        x2 * triAttribs[14],
+        -y2 * triAttribs[14],
         -triAttribs[13],
         triAttribs[14],
         triAttribs[10],
@@ -400,8 +400,8 @@
         triAttribs[8],
         triAttribs[9],
 
-        x3,
-        -y3,
+        x3 * triAttribs[22],
+        -y3 * triAttribs[22],
         -triAttribs[21],
         triAttribs[22],
         triAttribs[18],
@@ -586,40 +586,34 @@
     "triAttribute",
     [
       {
-        text: "U value",
-        value: 0,
+         "text":"U value",
+         "value":0
       },
       {
-        text: "V value",
-        value: 1,
+         "text":"V value",
+         "value":1
       },
       {
-        text: "red tint",
-        value: 2,
+         "text":"red tint",
+         "value":2
       },
       {
-        text: "green tint",
-        value: 3,
+         "text":"green tint",
+         "value":3
       },
       {
-        text: "blue tint",
-        value: 4,
+         "text":"blue tint",
+         "value":4
       },
       {
-        //<- out of order but this was last minute so yeah.
-        text: "transparency",
-        value: 7,
+         "text":"transparency",
+         "value":7
       },
-      //? Hide this value until Z is sorted out.
-      /*{
-        text: "triangle layer",
-        value: 5,
-      },*/
       {
-        text: "corner pinch",
-        value: 6,
-      },
-    ],
+         "text":"corner pinch",
+         "value":6
+      }
+   ],
     true
   );
 
@@ -630,7 +624,7 @@
       {
         text: "additive",
         value: gl.ONE_MINUS_SRC_ALPHA,
-      },
+      }
     ],
     true
   );
@@ -639,7 +633,7 @@
     "wrapMenu",
     [
       "clamp",
-      "repeat",
+      "repeat"
     ],
     true
   );
@@ -839,25 +833,17 @@
 
           const targetId = util.target.id;
 
-          if (triangleAttributesOfAllSprites[targetId]) {
-            setValueAccordingToCase(
-              targetId,
-              attribute,
-              value,
-              false,
-              trianglePointStart
-            );
-          } else {
+          if (!triangleAttributesOfAllSprites[targetId]) {
             triangleAttributesOfAllSprites[targetId] =
               triangleDefaultAttributes;
-            setValueAccordingToCase(
-              targetId,
-              attribute,
-              value,
-              false,
-              trianglePointStart
-            );
           }
+          setValueAccordingToCase(
+            targetId,
+            attribute,
+            value,
+            false,
+            trianglePointStart
+          );
         }
       )
       .addArgument("point", "1", null, "pointMenu")
