@@ -972,7 +972,7 @@
           y2 = Scratch.Cast.toNumber(y2) * dHeight * mul;
           y3 = Scratch.Cast.toNumber(y3) * dHeight * mul;
 
-          if (currentTexture != null || typeof currentTexture != "undefined") {
+          if (currentTexture != null && typeof currentTexture != "undefined") {
             drawTextTri(
               gl.getParameter(gl.CURRENT_PROGRAM),
               x1,
