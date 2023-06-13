@@ -930,7 +930,7 @@
             Scratch.Cast.toString(tex)
           );
           const curCostume = curTarget.sprite.costumes_[costIndex];
-          if (costIndex == curTarget.currentCostume) {
+          if (costIndex != curTarget.currentCostume) {
             curTarget.setCostume(costIndex);
           }
 
