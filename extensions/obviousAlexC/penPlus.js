@@ -661,8 +661,7 @@
           }
           return curTarget["_customState"]["Scratch.pen"][HSV];
         }
-      )
-      .addArgument("HSV", "color", null, "hsvMenu")
+      ).addArgument("HSV", "color", null, "hsvMenu")
       .setFilter();
 
     //TODO Figure out Z problems
@@ -702,9 +701,7 @@
 
           curTarget.runtime.ext_pen.penUp(null, util);
         }
-      )
-      .addArgument("x", 0)
-      .addArgument("y", 0)
+      ).addArgument("x", 0).addArgument("y", 0)
       .setFilter();
 
     extension.addBlock(
@@ -729,11 +726,7 @@
 
           curTarget.runtime.ext_pen.penUp(null, util);
         }
-      )
-      .addArgument("x1", 0)
-      .addArgument("y1", 0)
-      .addArgument("x2", 10)
-      .addArgument("y2", 10)
+      ).addArgument("x1", 0).addArgument("y1", 0).addArgument("x2", 10).addArgument("y2", 10)
       .setFilter();
 
     extension.addBlock(
@@ -839,10 +832,7 @@
             trianglePointStart
           );
         }
-      )
-      .addArgument("point", "1", null, "pointMenu")
-      .addArgument("attribute", 2, null, "triAttribute")
-      .addArgument("value", 1)
+      ).addArgument("point", "1", null, "pointMenu").addArgument("attribute", 2, null, "triAttribute").addArgument("value", 1)
       .setFilter();
 
     extension.addBlock(
@@ -868,10 +858,7 @@
           }
           return value;
         }
-      )
-      .addArgument("point", "1", null, "pointMenu")
-      .addArgument("attribute", 2, null, "triAttribute")
-      .addArgument("value", 1)
+      ).addArgument("point", "1", null, "pointMenu").addArgument("attribute", 2, null, "triAttribute").addArgument("value", 1)
       .setFilter();
 
     extension.addBlock(
@@ -930,13 +917,7 @@
             curTarget.id
           );
         }
-      )
-      .addArgument("x1", 0)
-      .addArgument("y1", 0)
-      .addArgument("x2", 10)
-      .addArgument("y2", 10)
-      .addArgument("x3", 10)
-      .addArgument("y3", 0)
+      ).addArgument("x1", 0).addArgument("y1", 0).addArgument("x2", 10).addArgument("y2", 10).addArgument("x3", 10).addArgument("y3", 0)
       .setFilter();
 
     extension.addBlock(
@@ -945,11 +926,16 @@
         Scratch.BlockType.COMMAND,
         ({ x1, y1, x2, y2, x3, y3, tex }, util) => {
           const curTarget = util.target;
-          const curCostume =
-            curTarget.sprite.costumes_[
-              curTarget.getCostumeIndexByName(Scratch.Cast.toString(tex))
-            ];
-          const currentTexture = renderer._allSkins[curCostume.skinId]._texture;
+          const costIndex = curTarget.getCostumeIndexByName(
+            Scratch.Cast.toString(tex)
+          );
+          const curCostume = curTarget.sprite.costumes_[costIndex];
+          if (costIndex == curTarget.currentCostume) {
+            curTarget.setCostume(costIndex);
+          }
+
+          const currentTexture =
+            renderer._allSkins[curCostume.skinId].getTexture();
 
           const nativeSize = renderer.useHighQualityRender
             ? [canvas.width, canvas.height]
@@ -986,7 +972,7 @@
           y2 = Scratch.Cast.toNumber(y2) * dHeight * mul;
           y3 = Scratch.Cast.toNumber(y3) * dHeight * mul;
 
-          if (currentTexture != null) {
+          if (currentTexture != null || typeof currentTexture != "undefined") {
             drawTextTri(
               gl.getParameter(gl.CURRENT_PROGRAM),
               x1,
@@ -1000,14 +986,7 @@
             );
           }
         }
-      )
-      .addArgument("x1", 0)
-      .addArgument("y1", 0)
-      .addArgument("x2", 10)
-      .addArgument("y2", 10)
-      .addArgument("x3", 10)
-      .addArgument("y3", 0)
-      .addArgument("tex", null, Scratch.ArgumentType.COSTUME)
+      ).addArgument("x1", 0).addArgument("y1", 0).addArgument("x2", 10).addArgument("y2", 10).addArgument("x3", 10).addArgument("y3", 0).addArgument("tex", null, Scratch.ArgumentType.COSTUME)
       .setFilter();
 
     /*extension.addBlock(
