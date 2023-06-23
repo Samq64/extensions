@@ -7,7 +7,178 @@
   //?Also I really like the syntax compared to JSON.
 
   /* eslint-disable */
-  class ExtensionBuilder{constructor(t,n,e,i){Scratch=Scratch||{TargetType:{SPRITE:"sprite",STAGE:"stage"},BlockType:{COMMAND:"command",REPORTER:"reporter",BOOLEAN:"Boolean",HAT:"hat"},ArgumentType:{STRING:"string",NUMBER:"number",COLOR:"color",ANGLE:"angle",BOOLEAN:"Boolean",MATRIX:"matrix",NOTE:"note"},vm:window.vm,Cast:{toNumber:t=>Number(t),toString:t=>String(t),toBoolean:t=>Boolean(t)},extensions:{unsandboxed:!0,register(t){let n=vm.extensionManager._registerInternalExtension(t);vm.extensionManager._loadedExtensions.set(t.getInfo().id,n)}}},this.internal={},this.internal.JSON={blocks:[],menus:{}},this.internal.defaultFunction={code(){console.log("This block has no code")},arguments:{}},this.addDocs=t=>{this.internal.JSON.docsURI=t},this.addBlock=(t,n,e,i,o,l)=>{i=i||this.internal.defaultFunction.code,this[n]=i,l=l||{};let s=l;s.disableMonitor||(s.disableMonitor=!0),s.opcode=n,s.blockType=e,s.text=t,s.arguments=o||this.internal.defaultFunction.arguments;let r=this.internal.JSON.blocks.length;return this.internal.JSON.blocks.push(s),this.internal.JSON.blocks[r].addArgument=(t,n,e,i)=>{if(null==(e=e||null))switch(typeof n){case"string":default:e=Scratch.ArgumentType.STRING;break;case"boolean":e=Scratch.ArgumentType.BOOLEAN;break;case"number":case"bigint":e=Scratch.ArgumentType.NUMBER}return null==n?this.internal.JSON.blocks[r].arguments[t]={type:e}:this.internal.JSON.blocks[r].arguments[t]={type:e,defaultValue:n},(i=i||null)&&"string"==typeof i&&(this.internal.JSON.blocks[r].arguments[t].menu=i),this.internal.JSON.blocks[r]},this.internal.JSON.blocks[r].setIcon=t=>{this.internal.JSON.blocks[r].blockIconURI=t},this.internal.JSON.blocks[r].setFilter=t=>(t=t||Scratch.TargetType.SPRITE,this.internal.JSON.blocks[r].filter=t,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].hideBlock=()=>{this.internal.JSON.blocks[r].hideFromPalette=!0},this.internal.JSON.blocks[r].stopMoniter=()=>{this.internal.JSON.blocks[r].disableMonitor=!0},this.internal.JSON.blocks[r]},this.addMenu=(t,n,e)=>{e=e||!1,"function"==typeof n?(this[t+"Function"]=n,this.internal.JSON.menus[t]={items:t+"Function"}):this.internal.JSON.menus[t]={items:n},this.internal.JSON.menus[t].acceptReporters=e},this.addDivider=()=>{this.internal.JSON.blocks.push("---")},this.addLabel=t=>{t=t||"N/A";let n={opcode:"__NOUSEOPCODE",blockType:"label",text:t};this.internal.JSON.blocks.push(n)},this.__NOUSEOPCODE=()=>{},this.internal.createBase=()=>{if(t=t||"Extension",n=n||"extension",this.internal.JSON.name=t,this.internal.JSON.id=n,(e=e||{}).blockColor=e.blockColor||null,e.inputColor=e.inputColor||null,e.outlineColor=e.outlineColor||null,null!=e.blockColor){let o=e.blockColor;o>8947848?this.internal.colors=[o,o-197379,o-394758,]:this.internal.colors=[o,o+197379,o+394758,],e.inputColor,this.internal.colors[1]=e.inputColor,e.outlineColor,this.internal.colors[2]=e.outlineColor,this.internal.JSON.color1=this.internal.colors[0],this.internal.JSON.color2=this.internal.colors[1],this.internal.JSON.color3=this.internal.colors[2]}(i=i||{}).blockIconUri=i.blockIconUri||null,i.menuIconUri=i.menuIconUri||i.blockIconUri||null,this.menuUri=i.menuIconUri,this.blockIco=i.blockIconUri,this.docsUri=null},this.internal.createBase(),this.setColors=(t,n,e)=>{t="string"==typeof t?t:(t+0).toString(16),n="string"==typeof n?n:(n+0).toString(16),e="string"==typeof e?e:(e+0).toString(16),this.internal.colors=[0,0,0],this.internal.colors[0]=t,this.internal.colors[1]=n,this.internal.colors[2]=e,this.internal.JSON.color1=t,this.internal.JSON.color2=n,this.internal.JSON.color3=e},this.setMenuIcon=t=>{this.internal.JSON.menuIconURI=t},this.setGlobalBlockIcon=t=>{this.internal.JSON.blockIconURI=t},this.getInfo=()=>this.internal.JSON,this.register=()=>{Scratch.extensions.register(this)}}}
+  class ExtensionBuilder {
+    constructor(t, n, e, i) {
+      (Scratch = Scratch || {
+        TargetType: { SPRITE: "sprite", STAGE: "stage" },
+        BlockType: {
+          COMMAND: "command",
+          REPORTER: "reporter",
+          BOOLEAN: "Boolean",
+          HAT: "hat",
+        },
+        ArgumentType: {
+          STRING: "string",
+          NUMBER: "number",
+          COLOR: "color",
+          ANGLE: "angle",
+          BOOLEAN: "Boolean",
+          MATRIX: "matrix",
+          NOTE: "note",
+        },
+        vm: window.vm,
+        Cast: {
+          toNumber: (t) => Number(t),
+          toString: (t) => String(t),
+          toBoolean: (t) => Boolean(t),
+        },
+        extensions: {
+          unsandboxed: !0,
+          register(t) {
+            let n = vm.extensionManager._registerInternalExtension(t);
+            vm.extensionManager._loadedExtensions.set(t.getInfo().id, n);
+          },
+        },
+      }),
+        (this.internal = {}),
+        (this.internal.JSON = { blocks: [], menus: {} }),
+        (this.internal.defaultFunction = {
+          code() {
+            console.log("This block has no code");
+          },
+          arguments: {},
+        }),
+        (this.addDocs = (t) => {
+          this.internal.JSON.docsURI = t;
+        }),
+        (this.addBlock = (t, n, e, i, o, l) => {
+          (i = i || this.internal.defaultFunction.code),
+            (this[n] = i),
+            (l = l || {});
+          let s = l;
+          s.disableMonitor || (s.disableMonitor = !0),
+            (s.opcode = n),
+            (s.blockType = e),
+            (s.text = t),
+            (s.arguments = o || this.internal.defaultFunction.arguments);
+          let r = this.internal.JSON.blocks.length;
+          return (
+            this.internal.JSON.blocks.push(s),
+            (this.internal.JSON.blocks[r].addArgument = (t, n, e, i) => {
+              if (null == (e = e || null))
+                switch (typeof n) {
+                  case "string":
+                  default:
+                    e = Scratch.ArgumentType.STRING;
+                    break;
+                  case "boolean":
+                    e = Scratch.ArgumentType.BOOLEAN;
+                    break;
+                  case "number":
+                  case "bigint":
+                    e = Scratch.ArgumentType.NUMBER;
+                }
+              return (
+                null == n
+                  ? (this.internal.JSON.blocks[r].arguments[t] = { type: e })
+                  : (this.internal.JSON.blocks[r].arguments[t] = {
+                      type: e,
+                      defaultValue: n,
+                    }),
+                (i = i || null) &&
+                  "string" == typeof i &&
+                  (this.internal.JSON.blocks[r].arguments[t].menu = i),
+                this.internal.JSON.blocks[r]
+              );
+            }),
+            (this.internal.JSON.blocks[r].setIcon = (t) => {
+              this.internal.JSON.blocks[r].blockIconURI = t;
+            }),
+            (this.internal.JSON.blocks[r].setFilter = (t) => (
+              (t = t || Scratch.TargetType.SPRITE),
+              (this.internal.JSON.blocks[r].filter = t),
+              this.internal.JSON.blocks[r]
+            )),
+            (this.internal.JSON.blocks[r].hideBlock = () => {
+              this.internal.JSON.blocks[r].hideFromPalette = !0;
+            }),
+            (this.internal.JSON.blocks[r].stopMoniter = () => {
+              this.internal.JSON.blocks[r].disableMonitor = !0;
+            }),
+            this.internal.JSON.blocks[r]
+          );
+        }),
+        (this.addMenu = (t, n, e) => {
+          (e = e || !1),
+            "function" == typeof n
+              ? ((this[t + "Function"] = n),
+                (this.internal.JSON.menus[t] = { items: t + "Function" }))
+              : (this.internal.JSON.menus[t] = { items: n }),
+            (this.internal.JSON.menus[t].acceptReporters = e);
+        }),
+        (this.addDivider = () => {
+          this.internal.JSON.blocks.push("---");
+        }),
+        (this.addLabel = (t) => {
+          t = t || "N/A";
+          let n = { opcode: "__NOUSEOPCODE", blockType: "label", text: t };
+          this.internal.JSON.blocks.push(n);
+        }),
+        (this.__NOUSEOPCODE = () => {}),
+        (this.internal.createBase = () => {
+          if (
+            ((t = t || "Extension"),
+            (n = n || "extension"),
+            (this.internal.JSON.name = t),
+            (this.internal.JSON.id = n),
+            ((e = e || {}).blockColor = e.blockColor || null),
+            (e.inputColor = e.inputColor || null),
+            (e.outlineColor = e.outlineColor || null),
+            null != e.blockColor)
+          ) {
+            let o = e.blockColor;
+            o > 8947848
+              ? (this.internal.colors = [o, o - 197379, o - 394758])
+              : (this.internal.colors = [o, o + 197379, o + 394758]),
+              e.inputColor,
+              (this.internal.colors[1] = e.inputColor),
+              e.outlineColor,
+              (this.internal.colors[2] = e.outlineColor),
+              (this.internal.JSON.color1 = this.internal.colors[0]),
+              (this.internal.JSON.color2 = this.internal.colors[1]),
+              (this.internal.JSON.color3 = this.internal.colors[2]);
+          }
+          ((i = i || {}).blockIconUri = i.blockIconUri || null),
+            (i.menuIconUri = i.menuIconUri || i.blockIconUri || null),
+            (this.menuUri = i.menuIconUri),
+            (this.blockIco = i.blockIconUri),
+            (this.docsUri = null);
+        }),
+        this.internal.createBase(),
+        (this.setColors = (t, n, e) => {
+          (t = "string" == typeof t ? t : (t + 0).toString(16)),
+            (n = "string" == typeof n ? n : (n + 0).toString(16)),
+            (e = "string" == typeof e ? e : (e + 0).toString(16)),
+            (this.internal.colors = [0, 0, 0]),
+            (this.internal.colors[0] = t),
+            (this.internal.colors[1] = n),
+            (this.internal.colors[2] = e),
+            (this.internal.JSON.color1 = t),
+            (this.internal.JSON.color2 = n),
+            (this.internal.JSON.color3 = e);
+        }),
+        (this.setMenuIcon = (t) => {
+          this.internal.JSON.menuIconURI = t;
+        }),
+        (this.setGlobalBlockIcon = (t) => {
+          this.internal.JSON.blockIconURI = t;
+        }),
+        (this.getInfo = () => this.internal.JSON),
+        (this.register = () => {
+          Scratch.extensions.register(this);
+        });
+    }
+  }
   /* eslint-enable */
 
   const menuIco =
@@ -35,6 +206,7 @@
 
   const canvas = renderer.canvas;
   const gl = renderer._gl;
+  let currentFilter = gl.NEAREST;
 
   let allowZbufferMod = false;
 
@@ -249,7 +421,6 @@
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
   //?Override pen Clear with pen+
-  let wrapType = gl.CLAMP_TO_EDGE;
   renderer.penClear = (penSkinID) => {
     //Pen+ Overrides default pen Clearing
     gl.clear(gl.DEPTH_BUFFER_BIT);
@@ -482,8 +653,8 @@
 
     if (gl.getParameter(gl.TEXTURE_BINDING_2D) != texture) {
       gl.bindTexture(gl.TEXTURE_2D, texture);
-      /*gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrapType);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrapType);*/
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, currentFilter);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, currentFilter);
       gl.uniform1i(u_texture_Location_text, 0);
     }
 
@@ -576,6 +747,7 @@
     }
   };
 
+  //? Define the menus
   extension.addMenu("orderMenu", ["off", "on"]);
   extension.addMenu(
     "hsvMenu",
@@ -616,6 +788,39 @@
     ],
     true
   );
+  extension.addMenu(
+    "filterType",
+    [
+      {
+        text: "Closest",
+        value: gl.NEAREST,
+      },
+      {
+        text: "Linear",
+        value: gl.LINEAR,
+      },
+    ],
+    true
+  );
+
+  extension.addMenu(
+    "wrapType",
+    [
+      {
+        text: "Clamp",
+        value: gl.CLAMP_TO_EDGE,
+      },
+      {
+        text: "Repeat",
+        value: gl.REPEAT,
+      },
+      {
+        text: "Mirrored",
+        value: gl.MIRRORED_REPEAT,
+      },
+    ],
+    true
+  );
 
   extension.addMenu("pointMenu", ["1", "2", "3"], true);
   extension.addMenu(
@@ -629,14 +834,13 @@
     true
   );
 
-  extension.addMenu("wrapMenu", ["clamp", "repeat"], true);
-
   //? Seperate blocks from the rest of the code to just clean up the workspace a bit
   const addBlocks = () => {
     extension.addLabel("Made by ObviousAlexC");
     extension.addLabel("Warning Misc Limits makes this lag!");
 
-    extension.addBlock(
+    extension
+      .addBlock(
         "Pen down?",
         "isPenDown",
         Scratch.BlockType.BOOLEAN,
@@ -648,7 +852,8 @@
       )
       .setFilter();
 
-    extension.addBlock(
+    extension
+      .addBlock(
         "Pen [HSV]",
         "getPenHSV",
         Scratch.BlockType.REPORTER,
@@ -661,7 +866,8 @@
           }
           return curTarget["_customState"]["Scratch.pen"][HSV];
         }
-      ).addArgument("HSV", "color", null, "hsvMenu")
+      )
+      .addArgument("HSV", "color", null, "hsvMenu")
       .setFilter();
 
     //TODO Figure out Z problems
@@ -681,7 +887,8 @@
     }).addArgument("order","off",null,"orderMenu")
     */
 
-    extension.addBlock(
+    extension
+      .addBlock(
         "Draw dot at [x] [y]",
         "drawDot",
         Scratch.BlockType.COMMAND,
@@ -701,10 +908,13 @@
 
           curTarget.runtime.ext_pen.penUp(null, util);
         }
-      ).addArgument("x", 0).addArgument("y", 0)
+      )
+      .addArgument("x", 0)
+      .addArgument("y", 0)
       .setFilter();
 
-    extension.addBlock(
+    extension
+      .addBlock(
         "Draw line from [x1] [y1] to [x2] [y2]",
         "drawLine",
         Scratch.BlockType.COMMAND,
@@ -726,7 +936,11 @@
 
           curTarget.runtime.ext_pen.penUp(null, util);
         }
-      ).addArgument("x1", 0).addArgument("y1", 0).addArgument("x2", 10).addArgument("y2", 10)
+      )
+      .addArgument("x1", 0)
+      .addArgument("y1", 0)
+      .addArgument("x2", 10)
+      .addArgument("y2", 10)
       .setFilter();
 
     extension.addBlock(
@@ -811,7 +1025,20 @@
     extension.addLabel("Triangle Blocks");
     extension.addLabel("Textures Must be a bitmap!");
 
-    extension.addBlock(
+    extension
+      .addBlock(
+        "Set triangle filter mode to [filter]",
+        "setTriangleFilterMode",
+        Scratch.BlockType.COMMAND,
+        ({ filter }) => {
+          currentFilter = filter;
+        }
+      )
+      .addArgument("filter", gl.NEAREST, null, "filterType")
+      .setFilter();
+
+    extension
+      .addBlock(
         "Set triangle point [point]'s [attribute] to [value]",
         "setTrianglePointAttribute",
         Scratch.BlockType.COMMAND,
@@ -832,10 +1059,14 @@
             trianglePointStart
           );
         }
-      ).addArgument("point", "1", null, "pointMenu").addArgument("attribute", 2, null, "triAttribute").addArgument("value", 1)
+      )
+      .addArgument("point", "1", null, "pointMenu")
+      .addArgument("attribute", 2, null, "triAttribute")
+      .addArgument("value", 1)
       .setFilter();
 
-    extension.addBlock(
+    extension
+      .addBlock(
         "Get triangle point [point]'s [attribute]",
         "getTrianglePointAttribute",
         Scratch.BlockType.REPORTER,
@@ -858,10 +1089,14 @@
           }
           return value;
         }
-      ).addArgument("point", "1", null, "pointMenu").addArgument("attribute", 2, null, "triAttribute").addArgument("value", 1)
+      )
+      .addArgument("point", "1", null, "pointMenu")
+      .addArgument("attribute", 2, null, "triAttribute")
+      .addArgument("value", 1)
       .setFilter();
 
-    extension.addBlock(
+    extension
+      .addBlock(
         "Draw triangle between [x1] [y1], [x2] [y2] and [x3] [y3]",
         "drawSolidTri",
         Scratch.BlockType.COMMAND,
@@ -917,10 +1152,17 @@
             curTarget.id
           );
         }
-      ).addArgument("x1", 0).addArgument("y1", 0).addArgument("x2", 10).addArgument("y2", 10).addArgument("x3", 10).addArgument("y3", 0)
+      )
+      .addArgument("x1", 0)
+      .addArgument("y1", 0)
+      .addArgument("x2", 10)
+      .addArgument("y2", 10)
+      .addArgument("x3", 10)
+      .addArgument("y3", 0)
       .setFilter();
 
-    extension.addBlock(
+    extension
+      .addBlock(
         "Draw textured triangle between [x1] [y1], [x2] [y2] and [x3] [y3] with the texture [tex]",
         "drawTexTri",
         Scratch.BlockType.COMMAND,
@@ -986,36 +1228,15 @@
             );
           }
         }
-      ).addArgument("x1", 0).addArgument("y1", 0).addArgument("x2", 10).addArgument("y2", 10).addArgument("x3", 10).addArgument("y3", 0).addArgument("tex", null, Scratch.ArgumentType.COSTUME)
+      )
+      .addArgument("x1", 0)
+      .addArgument("y1", 0)
+      .addArgument("x2", 10)
+      .addArgument("y2", 10)
+      .addArgument("x3", 10)
+      .addArgument("y3", 0)
+      .addArgument("tex", null, Scratch.ArgumentType.COSTUME)
       .setFilter();
-
-    /*extension.addBlock(
-      "Set [tex]'s wrap mode to [wrapMode]",
-      "setWrapMode",
-      Scratch.BlockType.COMMAND,
-      ({ tex , wrapMode }, util) => {
-        const curTarget = util.target;
-        const curCostume = curTarget.sprite.costumes_[
-          curTarget.getCostumeIndexByName(Scratch.Cast.toString(tex))
-        ];
-        const currentTexture = renderer._allSkins[curCostume.skinId]._texture;
-
-        if (currentTexture) {
-          if (gl.getParameter(gl.TEXTURE_BINDING_2D) != currentTexture) {
-            gl.bindTexture(gl.TEXTURE_2D, currentTexture);
-            if (wrapMode == "clamp"){
-              wrapType = gl.CLAMP_TO_EDGE;
-            }
-            else {
-              wrapType = gl.REPEAT;
-            }
-          }
-        }
-      }
-    )
-    .addArgument("tex", null, Scratch.ArgumentType.COSTUME)
-    .addArgument("wrapMode", null, Scratch.ArgumentType.STRING, "wrapMenu")
-    .setFilter();*/
   };
 
   addBlocks();
