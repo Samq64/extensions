@@ -347,6 +347,7 @@
 
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.DYNAMIC_DRAW);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
     gl.vertexAttribPointer(
       a_position_Location_untext,
@@ -366,12 +367,10 @@
     );
 
     gl.useProgram(penPlusShaders.untextured.ProgramInf.program);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     //? Hacky fix but it works.
     gl.useProgram(penPlusShaders.pen.program);
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
   };
 
   const drawTextTri = (
@@ -489,7 +488,6 @@
     );
 
     gl.useProgram(penPlusShaders.textured.ProgramInf.program);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     if (gl.getParameter(gl.TEXTURE_BINDING_2D) != texture) {
       gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -501,7 +499,6 @@
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     //? Hacky fix but it works.
     gl.useProgram(penPlusShaders.pen.program);
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
   };
 
   const lilPenDabble = (nativeSize, curTarget, util) => {
