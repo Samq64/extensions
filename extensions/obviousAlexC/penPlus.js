@@ -82,11 +82,13 @@
   //*Define PEN+ variables >:)
   const triangleDefaultAttributes = [
     // U V  TINT R G B  Z W transparency U V  TINT R G B  Z W transparency U V  TINT R G B  Z W transparency
-       0,0, 1,   1,1,0, 1,1,1,           1,1, 1,   1,0,1, 1,1,0,           1,1, 1,   0,1,1, 1,1,1
+    0,
+    0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1,
+    1,
   ];
   const squareDefaultAttributes = [
     // width* height*  rotation
-       1,     1,       90
+    1, 1, 90,
   ];
 
   const triangleAttributesOfAllSprites = {}; //!it dawned on me I have to do this
@@ -154,7 +156,7 @@
       ProgramInf: null,
     },
     pen: {
-      program: shaderManager._shaderCache.line[0].program
+      program: shaderManager._shaderCache.line[0].program,
     },
     createAndCompileShaders: (vert, frag) => {
       //? compile vertex Shader
@@ -599,16 +601,16 @@
     [
       {
         text: "Width",
-        value: 0
+        value: 0,
       },
       {
         text: "Height",
-        value: 1
+        value: 1,
       },
       {
         text: "Rotation",
-        value: 2
-      }
+        value: 2,
+      },
     ],
     true
   );
@@ -618,32 +620,32 @@
     [
       {
         text: "U value",
-        value: 0
+        value: 0,
       },
       {
         text: "V value",
-        value: 1
+        value: 1,
       },
       {
         text: "red tint",
-        value: 2
+        value: 2,
       },
       {
         text: "green tint",
-        value: 3
+        value: 3,
       },
       {
         text: "blue tint",
-        value: 4
+        value: 4,
       },
       {
         text: "transparency",
-        value: 7
+        value: 7,
       },
       {
         text: "corner pinch",
-        value: 6
-      }
+        value: 6,
+      },
     ],
     true
   );
@@ -652,12 +654,12 @@
     [
       {
         text: "Closest",
-        value: gl.NEAREST
+        value: gl.NEAREST,
       },
       {
         text: "Linear",
-        value: gl.LINEAR
-      }
+        value: gl.LINEAR,
+      },
     ],
     true
   );
@@ -667,16 +669,16 @@
     [
       {
         text: "Clamp",
-        value: gl.CLAMP_TO_EDGE
+        value: gl.CLAMP_TO_EDGE,
       },
       {
         text: "Repeat",
-        value: gl.REPEAT
+        value: gl.REPEAT,
       },
       {
         text: "Mirrored",
-        value: gl.MIRRORED_REPEAT
-      }
+        value: gl.MIRRORED_REPEAT,
+      },
     ],
     true
   );
@@ -687,8 +689,8 @@
     [
       {
         text: "additive",
-        value: gl.ONE_MINUS_SRC_ALPHA
-      }
+        value: gl.ONE_MINUS_SRC_ALPHA,
+      },
     ],
     true
   );
@@ -700,9 +702,9 @@
     extension.addLabel("The sprite that is drawing must not be...");
     extension.addLabel("hidden!");
 
-    extension.addDivider()
+    extension.addDivider();
 
-    extension.addLabel("Pen Properties")
+    extension.addLabel("Pen Properties");
 
     extension
       .addBlock(
@@ -795,266 +797,121 @@
 
     extension.addLabel("Square Pen Blocks");
 
-    extension.addBlock(
-      "Stamp pen square",
-      "squareDown",
-      Scratch.BlockType.COMMAND,
-      (arg, util) => {
-        //Just a simple thing to allow for pen drawing
-        const curTarget = util.target;
+    extension
+      .addBlock(
+        "Stamp pen square",
+        "squareDown",
+        Scratch.BlockType.COMMAND,
+        (arg, util) => {
+          //Just a simple thing to allow for pen drawing
+          const curTarget = util.target;
 
-        checkForPen(util)
+          checkForPen(util);
 
-        const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
-        const diam = attrib.diameter;
+          const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
+          const diam = attrib.diameter;
 
-        const nativeSize = renderer.useHighQualityRender
-          ? [canvas.width, canvas.height]
-          : renderer._nativeSize;
+          const nativeSize = renderer.useHighQualityRender
+            ? [canvas.width, canvas.height]
+            : renderer._nativeSize;
 
-        lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
+          lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
 
-        if (typeof triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] == "undefined"){
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] = triangleDefaultAttributes;
-        }
-
-        if (typeof squareAttributesOfAllSprites[curTarget.id] == "undefined") {
-          squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
-        }
-
-        const myAttributes = squareAttributesOfAllSprites[curTarget.id]
-
-        //trying my best to reduce memory usage
-        gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
-        const dWidth = 1 / nativeSize[0];
-        const dHeight = 1 / nativeSize[1];
-
-        const spritex = curTarget.x;
-        const spritey = curTarget.y;
-
-        //correction for HQ pen
-        const typSize = renderer._nativeSize;
-        const mul = renderer.useHighQualityRender
-          ? 2 * ((canvas.width + canvas.height) / (typSize[0] + typSize[1]))
-          : 2;
-
-        //Predifine stuff so there aren't as many calculations
-        const wMulX = mul * myAttributes[0];
-        const wMulY = mul * myAttributes[1];
-
-        const offDiam = 0.5 * diam;
-
-        const sprXoff = spritex * mul;
-        const sprYoff = spritey * mul;
-        //Paratheses because I know some obscure browser will screw this up.
-        let x1 = Scratch.Cast.toNumber(-offDiam) * wMulX;
-        let x2 = Scratch.Cast.toNumber(offDiam) * wMulX;
-        let x3 = Scratch.Cast.toNumber(offDiam) * wMulX;
-        let x4 = Scratch.Cast.toNumber(-offDiam) * wMulX;
-
-        let y1 = Scratch.Cast.toNumber(offDiam) * wMulY;
-        let y2 = Scratch.Cast.toNumber(offDiam) * wMulY;
-        let y3 = Scratch.Cast.toNumber(-offDiam) * wMulY;
-        let y4 = Scratch.Cast.toNumber(-offDiam) * wMulY;
-
-        function rotateTheThings(ox1,oy1,ox2,oy2,ox3,oy3,ox4,oy4) {
-          let sin = Math.sin(myAttributes[2] * d2r);
-          let cos = Math.cos(myAttributes[2] * d2r);
-
-          x1 = (ox1 * sin) + (oy1 * cos);
-          y1 = (ox1 * cos) - (oy1 * sin);
-
-          x2 = (ox2 * sin) + (oy2 * cos);
-          y2 = (ox2 * cos) - (oy2 * sin);
-
-          x3 = (ox3 * sin) + (oy3 * cos);
-          y3 = (ox3 * cos) - (oy3 * sin);
-
-          x4 = (ox4 * sin) + (oy4 * cos);
-          y4 = (ox4 * cos) - (oy4 * sin);
-        }
-
-        rotateTheThings(x1,y1,x2,y2,x3,y3,x4,y4);
-
-        x1+=sprXoff;
-        y1+=sprYoff;
-
-        x2+=sprXoff;
-        y2+=sprYoff;
-
-        x3+=sprXoff;
-        y3+=sprYoff;
-
-        x4+=sprXoff;
-        y4+=sprYoff;
-
-        x1*=dWidth
-        y1*=dHeight
-
-        x2*=dWidth
-        y2*=dHeight
-
-        x3*=dWidth
-        y3*=dHeight
-
-        x4*=dWidth
-        y4*=dHeight
-
-        drawTri(
-          gl.getParameter(gl.CURRENT_PROGRAM),
-          x1,
-          y1,
-          x2,
-          y2,
-          x3,
-          y3,
-          attrib.color4f,
-          "squareStamp"
-        );
-
-        drawTri(
-          gl.getParameter(gl.CURRENT_PROGRAM),
-          x1,
-          y1,
-          x3,
-          y3,
-          x4,
-          y4,
-          attrib.color4f,
-          "squareStamp_" + curTarget.id
-        );
-      }
-    )
-    .setFilter();
-
-    extension.addBlock(
-      "Stamp pen square with the texture of [tex]",
-      "squareTexDown",
-      Scratch.BlockType.COMMAND,
-      ({ tex }, util) => {
-        //Just a simple thing to allow for pen drawing
-        const curTarget = util.target;
-
-        const costIndex = curTarget.getCostumeIndexByName(
-          Scratch.Cast.toString(tex)
-        );
-
-        const curCostume = curTarget.sprite.costumes_[costIndex];
-          if (costIndex != curTarget.currentCostume) {
-            curTarget.setCostume(costIndex);
+          if (
+            typeof triangleAttributesOfAllSprites[
+              "squareStamp_" + curTarget.id
+            ] == "undefined"
+          ) {
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] =
+              triangleDefaultAttributes;
           }
 
-        const currentTexture = renderer._allSkins[curCostume.skinId].getTexture();
+          if (
+            typeof squareAttributesOfAllSprites[curTarget.id] == "undefined"
+          ) {
+            squareAttributesOfAllSprites[curTarget.id] =
+              squareDefaultAttributes;
+          }
 
-        checkForPen(util)
+          const myAttributes = squareAttributesOfAllSprites[curTarget.id];
 
-        const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
-        const diam = attrib.diameter;
+          //trying my best to reduce memory usage
+          gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
+          const dWidth = 1 / nativeSize[0];
+          const dHeight = 1 / nativeSize[1];
 
-        const nativeSize = renderer.useHighQualityRender
-          ? [canvas.width, canvas.height]
-          : renderer._nativeSize;
+          const spritex = curTarget.x;
+          const spritey = curTarget.y;
 
-        lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
+          //correction for HQ pen
+          const typSize = renderer._nativeSize;
+          const mul = renderer.useHighQualityRender
+            ? 2 * ((canvas.width + canvas.height) / (typSize[0] + typSize[1]))
+            : 2;
 
-        if (!triangleAttributesOfAllSprites["squareStamp_" + curTarget.id]){
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] = triangleDefaultAttributes;
-        }
+          //Predifine stuff so there aren't as many calculations
+          const wMulX = mul * myAttributes[0];
+          const wMulY = mul * myAttributes[1];
 
-        if (!squareAttributesOfAllSprites[curTarget.id]) {
-          squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
-        }
+          const offDiam = 0.5 * diam;
 
-        const myAttributes = squareAttributesOfAllSprites[curTarget.id]
+          const sprXoff = spritex * mul;
+          const sprYoff = spritey * mul;
+          //Paratheses because I know some obscure browser will screw this up.
+          let x1 = Scratch.Cast.toNumber(-offDiam) * wMulX;
+          let x2 = Scratch.Cast.toNumber(offDiam) * wMulX;
+          let x3 = Scratch.Cast.toNumber(offDiam) * wMulX;
+          let x4 = Scratch.Cast.toNumber(-offDiam) * wMulX;
 
-        //trying my best to reduce memory usage
-        gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
-        const dWidth = 1 / nativeSize[0];
-        const dHeight = 1 / nativeSize[1];
+          let y1 = Scratch.Cast.toNumber(offDiam) * wMulY;
+          let y2 = Scratch.Cast.toNumber(offDiam) * wMulY;
+          let y3 = Scratch.Cast.toNumber(-offDiam) * wMulY;
+          let y4 = Scratch.Cast.toNumber(-offDiam) * wMulY;
 
-        const spritex = curTarget.x;
-        const spritey = curTarget.y;
+          function rotateTheThings(ox1, oy1, ox2, oy2, ox3, oy3, ox4, oy4) {
+            let sin = Math.sin(myAttributes[2] * d2r);
+            let cos = Math.cos(myAttributes[2] * d2r);
 
-        //correction for HQ pen
-        const typSize = renderer._nativeSize;
-        const mul = renderer.useHighQualityRender
-          ? 2 * ((canvas.width + canvas.height) / (typSize[0] + typSize[1]))
-          : 2;
+            x1 = ox1 * sin + oy1 * cos;
+            y1 = ox1 * cos - oy1 * sin;
 
-        //Predifine stuff so there aren't as many calculations
-        const wMulX = mul * myAttributes[0];
-        const wMulY = mul * myAttributes[1];
+            x2 = ox2 * sin + oy2 * cos;
+            y2 = ox2 * cos - oy2 * sin;
 
-        const offDiam = 0.5 * diam;
+            x3 = ox3 * sin + oy3 * cos;
+            y3 = ox3 * cos - oy3 * sin;
 
-        const sprXoff = spritex * mul;
-        const sprYoff = spritey * mul;
-        //Paratheses because I know some obscure browser will screw this up.
-        let x1 = Scratch.Cast.toNumber(-offDiam) * wMulX;
-        let x2 = Scratch.Cast.toNumber(offDiam) * wMulX;
-        let x3 = Scratch.Cast.toNumber(offDiam) * wMulX;
-        let x4 = Scratch.Cast.toNumber(-offDiam) * wMulX;
+            x4 = ox4 * sin + oy4 * cos;
+            y4 = ox4 * cos - oy4 * sin;
+          }
 
-        let y1 = Scratch.Cast.toNumber(offDiam) * wMulY;
-        let y2 = Scratch.Cast.toNumber(offDiam) * wMulY;
-        let y3 = Scratch.Cast.toNumber(-offDiam) * wMulY;
-        let y4 = Scratch.Cast.toNumber(-offDiam) * wMulY;
+          rotateTheThings(x1, y1, x2, y2, x3, y3, x4, y4);
 
-        function rotateTheThings(ox1,oy1,ox2,oy2,ox3,oy3,ox4,oy4) {
-          let sin = Math.sin(myAttributes[2] * d2r);
-          let cos = Math.cos(myAttributes[2] * d2r);
+          x1 += sprXoff;
+          y1 += sprYoff;
 
-          x1 = (ox1 * sin) + (oy1 * cos);
-          y1 = (ox1 * cos) - (oy1 * sin);
+          x2 += sprXoff;
+          y2 += sprYoff;
 
-          x2 = (ox2 * sin) + (oy2 * cos);
-          y2 = (ox2 * cos) - (oy2 * sin);
+          x3 += sprXoff;
+          y3 += sprYoff;
 
-          x3 = (ox3 * sin) + (oy3 * cos);
-          y3 = (ox3 * cos) - (oy3 * sin);
+          x4 += sprXoff;
+          y4 += sprYoff;
 
-          x4 = (ox4 * sin) + (oy4 * cos);
-          y4 = (ox4 * cos) - (oy4 * sin);
-        }
+          x1 *= dWidth;
+          y1 *= dHeight;
 
-        rotateTheThings(x1,y1,x2,y2,x3,y3,x4,y4);
+          x2 *= dWidth;
+          y2 *= dHeight;
 
-        x1+=sprXoff;
-        y1+=sprYoff;
+          x3 *= dWidth;
+          y3 *= dHeight;
 
-        x2+=sprXoff;
-        y2+=sprYoff;
+          x4 *= dWidth;
+          y4 *= dHeight;
 
-        x3+=sprXoff;
-        y3+=sprYoff;
-
-        x4+=sprXoff;
-        y4+=sprYoff;
-
-        x1*=dWidth
-        y1*=dHeight
-
-        x2*=dWidth
-        y2*=dHeight
-
-        x3*=dWidth
-        y3*=dHeight
-
-        x4*=dWidth
-        y4*=dHeight
-
-        if (currentTexture != null && typeof currentTexture != "undefined") {
-
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][0] = 0;
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][1] = 1;
-
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][8] = 1;
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][9] = 1;
-
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][16] = 1;
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][17] = 0;
-
-          drawTextTri(
+          drawTri(
             gl.getParameter(gl.CURRENT_PROGRAM),
             x1,
             y1,
@@ -1062,20 +919,11 @@
             y2,
             x3,
             y3,
-            "squareStamp_" + curTarget.id,
-            currentTexture
+            attrib.color4f,
+            "squareStamp"
           );
 
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][0] = 0;
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][1] = 1;
-
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][8] = 1;
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][9] = 0;
-
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][16] = 0;
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][17] = 0;
-
-          drawTextTri(
+          drawTri(
             gl.getParameter(gl.CURRENT_PROGRAM),
             x1,
             y1,
@@ -1083,47 +931,241 @@
             y3,
             x4,
             y4,
-            "squareStamp_" + curTarget.id,
-            currentTexture
+            attrib.color4f,
+            "squareStamp_" + curTarget.id
           );
         }
-      }
-    )
-    .addArgument("tex", null, Scratch.ArgumentType.COSTUME)
-    .setFilter();
+      )
+      .setFilter();
 
-    extension.addBlock(
-      "Set pen square's [target] to [number]",
-      "setStampAttribute",
-      Scratch.BlockType.COMMAND,
-      ({ target, number }, util) => {
-        const curTarget = util.target;
-        if (!squareAttributesOfAllSprites[curTarget.id]) {
-          squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
+    extension
+      .addBlock(
+        "Stamp pen square with the texture of [tex]",
+        "squareTexDown",
+        Scratch.BlockType.COMMAND,
+        ({ tex }, util) => {
+          //Just a simple thing to allow for pen drawing
+          const curTarget = util.target;
+
+          const costIndex = curTarget.getCostumeIndexByName(
+            Scratch.Cast.toString(tex)
+          );
+
+          const curCostume = curTarget.sprite.costumes_[costIndex];
+          if (costIndex != curTarget.currentCostume) {
+            curTarget.setCostume(costIndex);
+          }
+
+          const currentTexture =
+            renderer._allSkins[curCostume.skinId].getTexture();
+
+          checkForPen(util);
+
+          const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
+          const diam = attrib.diameter;
+
+          const nativeSize = renderer.useHighQualityRender
+            ? [canvas.width, canvas.height]
+            : renderer._nativeSize;
+
+          lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
+
+          if (!triangleAttributesOfAllSprites["squareStamp_" + curTarget.id]) {
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] =
+              triangleDefaultAttributes;
+          }
+
+          if (!squareAttributesOfAllSprites[curTarget.id]) {
+            squareAttributesOfAllSprites[curTarget.id] =
+              squareDefaultAttributes;
+          }
+
+          const myAttributes = squareAttributesOfAllSprites[curTarget.id];
+
+          //trying my best to reduce memory usage
+          gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
+          const dWidth = 1 / nativeSize[0];
+          const dHeight = 1 / nativeSize[1];
+
+          const spritex = curTarget.x;
+          const spritey = curTarget.y;
+
+          //correction for HQ pen
+          const typSize = renderer._nativeSize;
+          const mul = renderer.useHighQualityRender
+            ? 2 * ((canvas.width + canvas.height) / (typSize[0] + typSize[1]))
+            : 2;
+
+          //Predifine stuff so there aren't as many calculations
+          const wMulX = mul * myAttributes[0];
+          const wMulY = mul * myAttributes[1];
+
+          const offDiam = 0.5 * diam;
+
+          const sprXoff = spritex * mul;
+          const sprYoff = spritey * mul;
+          //Paratheses because I know some obscure browser will screw this up.
+          let x1 = Scratch.Cast.toNumber(-offDiam) * wMulX;
+          let x2 = Scratch.Cast.toNumber(offDiam) * wMulX;
+          let x3 = Scratch.Cast.toNumber(offDiam) * wMulX;
+          let x4 = Scratch.Cast.toNumber(-offDiam) * wMulX;
+
+          let y1 = Scratch.Cast.toNumber(offDiam) * wMulY;
+          let y2 = Scratch.Cast.toNumber(offDiam) * wMulY;
+          let y3 = Scratch.Cast.toNumber(-offDiam) * wMulY;
+          let y4 = Scratch.Cast.toNumber(-offDiam) * wMulY;
+
+          function rotateTheThings(ox1, oy1, ox2, oy2, ox3, oy3, ox4, oy4) {
+            let sin = Math.sin(myAttributes[2] * d2r);
+            let cos = Math.cos(myAttributes[2] * d2r);
+
+            x1 = ox1 * sin + oy1 * cos;
+            y1 = ox1 * cos - oy1 * sin;
+
+            x2 = ox2 * sin + oy2 * cos;
+            y2 = ox2 * cos - oy2 * sin;
+
+            x3 = ox3 * sin + oy3 * cos;
+            y3 = ox3 * cos - oy3 * sin;
+
+            x4 = ox4 * sin + oy4 * cos;
+            y4 = ox4 * cos - oy4 * sin;
+          }
+
+          rotateTheThings(x1, y1, x2, y2, x3, y3, x4, y4);
+
+          x1 += sprXoff;
+          y1 += sprYoff;
+
+          x2 += sprXoff;
+          y2 += sprYoff;
+
+          x3 += sprXoff;
+          y3 += sprYoff;
+
+          x4 += sprXoff;
+          y4 += sprYoff;
+
+          x1 *= dWidth;
+          y1 *= dHeight;
+
+          x2 *= dWidth;
+          y2 *= dHeight;
+
+          x3 *= dWidth;
+          y3 *= dHeight;
+
+          x4 *= dWidth;
+          y4 *= dHeight;
+
+          if (currentTexture != null && typeof currentTexture != "undefined") {
+            triangleAttributesOfAllSprites[
+              "squareStamp_" + curTarget.id
+            ][0] = 0;
+            triangleAttributesOfAllSprites[
+              "squareStamp_" + curTarget.id
+            ][1] = 1;
+
+            triangleAttributesOfAllSprites[
+              "squareStamp_" + curTarget.id
+            ][8] = 1;
+            triangleAttributesOfAllSprites[
+              "squareStamp_" + curTarget.id
+            ][9] = 1;
+
+            triangleAttributesOfAllSprites[
+              "squareStamp_" + curTarget.id
+            ][16] = 1;
+            triangleAttributesOfAllSprites[
+              "squareStamp_" + curTarget.id
+            ][17] = 0;
+
+            drawTextTri(
+              gl.getParameter(gl.CURRENT_PROGRAM),
+              x1,
+              y1,
+              x2,
+              y2,
+              x3,
+              y3,
+              "squareStamp_" + curTarget.id,
+              currentTexture
+            );
+
+            triangleAttributesOfAllSprites[
+              "squareStamp_" + curTarget.id
+            ][0] = 0;
+            triangleAttributesOfAllSprites[
+              "squareStamp_" + curTarget.id
+            ][1] = 1;
+
+            triangleAttributesOfAllSprites[
+              "squareStamp_" + curTarget.id
+            ][8] = 1;
+            triangleAttributesOfAllSprites[
+              "squareStamp_" + curTarget.id
+            ][9] = 0;
+
+            triangleAttributesOfAllSprites[
+              "squareStamp_" + curTarget.id
+            ][16] = 0;
+            triangleAttributesOfAllSprites[
+              "squareStamp_" + curTarget.id
+            ][17] = 0;
+
+            drawTextTri(
+              gl.getParameter(gl.CURRENT_PROGRAM),
+              x1,
+              y1,
+              x3,
+              y3,
+              x4,
+              y4,
+              "squareStamp_" + curTarget.id,
+              currentTexture
+            );
+          }
         }
+      )
+      .addArgument("tex", null, Scratch.ArgumentType.COSTUME)
+      .setFilter();
 
-        squareAttributesOfAllSprites[curTarget.id][target] = number;
-      }
-    )
-    .addArgument("target", 0, Scratch.ArgumentType.NUMBER, "stampSquare")
-    .addArgument("number", 1, Scratch.ArgumentType.NUMBER)
-    .setFilter();
+    extension
+      .addBlock(
+        "Set pen square's [target] to [number]",
+        "setStampAttribute",
+        Scratch.BlockType.COMMAND,
+        ({ target, number }, util) => {
+          const curTarget = util.target;
+          if (!squareAttributesOfAllSprites[curTarget.id]) {
+            squareAttributesOfAllSprites[curTarget.id] =
+              squareDefaultAttributes;
+          }
 
-    extension.addBlock(
-      "get pen square's [target]",
-      "getStampAttribute",
-      Scratch.BlockType.REPORTER,
-      ({ target }, util) => {
-        const curTarget = util.target;
-        if (!squareAttributesOfAllSprites[curTarget.id]) {
-          squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
+          squareAttributesOfAllSprites[curTarget.id][target] = number;
         }
+      )
+      .addArgument("target", 0, Scratch.ArgumentType.NUMBER, "stampSquare")
+      .addArgument("number", 1, Scratch.ArgumentType.NUMBER)
+      .setFilter();
 
-        return squareAttributesOfAllSprites[curTarget.id][target];
-      }
-    )
-    .addArgument("target", 0, Scratch.ArgumentType.NUMBER, "stampSquare")
-    .setFilter();
+    extension
+      .addBlock(
+        "get pen square's [target]",
+        "getStampAttribute",
+        Scratch.BlockType.REPORTER,
+        ({ target }, util) => {
+          const curTarget = util.target;
+          if (!squareAttributesOfAllSprites[curTarget.id]) {
+            squareAttributesOfAllSprites[curTarget.id] =
+              squareDefaultAttributes;
+          }
+
+          return squareAttributesOfAllSprites[curTarget.id][target];
+        }
+      )
+      .addArgument("target", 0, Scratch.ArgumentType.NUMBER, "stampSquare")
+      .setFilter();
 
     extension.addLabel("Triangle Blocks");
 
