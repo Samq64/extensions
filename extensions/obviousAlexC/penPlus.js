@@ -1,3 +1,12 @@
+//If source code is modified or reused please credit ObviousAlexC or Pinksheep2917
+//Ideas taken from:
+//  ThatOneWierdo92
+//  SkyIsTumbling
+//  Alltrue
+//  TheShovel
+//  
+//Thanks
+
 (function (Scratch) {
   "use strict";
 
