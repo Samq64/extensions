@@ -1,184 +1,11 @@
 (function (Scratch) {
   "use strict";
-  //!Why can't I draw lines and tris at the same time?
-  //*But I can draw tris stamps and sprites at the same time? WHY
 
   //?Note to garboMuffin I use this class called "ExtensionBuilder" that I made to make the workflow faster so I don't have to spend as much time checking and modifying JSON data.
   //?Also I really like the syntax compared to JSON.
 
   /* eslint-disable */
-  class ExtensionBuilder {
-    constructor(t, n, e, i) {
-      (Scratch = Scratch || {
-        TargetType: { SPRITE: "sprite", STAGE: "stage" },
-        BlockType: {
-          COMMAND: "command",
-          REPORTER: "reporter",
-          BOOLEAN: "Boolean",
-          HAT: "hat",
-        },
-        ArgumentType: {
-          STRING: "string",
-          NUMBER: "number",
-          COLOR: "color",
-          ANGLE: "angle",
-          BOOLEAN: "Boolean",
-          MATRIX: "matrix",
-          NOTE: "note",
-        },
-        vm: window.vm,
-        Cast: {
-          toNumber: (t) => Number(t),
-          toString: (t) => String(t),
-          toBoolean: (t) => Boolean(t),
-        },
-        extensions: {
-          unsandboxed: !0,
-          register(t) {
-            let n = vm.extensionManager._registerInternalExtension(t);
-            vm.extensionManager._loadedExtensions.set(t.getInfo().id, n);
-          },
-        },
-      }),
-        (this.internal = {}),
-        (this.internal.JSON = { blocks: [], menus: {} }),
-        (this.internal.defaultFunction = {
-          code() {
-            console.log("This block has no code");
-          },
-          arguments: {},
-        }),
-        (this.addDocs = (t) => {
-          this.internal.JSON.docsURI = t;
-        }),
-        (this.addBlock = (t, n, e, i, o, l) => {
-          (i = i || this.internal.defaultFunction.code),
-            (this[n] = i),
-            (l = l || {});
-          let s = l;
-          s.disableMonitor || (s.disableMonitor = !0),
-            (s.opcode = n),
-            (s.blockType = e),
-            (s.text = t),
-            (s.arguments = o || this.internal.defaultFunction.arguments);
-          let r = this.internal.JSON.blocks.length;
-          return (
-            this.internal.JSON.blocks.push(s),
-            (this.internal.JSON.blocks[r].addArgument = (t, n, e, i) => {
-              if (null == (e = e || null))
-                switch (typeof n) {
-                  case "string":
-                  default:
-                    e = Scratch.ArgumentType.STRING;
-                    break;
-                  case "boolean":
-                    e = Scratch.ArgumentType.BOOLEAN;
-                    break;
-                  case "number":
-                  case "bigint":
-                    e = Scratch.ArgumentType.NUMBER;
-                }
-              return (
-                null == n
-                  ? (this.internal.JSON.blocks[r].arguments[t] = { type: e })
-                  : (this.internal.JSON.blocks[r].arguments[t] = {
-                      type: e,
-                      defaultValue: n,
-                    }),
-                (i = i || null) &&
-                  "string" == typeof i &&
-                  (this.internal.JSON.blocks[r].arguments[t].menu = i),
-                this.internal.JSON.blocks[r]
-              );
-            }),
-            (this.internal.JSON.blocks[r].setIcon = (t) => {
-              this.internal.JSON.blocks[r].blockIconURI = t;
-            }),
-            (this.internal.JSON.blocks[r].setFilter = (t) => (
-              (t = t || Scratch.TargetType.SPRITE),
-              (this.internal.JSON.blocks[r].filter = t),
-              this.internal.JSON.blocks[r]
-            )),
-            (this.internal.JSON.blocks[r].hideBlock = () => {
-              this.internal.JSON.blocks[r].hideFromPalette = !0;
-            }),
-            (this.internal.JSON.blocks[r].stopMoniter = () => {
-              this.internal.JSON.blocks[r].disableMonitor = !0;
-            }),
-            this.internal.JSON.blocks[r]
-          );
-        }),
-        (this.addMenu = (t, n, e) => {
-          (e = e || !1),
-            "function" == typeof n
-              ? ((this[t + "Function"] = n),
-                (this.internal.JSON.menus[t] = { items: t + "Function" }))
-              : (this.internal.JSON.menus[t] = { items: n }),
-            (this.internal.JSON.menus[t].acceptReporters = e);
-        }),
-        (this.addDivider = () => {
-          this.internal.JSON.blocks.push("---");
-        }),
-        (this.addLabel = (t) => {
-          t = t || "N/A";
-          let n = { opcode: "__NOUSEOPCODE", blockType: "label", text: t };
-          this.internal.JSON.blocks.push(n);
-        }),
-        (this.__NOUSEOPCODE = () => {}),
-        (this.internal.createBase = () => {
-          if (
-            ((t = t || "Extension"),
-            (n = n || "extension"),
-            (this.internal.JSON.name = t),
-            (this.internal.JSON.id = n),
-            ((e = e || {}).blockColor = e.blockColor || null),
-            (e.inputColor = e.inputColor || null),
-            (e.outlineColor = e.outlineColor || null),
-            null != e.blockColor)
-          ) {
-            let o = e.blockColor;
-            o > 8947848
-              ? (this.internal.colors = [o, o - 197379, o - 394758])
-              : (this.internal.colors = [o, o + 197379, o + 394758]),
-              e.inputColor,
-              (this.internal.colors[1] = e.inputColor),
-              e.outlineColor,
-              (this.internal.colors[2] = e.outlineColor),
-              (this.internal.JSON.color1 = this.internal.colors[0]),
-              (this.internal.JSON.color2 = this.internal.colors[1]),
-              (this.internal.JSON.color3 = this.internal.colors[2]);
-          }
-          ((i = i || {}).blockIconUri = i.blockIconUri || null),
-            (i.menuIconUri = i.menuIconUri || i.blockIconUri || null),
-            (this.menuUri = i.menuIconUri),
-            (this.blockIco = i.blockIconUri),
-            (this.docsUri = null);
-        }),
-        this.internal.createBase(),
-        (this.setColors = (t, n, e) => {
-          (t = "string" == typeof t ? t : (t + 0).toString(16)),
-            (n = "string" == typeof n ? n : (n + 0).toString(16)),
-            (e = "string" == typeof e ? e : (e + 0).toString(16)),
-            (this.internal.colors = [0, 0, 0]),
-            (this.internal.colors[0] = t),
-            (this.internal.colors[1] = n),
-            (this.internal.colors[2] = e),
-            (this.internal.JSON.color1 = t),
-            (this.internal.JSON.color2 = n),
-            (this.internal.JSON.color3 = e);
-        }),
-        (this.setMenuIcon = (t) => {
-          this.internal.JSON.menuIconURI = t;
-        }),
-        (this.setGlobalBlockIcon = (t) => {
-          this.internal.JSON.blockIconURI = t;
-        }),
-        (this.getInfo = () => this.internal.JSON),
-        (this.register = () => {
-          Scratch.extensions.register(this);
-        });
-    }
-  }
+  class ExtensionBuilder{constructor(t,n,i,l){this.internal={},this.internal.JSON={blocks:[],menus:{}},this.runtime=Scratch.vm.runtime,this.internal.defaultFunction={code(){console.log("This block has no code")},arguments:{}},this.addDocs=t=>{this.internal.JSON.docsURI=t},this.addBlock=(t,n,i,l,e,s)=>{l=l||this.internal.defaultFunction.code,this[n]=l,s=s||{};let o=s;o.disableMonitor||(o.disableMonitor=!0),o.opcode=n,o.blockType=i,o.text=t,o.arguments=e||this.internal.defaultFunction.arguments;let r=this.internal.JSON.blocks.length;return this.internal.JSON.blocks.push(o),this.internal.JSON.blocks[r].addArgument=(t,n,i,l)=>{if(null==(i=i||null))switch(typeof n){case"string":default:i=Scratch.ArgumentType.STRING;break;case"boolean":i=Scratch.ArgumentType.BOOLEAN;break;case"number":case"bigint":i=Scratch.ArgumentType.NUMBER}return null==n?this.internal.JSON.blocks[r].arguments[t]={type:i}:this.internal.JSON.blocks[r].arguments[t]={type:i,defaultValue:n},(l=l||null)&&"string"==typeof l&&(this.internal.JSON.blocks[r].arguments[t].menu=l),this.internal.JSON.blocks[r]},this.internal.JSON.blocks[r].setIcon=t=>(this.internal.JSON.blocks[r].blockIconURI=t,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].setFilter=t=>(t=t||Scratch.TargetType.SPRITE,this.internal.JSON.blocks[r].filter=t,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].hideBlock=()=>(this.internal.JSON.blocks[r].hideFromPalette=!0,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].stopMoniter=()=>(this.internal.JSON.blocks[r].disableMonitor=!0,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].setEdgeActivation=t=>(this.internal.JSON.blocks[r].isEdgeActivated=t,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].addImage=(t,n,i)=>{i=i||!1;let l={type:Scratch.ArgumentType.IMAGE,dataURI:n,flipRTL:i};return this.internal.JSON.blocks[r].arguments[t]=l,this.internal.JSON.blocks[r]},this.internal.JSON.blocks[r]},this.addMenu=(t,n,i)=>{i=i||!1,"function"==typeof n?(this[t+"Function"]=n,this.internal.JSON.menus[t]={items:t+"Function"}):this.internal.JSON.menus[t]={items:n},this.internal.JSON.menus[t].acceptReporters=i},this.addButton=(t,n,i)=>{n=n||this.internal.defaultFunction.code,i=i||"Button",this["button_"+t]=n;let l={};l.func="button_"+t,l.blockType=Scratch.BlockType.BUTTON,l.text=i;let e=this.internal.JSON.blocks.length;return this.internal.JSON.blocks[e]=l,this.internal.JSON.blocks[e]},this.addDivider=()=>{this.internal.JSON.blocks.push("---")},this.addLabel=t=>{t=t||"N/A";let n={opcode:"__NOUSEOPCODE",blockType:"label",text:t};this.internal.JSON.blocks.push(n)},this.__NOUSEOPCODE=()=>{},this.internal.createBase=()=>{if(t=t||"Extension",n=n||"extension",this.internal.JSON.name=t,this.internal.JSON.id=n,(i=i||{}).blockColor=i.blockColor||null,i.inputColor=i.inputColor||null,i.outlineColor=i.outlineColor||null,null!=i.blockColor){let e=i.blockColor;e>8947848?this.internal.colors=[e,e-197379,e-394758,]:this.internal.colors=[e,e+197379,e+394758,],i.inputColor,this.internal.colors[1]=i.inputColor,i.outlineColor,this.internal.colors[2]=i.outlineColor,this.internal.JSON.color1=this.internal.colors[0],this.internal.JSON.color2=this.internal.colors[1],this.internal.JSON.color3=this.internal.colors[2]}(l=l||{}).blockIconUri=l.blockIconUri||null,l.menuIconUri=l.menuIconUri||l.blockIconUri||null,this.menuUri=l.menuIconUri,this.blockIco=l.blockIconUri,this.docsUri=null},this.internal.createBase(),this.setColors=(t,n,i)=>{t="string"==typeof t?t:(t+0).toString(16),n="string"==typeof n?n:(n+0).toString(16),i="string"==typeof i?i:(i+0).toString(16),this.internal.colors=[0,0,0],this.internal.colors[0]=t,this.internal.colors[1]=n,this.internal.colors[2]=i,this.internal.JSON.color1=t,this.internal.JSON.color2=n,this.internal.JSON.color3=i},this.setMenuIcon=t=>{this.internal.JSON.menuIconURI=t},this.setGlobalBlockIcon=t=>{this.internal.JSON.blockIconURI=t},this.runHat=t=>{this.runtime.startHats(this.internal.JSON.id+"_"+t)},this.getInfo=()=>this.internal.JSON,this.register=()=>{Scratch.extensions.register(this)}}}
   /* eslint-enable */
 
   const menuIco =
@@ -197,6 +24,7 @@
   const f32_4 = 4 * Float32Array.BYTES_PER_ELEMENT;
   const f32_8 = 8 * Float32Array.BYTES_PER_ELEMENT;
   const f32_10 = 10 * Float32Array.BYTES_PER_ELEMENT;
+  const d2r = 0.0174533;
 
   //?Declare most of the main repo's we are going to use around the scratch vm
   const vm = Scratch.vm;
@@ -207,8 +35,6 @@
   const canvas = renderer.canvas;
   const gl = renderer._gl;
   let currentFilter = gl.NEAREST;
-
-  let allowZbufferMod = false;
 
   if (!Scratch.vm.extensionManager.isExtensionLoaded("pen")) {
     runtime.extensionManager.loadExtensionIdSync("pen");
@@ -255,11 +81,17 @@
 
   //*Define PEN+ variables >:)
   const triangleDefaultAttributes = [
-    // U V  TINT R G B  Z W transparency
-    0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1,
+    // U V  TINT R G B  Z W transparency U V  TINT R G B  Z W transparency U V  TINT R G B  Z W transparency
+       0,0, 1,   1,1,0, 1,1,1,           1,1, 1,   1,0,1, 1,1,0,           1,1, 1,   0,1,1, 1,1,1
+  ];
+  const squareDefaultAttributes = [
+    // width* height*  rotation
+       1,     1,       90
   ];
 
   const triangleAttributesOfAllSprites = {}; //!it dawned on me I have to do this
+
+  const squareAttributesOfAllSprites = {}; //?Doing this for part 2
 
   //?Get Shaders
   const penPlusShaders = {
@@ -282,6 +114,7 @@
                 void main()
                 {
                   gl_FragColor = v_color;
+                  gl_FragColor.rgb *= gl_FragColor.a;
                 }
             `,
       },
@@ -314,10 +147,14 @@
                 void main()
                 {
                     gl_FragColor = texture2D(u_texture, v_texCoord) * v_color;
+                    gl_FragColor.rgb *= gl_FragColor.a;
                 }
             `,
       },
       ProgramInf: null,
+    },
+    pen: {
+      program: shaderManager._shaderCache.line[0].program
     },
     createAndCompileShaders: (vert, frag) => {
       //? compile vertex Shader
@@ -435,7 +272,6 @@
   //define defaults
   gl.disable(gl.DEPTH_TEST);
   gl.depthFunc(gl.NEVER);
-  //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
   let vertexBufferData = null;
   let texVertexBufferData = null;
@@ -527,10 +363,13 @@
       f32_4
     );
 
-    if (curProgram != penPlusShaders.untextured.ProgramInf.program) {
-      gl.useProgram(penPlusShaders.untextured.ProgramInf.program);
-    }
+    gl.useProgram(penPlusShaders.untextured.ProgramInf.program);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
     gl.drawArrays(gl.TRIANGLES, 0, 3);
+    //? Hacky fix but it works.
+    gl.useProgram(penPlusShaders.pen.program);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
   };
 
   const drawTextTri = (
@@ -647,9 +486,8 @@
       f32_8
     );
 
-    if (curProgram != penPlusShaders.textured.ProgramInf.program) {
-      gl.useProgram(penPlusShaders.textured.ProgramInf.program);
-    }
+    gl.useProgram(penPlusShaders.textured.ProgramInf.program);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     if (gl.getParameter(gl.TEXTURE_BINDING_2D) != texture) {
       gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -659,6 +497,9 @@
     }
 
     gl.drawArrays(gl.TRIANGLES, 0, 3);
+    //? Hacky fix but it works.
+    gl.useProgram(penPlusShaders.pen.program);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
   };
 
   const lilPenDabble = (nativeSize, curTarget, util) => {
@@ -666,22 +507,20 @@
 
     const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
 
-    curTarget.runtime.ext_pen.penDown(null, util);
-
-    renderer.penPoint(
+    Scratch.vm.renderer.penLine(
       Scratch.vm.renderer._penSkinId,
       {
         color4f: [0, 0, 1, 1],
         diameter: 1,
       },
-      nativeSize[0],
-      nativeSize[1]
+      10000,
+      10000,
+      10000,
+      10000
     );
-
-    curTarget.runtime.ext_pen.penUp(null, util);
   };
 
-  const setValueAccordingToCase = (
+  const setValueAccordingToCaseTriangle = (
     targetId,
     attribute,
     value,
@@ -754,37 +593,57 @@
     ["color", "saturation", "brightness", "transparency", "size"],
     true
   );
+
+  extension.addMenu(
+    "stampSquare",
+    [
+      {
+        text: "Width",
+        value: 0
+      },
+      {
+        text: "Height",
+        value: 1
+      },
+      {
+        text: "Rotation",
+        value: 2
+      }
+    ],
+    true
+  );
+
   extension.addMenu(
     "triAttribute",
     [
       {
         text: "U value",
-        value: 0,
+        value: 0
       },
       {
         text: "V value",
-        value: 1,
+        value: 1
       },
       {
         text: "red tint",
-        value: 2,
+        value: 2
       },
       {
         text: "green tint",
-        value: 3,
+        value: 3
       },
       {
         text: "blue tint",
-        value: 4,
+        value: 4
       },
       {
         text: "transparency",
-        value: 7,
+        value: 7
       },
       {
         text: "corner pinch",
-        value: 6,
-      },
+        value: 6
+      }
     ],
     true
   );
@@ -793,12 +652,12 @@
     [
       {
         text: "Closest",
-        value: gl.NEAREST,
+        value: gl.NEAREST
       },
       {
         text: "Linear",
-        value: gl.LINEAR,
-      },
+        value: gl.LINEAR
+      }
     ],
     true
   );
@@ -808,16 +667,16 @@
     [
       {
         text: "Clamp",
-        value: gl.CLAMP_TO_EDGE,
+        value: gl.CLAMP_TO_EDGE
       },
       {
         text: "Repeat",
-        value: gl.REPEAT,
+        value: gl.REPEAT
       },
       {
         text: "Mirrored",
-        value: gl.MIRRORED_REPEAT,
-      },
+        value: gl.MIRRORED_REPEAT
+      }
     ],
     true
   );
@@ -828,8 +687,8 @@
     [
       {
         text: "additive",
-        value: gl.ONE_MINUS_SRC_ALPHA,
-      },
+        value: gl.ONE_MINUS_SRC_ALPHA
+      }
     ],
     true
   );
@@ -838,6 +697,12 @@
   const addBlocks = () => {
     extension.addLabel("Made by ObviousAlexC");
     extension.addLabel("Warning Misc Limits makes this lag!");
+    extension.addLabel("The sprite that is drawing must not be...");
+    extension.addLabel("hidden!");
+
+    extension.addDivider()
+
+    extension.addLabel("Pen Properties")
 
     extension
       .addBlock(
@@ -871,21 +736,6 @@
       .setFilter();
 
     //TODO Figure out Z problems
-    /*
-    extension.addBlock("Turn independent triangles [order]","setRenderOrder",Scratch.BlockType.COMMAND,({order},util) => {
-        checkForPen(util)
-        if (order == "off"){
-            gl.disable(gl.DEPTH_TEST);
-            gl.depthFunc(gl.NEVER);
-            allowZbufferMod = false;
-        }
-        else{
-            gl.enable(gl.DEPTH_TEST);
-            gl.depthFunc(gl.GEQUAL);
-            allowZbufferMod = true;
-        }
-    }).addArgument("order","off",null,"orderMenu")
-    */
 
     extension
       .addBlock(
@@ -943,6 +793,8 @@
       .addArgument("y2", 10)
       .setFilter();
 
+    extension.addLabel("Square Pen Blocks");
+
     extension.addBlock(
       "Stamp pen square",
       "squareDown",
@@ -950,6 +802,8 @@
       (arg, util) => {
         //Just a simple thing to allow for pen drawing
         const curTarget = util.target;
+
+        checkForPen(util)
 
         const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
         const diam = attrib.diameter;
@@ -960,11 +814,15 @@
 
         lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
 
-        if (!allowZbufferMod && triangleAttributesOfAllSprites["squareStamp"]) {
-          triangleAttributesOfAllSprites[curTarget.id][5] = 1;
-          triangleAttributesOfAllSprites[curTarget.id][13] = 1;
-          triangleAttributesOfAllSprites[curTarget.id][21] = 1;
+        if (typeof triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] == "undefined"){
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] = triangleDefaultAttributes;
         }
+
+        if (typeof squareAttributesOfAllSprites[curTarget.id] == "undefined") {
+          squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
+        }
+
+        const myAttributes = squareAttributesOfAllSprites[curTarget.id]
 
         //trying my best to reduce memory usage
         gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
@@ -979,14 +837,68 @@
         const mul = renderer.useHighQualityRender
           ? 2 * ((canvas.width + canvas.height) / (typSize[0] + typSize[1]))
           : 2;
-        //Paratheses because I know some obscure browser will screw this up.
-        let x1 = Scratch.Cast.toNumber(spritex - 0.5 * diam) * dWidth * mul;
-        let x2 = Scratch.Cast.toNumber(spritex + 0.5 * diam) * dWidth * mul;
-        let x3 = Scratch.Cast.toNumber(spritex + 0.5 * diam) * dWidth * mul;
 
-        let y1 = Scratch.Cast.toNumber(spritey + 0.5 * diam) * dHeight * mul;
-        let y2 = Scratch.Cast.toNumber(spritey + 0.5 * diam) * dHeight * mul;
-        let y3 = Scratch.Cast.toNumber(spritey - 0.5 * diam) * dHeight * mul;
+        //Predifine stuff so there aren't as many calculations
+        const wMulX = mul * myAttributes[0];
+        const wMulY = mul * myAttributes[1];
+
+        const offDiam = 0.5 * diam;
+
+        const sprXoff = spritex * mul;
+        const sprYoff = spritey * mul;
+        //Paratheses because I know some obscure browser will screw this up.
+        let x1 = Scratch.Cast.toNumber(-offDiam) * wMulX;
+        let x2 = Scratch.Cast.toNumber(offDiam) * wMulX;
+        let x3 = Scratch.Cast.toNumber(offDiam) * wMulX;
+        let x4 = Scratch.Cast.toNumber(-offDiam) * wMulX;
+
+        let y1 = Scratch.Cast.toNumber(offDiam) * wMulY;
+        let y2 = Scratch.Cast.toNumber(offDiam) * wMulY;
+        let y3 = Scratch.Cast.toNumber(-offDiam) * wMulY;
+        let y4 = Scratch.Cast.toNumber(-offDiam) * wMulY;
+
+        function rotateTheThings(ox1,oy1,ox2,oy2,ox3,oy3,ox4,oy4) {
+          let sin = Math.sin(myAttributes[2] * d2r);
+          let cos = Math.cos(myAttributes[2] * d2r);
+
+          x1 = (ox1 * sin) + (oy1 * cos);
+          y1 = (ox1 * cos) - (oy1 * sin);
+
+          x2 = (ox2 * sin) + (oy2 * cos);
+          y2 = (ox2 * cos) - (oy2 * sin);
+
+          x3 = (ox3 * sin) + (oy3 * cos);
+          y3 = (ox3 * cos) - (oy3 * sin);
+
+          x4 = (ox4 * sin) + (oy4 * cos);
+          y4 = (ox4 * cos) - (oy4 * sin);
+        }
+
+        rotateTheThings(x1,y1,x2,y2,x3,y3,x4,y4);
+
+        x1+=sprXoff;
+        y1+=sprYoff;
+
+        x2+=sprXoff;
+        y2+=sprYoff;
+
+        x3+=sprXoff;
+        y3+=sprYoff;
+
+        x4+=sprXoff;
+        y4+=sprYoff;
+
+        x1*=dWidth
+        y1*=dHeight
+
+        x2*=dWidth
+        y2*=dHeight
+
+        x3*=dWidth
+        y3*=dHeight
+
+        x4*=dWidth
+        y4*=dHeight
 
         drawTri(
           gl.getParameter(gl.CURRENT_PROGRAM),
@@ -1000,30 +912,220 @@
           "squareStamp"
         );
 
-        x1 = Scratch.Cast.toNumber(spritex - 0.5 * diam) * dWidth * mul;
-        x2 = Scratch.Cast.toNumber(spritex - 0.5 * diam) * dWidth * mul;
-        x3 = Scratch.Cast.toNumber(spritex + 0.5 * diam) * dWidth * mul;
-
-        y1 = Scratch.Cast.toNumber(spritey + 0.5 * diam) * dHeight * mul;
-        y2 = Scratch.Cast.toNumber(spritey - 0.5 * diam) * dHeight * mul;
-        y3 = Scratch.Cast.toNumber(spritey - 0.5 * diam) * dHeight * mul;
-
         drawTri(
           gl.getParameter(gl.CURRENT_PROGRAM),
           x1,
           y1,
-          x2,
-          y2,
           x3,
           y3,
+          x4,
+          y4,
           attrib.color4f,
-          "squareStamp"
+          "squareStamp_" + curTarget.id
         );
       }
-    );
+    )
+    .setFilter();
+
+    extension.addBlock(
+      "Stamp pen square with the texture of [tex]",
+      "squareTexDown",
+      Scratch.BlockType.COMMAND,
+      ({ tex }, util) => {
+        //Just a simple thing to allow for pen drawing
+        const curTarget = util.target;
+
+        const costIndex = curTarget.getCostumeIndexByName(
+          Scratch.Cast.toString(tex)
+        );
+
+        const curCostume = curTarget.sprite.costumes_[costIndex];
+          if (costIndex != curTarget.currentCostume) {
+            curTarget.setCostume(costIndex);
+          }
+
+        const currentTexture = renderer._allSkins[curCostume.skinId].getTexture();
+
+        checkForPen(util)
+
+        const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
+        const diam = attrib.diameter;
+
+        const nativeSize = renderer.useHighQualityRender
+          ? [canvas.width, canvas.height]
+          : renderer._nativeSize;
+
+        lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
+
+        if (!triangleAttributesOfAllSprites["squareStamp_" + curTarget.id]){
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] = triangleDefaultAttributes;
+        }
+
+        if (!squareAttributesOfAllSprites[curTarget.id]) {
+          squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
+        }
+
+        const myAttributes = squareAttributesOfAllSprites[curTarget.id]
+
+        //trying my best to reduce memory usage
+        gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
+        const dWidth = 1 / nativeSize[0];
+        const dHeight = 1 / nativeSize[1];
+
+        const spritex = curTarget.x;
+        const spritey = curTarget.y;
+
+        //correction for HQ pen
+        const typSize = renderer._nativeSize;
+        const mul = renderer.useHighQualityRender
+          ? 2 * ((canvas.width + canvas.height) / (typSize[0] + typSize[1]))
+          : 2;
+
+        //Predifine stuff so there aren't as many calculations
+        const wMulX = mul * myAttributes[0];
+        const wMulY = mul * myAttributes[1];
+
+        const offDiam = 0.5 * diam;
+
+        const sprXoff = spritex * mul;
+        const sprYoff = spritey * mul;
+        //Paratheses because I know some obscure browser will screw this up.
+        let x1 = Scratch.Cast.toNumber(-offDiam) * wMulX;
+        let x2 = Scratch.Cast.toNumber(offDiam) * wMulX;
+        let x3 = Scratch.Cast.toNumber(offDiam) * wMulX;
+        let x4 = Scratch.Cast.toNumber(-offDiam) * wMulX;
+
+        let y1 = Scratch.Cast.toNumber(offDiam) * wMulY;
+        let y2 = Scratch.Cast.toNumber(offDiam) * wMulY;
+        let y3 = Scratch.Cast.toNumber(-offDiam) * wMulY;
+        let y4 = Scratch.Cast.toNumber(-offDiam) * wMulY;
+
+        function rotateTheThings(ox1,oy1,ox2,oy2,ox3,oy3,ox4,oy4) {
+          let sin = Math.sin(myAttributes[2] * d2r);
+          let cos = Math.cos(myAttributes[2] * d2r);
+
+          x1 = (ox1 * sin) + (oy1 * cos);
+          y1 = (ox1 * cos) - (oy1 * sin);
+
+          x2 = (ox2 * sin) + (oy2 * cos);
+          y2 = (ox2 * cos) - (oy2 * sin);
+
+          x3 = (ox3 * sin) + (oy3 * cos);
+          y3 = (ox3 * cos) - (oy3 * sin);
+
+          x4 = (ox4 * sin) + (oy4 * cos);
+          y4 = (ox4 * cos) - (oy4 * sin);
+        }
+
+        rotateTheThings(x1,y1,x2,y2,x3,y3,x4,y4);
+
+        x1+=sprXoff;
+        y1+=sprYoff;
+
+        x2+=sprXoff;
+        y2+=sprYoff;
+
+        x3+=sprXoff;
+        y3+=sprYoff;
+
+        x4+=sprXoff;
+        y4+=sprYoff;
+
+        x1*=dWidth
+        y1*=dHeight
+
+        x2*=dWidth
+        y2*=dHeight
+
+        x3*=dWidth
+        y3*=dHeight
+
+        x4*=dWidth
+        y4*=dHeight
+
+        if (currentTexture != null && typeof currentTexture != "undefined") {
+
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][0] = 0;
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][1] = 1;
+
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][8] = 1;
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][9] = 1;
+
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][16] = 1;
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][17] = 0;
+
+          drawTextTri(
+            gl.getParameter(gl.CURRENT_PROGRAM),
+            x1,
+            y1,
+            x2,
+            y2,
+            x3,
+            y3,
+            "squareStamp_" + curTarget.id,
+            currentTexture
+          );
+
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][0] = 0;
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][1] = 1;
+
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][8] = 1;
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][9] = 0;
+
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][16] = 0;
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][17] = 0;
+
+          drawTextTri(
+            gl.getParameter(gl.CURRENT_PROGRAM),
+            x1,
+            y1,
+            x3,
+            y3,
+            x4,
+            y4,
+            "squareStamp_" + curTarget.id,
+            currentTexture
+          );
+        }
+      }
+    )
+    .addArgument("tex", null, Scratch.ArgumentType.COSTUME)
+    .setFilter();
+
+    extension.addBlock(
+      "Set pen square's [target] to [number]",
+      "setStampAttribute",
+      Scratch.BlockType.COMMAND,
+      ({ target, number }, util) => {
+        const curTarget = util.target;
+        if (!squareAttributesOfAllSprites[curTarget.id]) {
+          squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
+        }
+
+        squareAttributesOfAllSprites[curTarget.id][target] = number;
+      }
+    )
+    .addArgument("target", 0, Scratch.ArgumentType.NUMBER, "stampSquare")
+    .addArgument("number", 1, Scratch.ArgumentType.NUMBER)
+    .setFilter();
+
+    extension.addBlock(
+      "get pen square's [target]",
+      "getStampAttribute",
+      Scratch.BlockType.REPORTER,
+      ({ target }, util) => {
+        const curTarget = util.target;
+        if (!squareAttributesOfAllSprites[curTarget.id]) {
+          squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
+        }
+
+        return squareAttributesOfAllSprites[curTarget.id][target];
+      }
+    )
+    .addArgument("target", 0, Scratch.ArgumentType.NUMBER, "stampSquare")
+    .setFilter();
 
     extension.addLabel("Triangle Blocks");
-    extension.addLabel("Textures Must be a bitmap!");
 
     extension
       .addBlock(
@@ -1051,7 +1153,7 @@
             triangleAttributesOfAllSprites[targetId] =
               triangleDefaultAttributes;
           }
-          setValueAccordingToCase(
+          setValueAccordingToCaseTriangle(
             targetId,
             attribute,
             value,
@@ -1109,10 +1211,7 @@
             ? [canvas.width, canvas.height]
             : renderer._nativeSize;
 
-          if (
-            !allowZbufferMod &&
-            triangleAttributesOfAllSprites[curTarget.id]
-          ) {
+          if (triangleAttributesOfAllSprites[curTarget.id]) {
             triangleAttributesOfAllSprites[curTarget.id][5] = 1;
             triangleAttributesOfAllSprites[curTarget.id][13] = 1;
             triangleAttributesOfAllSprites[curTarget.id][21] = 1;
@@ -1186,10 +1285,7 @@
           //?Renderer Freaks out if we don't do this so do it.
           lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
 
-          if (
-            !allowZbufferMod &&
-            triangleAttributesOfAllSprites[curTarget.id]
-          ) {
+          if (triangleAttributesOfAllSprites[curTarget.id]) {
             triangleAttributesOfAllSprites[curTarget.id][5] = 1;
             triangleAttributesOfAllSprites[curTarget.id][13] = 1;
             triangleAttributesOfAllSprites[curTarget.id][21] = 1;
