@@ -1,0 +1,96 @@
+.lightTheme{
+    --Primary: #FF4C4C;
+    --Secondary: #E9F1FC;
+    --Text_Color: #858585;
+
+    --Button: #FF4C4C;
+    --Button_Darker: #c03b3b;
+    --Button_Border: #ff2727;
+    --Invisible: #00000000;
+}
+
+.darkTheme{
+    --Primary: #333333;
+    --Secondary: #1E1E1E;
+    --Text_Color: #FFFFFF;
+
+    --Button: #FF4C4C;
+    --Button_Darker: #c03b3b;
+    --Button_Border: #ff8686;
+    --Invisible: #00000000;
+}
+
+body{
+    background-color: var(--Secondary);
+    color: var(--Text_Color);
+    padding: 0;
+    margin: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: large;
+}
+
+.upper{
+    background-color: var(--Primary);
+    width: 100%;
+    height: 10vh;
+
+    text-align: center;
+    font-size: xx-large;
+}
+
+.centered{
+    position: relative;
+    left: calc(50% - 40%);
+    width: 80%;
+}
+
+.middle{
+    text-align: center;
+    width: 100%;
+    font-size: x-large;
+}
+
+.credits{
+    text-align: center;
+    width: 100%;
+    font-size: large;
+}
+
+.Title{
+    font-size: x-large;
+}
+
+button{
+    background-color: var(--Button);
+    color: var(--Text_Color);
+    border-radius: 50px;
+    border-color: var(--Invisible);
+
+    font-size: large;
+
+    transition: 100ms;
+}
+
+button:hover{
+    background-color: var(--Button_Darker);
+    color: var(--Text_Color);
+    border-radius: 100px;
+    border-color: var(--Button_Border);
+
+    font-size: larger;
+}
+
+.block{
+    width: 20%;
+    height: auto;
+}
+
+.longBlock{
+    width: 50%;
+    height: auto;
+}
+
+.superLongBlock{
+    width: 100%;
+    height: auto;
+}

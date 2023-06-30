@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" style="--editorTheme3-motionColor: #4a6cd4; --editorTheme3-looksColor: #8a55d7; --editorTheme3-soundsColor: #bb42c3; --editorTheme3-eventsColor: #c88330; --editorTheme3-controlColor: #e1a91a; --editorTheme3-sensingColor: #2ca5e2; --editorTheme3-operatorsColor: #5cb712; --editorTheme3-dataColor: #ee7d16; --editorTheme3-dataListsColor: #cc5b22; --editorTheme3-customColor: #632d99; --editorTheme3-PenColor: #0e9a6c; --editorTheme3-twColor: #ff4c4c; --editorTheme3-saColor: #29beb8; --editorTheme3-inputColor: #ffffff; --editorTheme3-commentColor: #FFFFD2; --editorTheme3-text: white; --editorTheme3-inputColor-text: #575e75; --editorTheme3-inputColor-blackText: #000000; --editorTheme3-commentText: #575e75; --editorTheme3-commentTextTransparent: rgba(0, 0, 0, 0.50); --editorTheme3-commentBorder: #b3b393ff; --editorTheme3-motion-primary: #4a6cd4; --editorTheme3-motion-secondary: #4361bfff; --editorTheme3-motion-tertiary: #3b56aaff; --editorTheme3-motion-field: #3b56aaff; --editorTheme3-looks-primary: #8a55d7; --editorTheme3-looks-secondary: #7c4dc2ff; --editorTheme3-looks-tertiary: #6e44acff; --editorTheme3-looks-field: #6e44acff; --editorTheme3-sounds-primary: #bb42c3; --editorTheme3-sounds-secondary: #a83bb0ff; --editorTheme3-sounds-tertiary: #96359cff; --editorTheme3-sounds-field: #96359cff; --editorTheme3-event-primary: #c88330; --editorTheme3-event-secondary: #b4762bff; --editorTheme3-event-tertiary: #a06926ff; --editorTheme3-event-field: #a06926ff; --editorTheme3-control-primary: #e1a91a; --editorTheme3-control-secondary: #cb9817ff; --editorTheme3-control-tertiary: #b48715ff; --editorTheme3-control-field: #b48715ff; --editorTheme3-sensing-primary: #2ca5e2; --editorTheme3-sensing-secondary: #2895cbff; --editorTheme3-sensing-tertiary: #2384b5ff; --editorTheme3-sensing-field: #2384b5ff; --editorTheme3-operators-primary: #5cb712; --editorTheme3-operators-secondary: #53a510ff; --editorTheme3-operators-tertiary: #4a920eff; --editorTheme3-operators-field: #4a920eff; --editorTheme3-data-primary: #ee7d16; --editorTheme3-data-secondary: #d67114ff; --editorTheme3-data-tertiary: #be6412ff; --editorTheme3-data-field: #be6412ff; --editorTheme3-data_lists-primary: #cc5b22; --editorTheme3-data_lists-secondary: #b8521fff; --editorTheme3-data_lists-tertiary: #a3491bff; --editorTheme3-data_lists-field: #a3491bff; --editorTheme3-more-primary: #632d99; --editorTheme3-more-secondary: #59298aff; --editorTheme3-more-tertiary: #4f247aff; --editorTheme3-more-field: #4f247aff; --editorTheme3-pen-primary: #0e9a6c; --editorTheme3-pen-secondary: #0d8b61ff; --editorTheme3-pen-tertiary: #0b7b56ff; --editorTheme3-pen-field: #0b7b56ff; --editorTheme3-tw-primary: #ff4c4c; --editorTheme3-tw-secondary: #e64444ff; --editorTheme3-tw-tertiary: #cc3d3dff; --editorTheme3-tw-field: #cc3d3dff; --editorTheme3-sa-primary: #29beb8; --editorTheme3-sa-secondary: #25aba6ff; --editorTheme3-sa-tertiary: #219893ff; --editorTheme3-sa-field: #219893ff;"><style xmlns="http://www.w3.org/1999/xhtml">
+    .blocklyText {
+        fill: #fff;
+        font-family: "Helvetica Neue", Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: 500;
+    }
+    .blocklyNonEditableText&gt;text, .blocklyEditableText&gt;text {
+        fill: #575E75;
+    }
+    .blocklyDropdownText {
+        fill: #fff !important;
+    }
+    .blocklyEditableText &gt; text {
+  fill: var(--editorTheme3-inputColor-text);
+}
+.blocklyHtmlInput {
+  background-color: var(--editorTheme3-inputColor);
+  color: var(--editorTheme3-inputColor-text);
+}
+
+.blocklyDropDownDiv .goog-menuitem-highlight,
+.blocklyDropDownDiv .goog-menuitem-hover,
+.sa-contextmenu-colored .blocklyContextMenu .goog-menuitem-highlight {
+  background-color: var(--editorTheme3-hoveredItem, rgba(0, 0, 0, 0.2));
+}
+
+.scratchCommentRect {
+  fill: var(--editorTheme3-commentColor);
+}
+.scratchCommentBody,
+.scratchCommentTextarea {
+  background-color: var(--editorTheme3-commentColor);
+}
+.scratchWorkspaceCommentBorder {
+  stroke: var(--editorTheme3-commentBorder);
+}
+.scratchCommentTextarea::placeholder {
+  color: var(--editorTheme3-commentTextTransparent);
+}
+.scratchCommentText {
+  fill: var(--editorTheme3-commentText);
+  color: var(--editorTheme3-commentText);
+}
+</style><g data-id="i_P#eG)+C`.br1}2nOS%" class="blocklyDraggable blocklySelected" data-shapes="stack" data-category="Pen+" transform="translate(0,0) "><path class="blocklyPath blocklyBlockBackground" stroke="#0b7b56ff" fill="#0e9a6c" fill-opacity="1" d="m 0,6 A 6,6 0 0,1 6,0 H 12 c 2,0 3,0.75 4,1.5 l 2.0999999999999996,2.0999999999999996 c 1,0.75 2,1.5 4,1.5 h 4.799999999999999 c 2,0 3,-0.75 4,-1.5 l 2.0999999999999996,-2.0999999999999996c 1,-0.75 2,-1.5 4,-1.5 H 228.329630279541 a 6,6 0 0,1 6,6 v 29.599999999999994  a 6,6 0 0,1 -6,6 H 40.4   h -3.25c -2,0 -3,0.75 -4,1.5 l -2.0999999999999996,2.0999999999999996 c -1,0.75 -2,1.5 -4,1.5 h -4.799999999999999 c -2,0 -3,-0.75 -4,-1.5 l -2.0999999999999996,-2.0999999999999996c -1,-0.75 -2,-1.5 -4,-1.5 H 6 a 6,6 0 0,1 -6,-6 z"/><g data-id="HiY/%CQu,GTTQPcV=c+(" data-argument-type="text number" data-shapes="argument round" transform="translate(160.12963104248047,9.599999999999998)"><path class="blocklyPath blocklyBlockBackground" stroke="#0b7b56ff" fill="#ffffff" fill-opacity="1" d="m 0,0 m 11.2,0 H 17.899999618530273 a 11.2 11.2 0 0 1 0 22.4 H 11.2 a 11.2 11.2 0 0 1 0 -22.4 z"/><g class="blocklyEditableText" transform="translate(8, 0) " style="cursor: text;"><text class="blocklyText" x="8.399999999999999" y="13.2" dominant-baseline="middle" dy="0" text-anchor="middle">0</text></g><g><g/></g></g><g data-id="iM{-Hyiet6lfU]VWA.J7" data-argument-type="text number" data-shapes="argument round" transform="translate(197.22963066101073,9.599999999999998)"><path class="blocklyPath blocklyBlockBackground" stroke="#0b7b56ff" fill="#ffffff" fill-opacity="1" d="m 0,0 m 11.2,0 H 17.899999618530273 a 11.2 11.2 0 0 1 0 22.4 H 11.2 a 11.2 11.2 0 0 1 0 -22.4 z"/><g class="blocklyEditableText" transform="translate(8, 0) " style="cursor: text;"><text class="blocklyText" x="8.399999999999999" y="13.2" dominant-baseline="middle" dy="0" text-anchor="middle">0</text></g><g><g/></g></g><g transform="translate(8, 4.799999999999997) "><image height="40px" width="40px" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGl0bGU+cGVuLWljb248L3RpdGxlPjxnIHN0cm9rZT0iIzU3NUU3NSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik04Ljc1MyAzNC42MDJsLTQuMjUgMS43OCAxLjc4My00LjIzN2MxLjIxOC0yLjg5MiAyLjkwNy01LjQyMyA1LjAzLTcuNTM4TDMxLjA2NiA0LjkzYy44NDYtLjg0MiAyLjY1LS40MSA0LjAzMi45NjcgMS4zOCAxLjM3NSAxLjgxNiAzLjE3My45NyA0LjAxNUwxNi4zMTggMjkuNTljLTIuMTIzIDIuMTE2LTQuNjY0IDMuOC03LjU2NSA1LjAxMiIgZmlsbD0iI0ZGRiIvPjxwYXRoIGQ9Ik0yOS40MSA2LjExcy00LjQ1LTIuMzc4LTguMjAyIDUuNzcyYy0xLjczNCAzLjc2Ni00LjM1IDEuNTQ2LTQuMzUgMS41NDYiLz48cGF0aCBkPSJNMzYuNDIgOC44MjVjMCAuNDYzLS4xNC44NzMtLjQzMiAxLjE2NGwtOS4zMzUgOS4zYy4yODItLjI5LjQxLS42NjguNDEtMS4xMiAwLS44NzQtLjUwNy0xLjk2My0xLjQwNi0yLjg2OC0xLjM2Mi0xLjM1OC0zLjE0Ny0xLjgtNC4wMDItLjk5TDMwLjk5IDUuMDFjLjg0NC0uODQgMi42NS0uNDEgNC4wMzUuOTYuODk4LjkwNCAxLjM5NiAxLjk4MiAxLjM5NiAyLjg1NU0xMC41MTUgMzMuNzc0Yy0uNTczLjMwMi0xLjE1Ny41Ny0xLjc2NC44M0w0LjUgMzYuMzgybDEuNzg2LTQuMjM1Yy4yNTgtLjYwNC41My0xLjE4Ni44MzMtMS43NTcuNjkuMTgzIDEuNDQ4LjYyNSAyLjEwOCAxLjI4Mi42Ni42NTggMS4xMDIgMS40MTIgMS4yODcgMi4xMDIiIGZpbGw9IiM0Qzk3RkYiLz48cGF0aCBkPSJNMzYuNDk4IDguNzQ4YzAgLjQ2NC0uMTQuODc0LS40MzMgMS4xNjVsLTE5Ljc0MiAxOS42OGMtMi4xMyAyLjExLTQuNjczIDMuNzkzLTcuNTcyIDUuMDFMNC41IDM2LjM4bC45NzQtMi4zMTYgMS45MjUtLjgwOGMyLjg5OC0xLjIxOCA1LjQ0LTIuOSA3LjU3LTUuMDFsMTkuNzQzLTE5LjY4Yy4yOTItLjI5Mi40MzItLjcwMi40MzItMS4xNjUgMC0uNjQ2LS4yNy0xLjQtLjc4LTIuMTIyLjI1LjE3Mi41LjM3Ny43MzcuNjE0Ljg5OC45MDUgMS4zOTYgMS45ODMgMS4zOTYgMi44NTYiIGZpbGw9IiM1NzVFNzUiIG9wYWNpdHk9Ii4xNSIvPjxwYXRoIGQ9Ik0xOC40NSAxMi44M2MwIC41LS40MDQuOTA1LS45MDQuOTA1cy0uOTA1LS40MDUtLjkwNS0uOTA0YzAtLjUuNDA3LS45MDMuOTA2LS45MDMuNSAwIC45MDQuNDA0LjkwNC45MDR6IiBmaWxsPSIjNTc1RTc1Ii8+PC9nPjwvc3ZnPg=="/></g><g transform="translate(56, 6.799999999999997) "><line stroke="#0d8b61ff" stroke-linecap="round" x1="0" y1="0" x2="0" y2="28"/></g><text class="blocklyText" y="2" text-anchor="middle" dominant-baseline="middle" dy="0" x="43.564815521240234" transform="translate(65, 20.799999999999997) " style="fill: rgb(255, 255, 255);">Draw dot at</text><path class="blocklyPath" style="visibility: hidden" d="" fill="#0b7b56ff"/><path class="blocklyPath" style="visibility: hidden" d="" fill="#0b7b56ff"/><g><g/></g></g></svg>
