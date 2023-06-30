@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pen+ Docs</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="PenLogo.png" type="image/x-icon">
+</head>
+<body class="lightTheme">
+    <!--This is the Title Bar that says the doc name-->
+    <div class="upper">Pen+ Documentation</div>
+
+    <!--Main Chunk of the docs-->
+    <div class="centered">
+        <!--Basic Tutorials-->
+        <br>
+        Pen+ is a turbowarp extension that expands the pen catagory to add more blocks that should have been there or that help accelerate the development process of pen based games<br><br>
+        
+        If you want video tutorials please press <button>This Button</button> to go to the video tutorials playlist.<br><br>
+
+        These docs will not go into every block as some are pretty self explanitory.<br>
+
+        <!--Common Terminology-->
+        <p class="Title">Common Terms</p>
+        U - Horizontal position on the texture typically between 0-1, in specific cases when exceeded the image will loop back around.<br>
+        V - Vertical position on the texture typically between 0-1, in specific cases when exceeded the image will loop back around.<br>
+        Texture - The image on a polygon.<br>
+
+        <!--Scratch Like-->
+        <p class="Title">Pen Down</p>
+        This block returns whether or not the scratch pen is down or not.<br>
+        Here is what the block looks like, and what every other block looks like!<br>
+        <img src="Images/ScratchPenLike/Pen_Down.svg" alt="The pen down block" class="block"><br>
+
+        <p class="Title">Pen Attribute</p>
+        This block gets the desired attribute of the pen of the desired sprite.<br>
+        There are 5 different values you can get! These are, <br>
+        <b>Pen Color</b><br>
+        <b>Pen Saturation</b><br>
+        <b>Pen Brightness</b><br>
+        <b>Pen Transparency</b><br>
+        and<br>
+        <b>Pen Size</b><br>
+
+        Here is what the block and what two of its variants look like.<br>
+        <img src="Images/ScratchPenLike/Pen_Value_Variation_Color.svg" alt="The pen attribute block getting the color attribute" class="block">
+        <img src="Images/ScratchPenLike/Pen_Value_Variation_Sat.svg" alt="The pen attribute block getting the saturation attribute" class="block"><br>
+
+        <p class="Title">Pen Dot</p>
+        This block places a dot at the desired coordinates using the current pen color and size.<br>
+        <img src="Images/ScratchPenExtras/Pen_Dot.svg" alt="The pen dot block putting a dot at the coordinates X 0 and Y 0 on the stage" class="block"><br>
+
+        <p class="Title">Pen Line</p>
+        This block draws a line between the two desired points on the scratch stage using the current pen color and size.<br>
+        <img src="Images/ScratchPenExtras/Pen_Line.svg" alt="The pen line block drawing a line between X 0, Y 0, and X 10, Y 10" class="longBlock"><br>
+
+
+        <!--3d community suggestions-->
+        <p class="Title">Pen Square</p>
+        This block draws a square at the sprites position on the scratch stage using the current pen color and size.<br>
+        <img src="Images/Scratch3dSuggestions/Pen_Square.svg" alt="Draws a solid square onto the stage using the pen size" class="block"><br>
+
+        <p class="Title">Pen Textured Square</p>
+        This block draws a square at the sprites position on the scratch stage with an image on it! Of course using the current pen color and size.<br>
+        The example below uses "costume1" as the image drawn ontop of the stamped square.<br>
+        <img src="Images/Scratch3dSuggestions/Pen_Textured_Square.svg" alt="This block draws a square with the image of costume1 stamped on it" class="longBlock"><br>
+
+        <p class="Title">Set square attribute</p>
+        This block sets an attribute of a pen based square.<br>
+        These can be,<br>
+        <b>Square Width</b><br>
+        <b>Square Height</b><br>
+        <b>Rotation</b><br>
+        <b>U size multiplier</b><br>
+        <b>U position offset</b><br>
+        <b>V size nultiplier</b><br>
+        <b>V position offset</b><br>
+        <b>Red Tint</b><br>
+        <b>Green Tint</b><br>
+        <b>Blue Tint</b><br>
+        and<br>
+        <b>Transparency</b><br>
+        The tint and transparency blocks are values from 0-100<br>
+        <img src="Images/Scratch3dSuggestions/Square_Value_Width_Set.svg" alt="Sets the width value of the square to 1x" class="longBlock">
+        <img src="Images/Scratch3dSuggestions/Square_Value_Rotation_Set.svg" alt="Sets the rotation value of the square to 1 degree" class="longBlock"><br>
+
+        <p class="Title">Get square attribute</p>
+        Like the previous block this block gets an attribute from the pen square<br>
+        <img src="Images/Scratch3dSuggestions/Square_Value_UMul_Get.svg" alt="This block draws a square with the image of costume1 stamped on it" class="longBlock"><br>
+        <img src="Images/Scratch3dSuggestions/Square_Value_Height_Get.svg" alt="This block draws a square with the image of costume1 stamped on it" class="longBlock"><br>
+
+
+        <!--Triangle Blocks-->
+        <p class="Title">Set triangle point attribute</p>
+        This block sets the desired attribute of the desired point of the triangle.<br>
+        The values are,<br>
+        <b>U value</b><br>
+        <b>V value</b><br>
+        <b>red tint</b><br>
+        <b>green tint</b><br>
+        <b>blue tint</b><br>
+        <b>transparency</b><br>
+        and<br>
+        <b>Corner Pinch</b><br>
+        The corner pinch value shrinks the size of that corner<br>
+        The tint and transparency values are from 0-100<br>
+        <img src="Images/Triangle/Triangle_Attribute_Set_Red.svg" alt="This block sets the red value of the specified point" class="longBlock"><br>
+        <img src="Images/Triangle/Triangle_Attribute_Set_Green.svg" alt="This block sets the green value of the specified point" class="longBlock"><br>
+
+        <p class="Title">Get triangle point attribute</p>
+        This block gets the desired attribute of the desired point of the triangle.<br>
+        The values are,<br>
+        <img src="Images/Triangle/Triangle_Attribute_Get_Transparency.svg" alt="This block gets the transparency value of the specified point" class="longBlock"><br>
+        <img src="Images/Triangle/Triangle_Attribute_Get_CornerPinch.svg" alt="This block gets the corner pinch of the specified point" class="longBlock"><br>
+
+        <p class="Title">Draw Solid Triangle</p>
+        Draws a solid triangle between the three points using the pen color.<br>
+        <img src="Images/Triangle/Triangle_Solid.svg" alt="This block draws a triangle between X -22 Y -10, X 50 Y 10, and X 80 Y -50" class="longBlock"><br>
+
+        <p class="Title">Draw Textured Triangle</p>
+        Draws a Textured triangle between the three points with the desired texture.<br>
+        <img src="Images/Triangle/Triangle_Textured.svg" alt="This block draws a triangle with the image in costume1 between X -22 Y -10, X 50 Y 10, and X 80 Y -50" class="superLongBlock"><br>
+
+        <!--Image Blocks-->
+        <p class="Title">Draw Textured Triangle</p>
+        This block sets the type of wrapping the next image to be imported uses.<br>
+        This can either be,<br>
+        <b>Clamp</b><br>
+        <b>Repeat</b><br>
+        <b>Mirrored</b><br>
+        <img src="Images/Images/Image_Wrap.svg" alt="Sets the wrap mode to Clamp" class="superLongBlock"><br>
+        
+
+        <!--The Credits-->
+        <br>
+        <div class="middle">
+            Pen+ made by ObviousAlexC<br>
+            Co-developed and tested by ThatOneWierdo92<br>
+            Maintained by GarboMuffin<br>
+            <br>
+            with special thanks to
+            <div class="credits">
+                TheShovel<br>
+                LilyMakesThings<br>
+                SkyIsTumbling<br>
+                Alltrue<br>
+                LittleBunny06<br>
+                ggenije<br>
+                JeremyGamer13<br>
+                Scratchtomv<br>
+                Geotale<br>
+            </div>
+        </div>
+    </div>
+
+    <!--The only thing this script does is fitting the theme and making button functions!-->
+    <script src="script.js"></script>
+</body>
+</html>
