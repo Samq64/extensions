@@ -1736,5 +1736,8 @@
     0,
     0
   );
+
+  extension.addDocs("https://extensions.turbowarp.org/penplus")
+
   extension.register();
 })(window.Scratch);
