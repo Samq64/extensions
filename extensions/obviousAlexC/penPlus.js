@@ -832,10 +832,6 @@
 
   //? Seperate blocks from the rest of the code to just clean up the workspace a bit
   const addBlocks = () => {
-    extension.addLabel("Made by ObviousAlexC");
-    extension.addLabel("Docs are under construction!");
-
-    extension.addDivider();
 
     extension.addLabel("Pen Properties");
 
