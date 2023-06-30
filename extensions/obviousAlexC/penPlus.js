@@ -272,8 +272,8 @@
     1,
   ];
   const squareDefaultAttributes = [
-    // width* height*  rotation  u-mul u     v-mul   v
-       1,     1,       90,       1,    0,    1,      0
+    // width* height*  rotation  u-mul u     v-mul   v    r g b transparency
+       1,     1,       90,       1,    0,    1,      0,   1,1,1,1
   ];
 
   const triangleAttributesOfAllSprites = {}; //!it dawned on me I have to do this
@@ -849,6 +849,22 @@
         text: "V-Offset",
         value: "6",
       },
+      {
+        text: "Red Tint",
+        value: "7",
+      },
+      {
+        text: "Green Tint",
+        value: "8",
+      },
+      {
+        text: "Blue Tint",
+        value: "9",
+      },
+      {
+        text: "Transparency",
+        value: "10",
+      },
     ],
     true
   );
@@ -950,9 +966,7 @@
   //? Seperate blocks from the rest of the code to just clean up the workspace a bit
   const addBlocks = () => {
     extension.addLabel("Made by ObviousAlexC");
-    extension.addLabel("Warning Misc Limits makes this lag!");
-    extension.addLabel("The sprite that is drawing must not be...");
-    extension.addLabel("hidden!");
+    extension.addLabel("Docs are under construction!");
 
     extension.addDivider();
 
@@ -1163,6 +1177,19 @@
           x4 *= dWidth;
           y4 *= dHeight;
 
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][2] = myAttributes[7];
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][3] = myAttributes[8];
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][4] = myAttributes[9];
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][7] = myAttributes[10];
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][10] = myAttributes[7];
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][11] = myAttributes[8];
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][12] = myAttributes[9];
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][15] = myAttributes[10];
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][18] = myAttributes[7];
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][19] = myAttributes[8];
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][20] = myAttributes[9];
+          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][23] = myAttributes[10];
+
           drawTri(
             gl.getParameter(gl.CURRENT_PROGRAM),
             x1,
@@ -1317,26 +1344,29 @@
           y4 *= dHeight;
 
           if (currentTexture != null && typeof currentTexture != "undefined") {
-            triangleAttributesOfAllSprites[
-              "squareStamp_" + curTarget.id
-            ][0] = (0 + myAttributes[4]) * myAttributes[3];
-            triangleAttributesOfAllSprites[
-              "squareStamp_" + curTarget.id
-            ][1] =  (1 + myAttributes[6]) * myAttributes[5];
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][0] = (0 + myAttributes[4]) * myAttributes[3];
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][1] =  (1 + myAttributes[6]) * myAttributes[5];
 
-            triangleAttributesOfAllSprites[
-              "squareStamp_" + curTarget.id
-            ][8] = (1 + myAttributes[4]) * myAttributes[3];
-            triangleAttributesOfAllSprites[
-              "squareStamp_" + curTarget.id
-            ][9] = (1 + myAttributes[6]) * myAttributes[5];
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][2] = myAttributes[7];
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][3] = myAttributes[8];
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][4] = myAttributes[9];
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][7] = myAttributes[10];
 
-            triangleAttributesOfAllSprites[
-              "squareStamp_" + curTarget.id
-            ][16] = (1 + myAttributes[4]) * myAttributes[3];
-            triangleAttributesOfAllSprites[
-              "squareStamp_" + curTarget.id
-            ][17] = (0 + myAttributes[6]) * myAttributes[5];
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][8] = (1 + myAttributes[4]) * myAttributes[3];
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][9] = (1 + myAttributes[6]) * myAttributes[5];
+
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][10] = myAttributes[7];
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][11] = myAttributes[8];
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][12] = myAttributes[9];
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][15] = myAttributes[10];
+
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][16] = (1 + myAttributes[4]) * myAttributes[3];
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][17] = (0 + myAttributes[6]) * myAttributes[5];
+
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][18] = myAttributes[7];
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][19] = myAttributes[8];
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][20] = myAttributes[9];
+            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][23] = myAttributes[10];
 
             drawTextTri(
               gl.getParameter(gl.CURRENT_PROGRAM),
@@ -1399,8 +1429,13 @@
             squareAttributesOfAllSprites[curTarget.id] =
               squareDefaultAttributes;
           }
-
-          squareAttributesOfAllSprites[curTarget.id][Scratch.Cast.toNumber(target)] = number;
+          
+          const attributeNum = Scratch.Cast.toNumber(target)
+          if (attributeNum >= 7){
+            squareAttributesOfAllSprites[curTarget.id][attributeNum] = Math.min(Math.max(number, 0), 100) * 0.01;
+            return
+          }
+          squareAttributesOfAllSprites[curTarget.id][attributeNum] = number;
         }
       )
       .addArgument("target", 0, Scratch.ArgumentType.NUMBER, "stampSquare")
