@@ -4,7 +4,7 @@
 //  SkyIsTumbling
 //  Alltrue
 //  TheShovel
-//  
+//
 //Thanks
 
 (function (Scratch) {
@@ -14,183 +14,7 @@
   //?Also I really like the syntax compared to JSON.
 
   /* eslint-disable */
-  class ExtensionBuilder {
-    constructor(t, n, i, l) {
-      (this.internal = {}),
-        (this.internal.JSON = { blocks: [], menus: {} }),
-        (this.runtime = Scratch.vm.runtime),
-        (this.internal.defaultFunction = {
-          code() {
-            console.log("This block has no code");
-          },
-          arguments: {},
-        }),
-        (this.addDocs = (t) => {
-          this.internal.JSON.docsURI = t;
-        }),
-        (this.addBlock = (t, n, i, l, e, s) => {
-          (l = l || this.internal.defaultFunction.code),
-            (this[n] = l),
-            (s = s || {});
-          let o = s;
-          o.disableMonitor || (o.disableMonitor = !0),
-            (o.opcode = n),
-            (o.blockType = i),
-            (o.text = t),
-            (o.arguments = e || this.internal.defaultFunction.arguments);
-          let r = this.internal.JSON.blocks.length;
-          return (
-            this.internal.JSON.blocks.push(o),
-            (this.internal.JSON.blocks[r].addArgument = (t, n, i, l) => {
-              if (null == (i = i || null))
-                switch (typeof n) {
-                  case "string":
-                  default:
-                    i = Scratch.ArgumentType.STRING;
-                    break;
-                  case "boolean":
-                    i = Scratch.ArgumentType.BOOLEAN;
-                    break;
-                  case "number":
-                  case "bigint":
-                    i = Scratch.ArgumentType.NUMBER;
-                }
-              return (
-                null == n
-                  ? (this.internal.JSON.blocks[r].arguments[t] = { type: i })
-                  : (this.internal.JSON.blocks[r].arguments[t] = {
-                      type: i,
-                      defaultValue: n,
-                    }),
-                (l = l || null) &&
-                  "string" == typeof l &&
-                  (this.internal.JSON.blocks[r].arguments[t].menu = l),
-                this.internal.JSON.blocks[r]
-              );
-            }),
-            (this.internal.JSON.blocks[r].setIcon = (t) => (
-              (this.internal.JSON.blocks[r].blockIconURI = t),
-              this.internal.JSON.blocks[r]
-            )),
-            (this.internal.JSON.blocks[r].setFilter = (t) => (
-              (t = t || Scratch.TargetType.SPRITE),
-              (this.internal.JSON.blocks[r].filter = t),
-              this.internal.JSON.blocks[r]
-            )),
-            (this.internal.JSON.blocks[r].hideBlock = () => (
-              (this.internal.JSON.blocks[r].hideFromPalette = !0),
-              this.internal.JSON.blocks[r]
-            )),
-            (this.internal.JSON.blocks[r].stopMoniter = () => (
-              (this.internal.JSON.blocks[r].disableMonitor = !0),
-              this.internal.JSON.blocks[r]
-            )),
-            (this.internal.JSON.blocks[r].setEdgeActivation = (t) => (
-              (this.internal.JSON.blocks[r].isEdgeActivated = t),
-              this.internal.JSON.blocks[r]
-            )),
-            (this.internal.JSON.blocks[r].addImage = (t, n, i) => {
-              i = i || !1;
-              let l = {
-                type: Scratch.ArgumentType.IMAGE,
-                dataURI: n,
-                flipRTL: i,
-              };
-              return (
-                (this.internal.JSON.blocks[r].arguments[t] = l),
-                this.internal.JSON.blocks[r]
-              );
-            }),
-            this.internal.JSON.blocks[r]
-          );
-        }),
-        (this.addMenu = (t, n, i) => {
-          (i = i || !1),
-            "function" == typeof n
-              ? ((this[t + "Function"] = n),
-                (this.internal.JSON.menus[t] = { items: t + "Function" }))
-              : (this.internal.JSON.menus[t] = { items: n }),
-            (this.internal.JSON.menus[t].acceptReporters = i);
-        }),
-        (this.addButton = (t, n, i) => {
-          (n = n || this.internal.defaultFunction.code),
-            (i = i || "Button"),
-            (this["button_" + t] = n);
-          let l = {};
-          (l.func = "button_" + t),
-            (l.blockType = Scratch.BlockType.BUTTON),
-            (l.text = i);
-          let e = this.internal.JSON.blocks.length;
-          return (
-            (this.internal.JSON.blocks[e] = l), this.internal.JSON.blocks[e]
-          );
-        }),
-        (this.addDivider = () => {
-          this.internal.JSON.blocks.push("---");
-        }),
-        (this.addLabel = (t) => {
-          t = t || "N/A";
-          let n = { opcode: "__NOUSEOPCODE", blockType: "label", text: t };
-          this.internal.JSON.blocks.push(n);
-        }),
-        (this.__NOUSEOPCODE = () => {}),
-        (this.internal.createBase = () => {
-          if (
-            ((t = t || "Extension"),
-            (n = n || "extension"),
-            (this.internal.JSON.name = t),
-            (this.internal.JSON.id = n),
-            ((i = i || {}).blockColor = i.blockColor || null),
-            (i.inputColor = i.inputColor || null),
-            (i.outlineColor = i.outlineColor || null),
-            null != i.blockColor)
-          ) {
-            let e = i.blockColor;
-            e > 8947848
-              ? (this.internal.colors = [e, e - 197379, e - 394758])
-              : (this.internal.colors = [e, e + 197379, e + 394758]),
-              i.inputColor,
-              (this.internal.colors[1] = i.inputColor),
-              i.outlineColor,
-              (this.internal.colors[2] = i.outlineColor),
-              (this.internal.JSON.color1 = this.internal.colors[0]),
-              (this.internal.JSON.color2 = this.internal.colors[1]),
-              (this.internal.JSON.color3 = this.internal.colors[2]);
-          }
-          ((l = l || {}).blockIconUri = l.blockIconUri || null),
-            (l.menuIconUri = l.menuIconUri || l.blockIconUri || null),
-            (this.menuUri = l.menuIconUri),
-            (this.blockIco = l.blockIconUri),
-            (this.docsUri = null);
-        }),
-        this.internal.createBase(),
-        (this.setColors = (t, n, i) => {
-          (t = "string" == typeof t ? t : (t + 0).toString(16)),
-            (n = "string" == typeof n ? n : (n + 0).toString(16)),
-            (i = "string" == typeof i ? i : (i + 0).toString(16)),
-            (this.internal.colors = [0, 0, 0]),
-            (this.internal.colors[0] = t),
-            (this.internal.colors[1] = n),
-            (this.internal.colors[2] = i),
-            (this.internal.JSON.color1 = t),
-            (this.internal.JSON.color2 = n),
-            (this.internal.JSON.color3 = i);
-        }),
-        (this.setMenuIcon = (t) => {
-          this.internal.JSON.menuIconURI = t;
-        }),
-        (this.setGlobalBlockIcon = (t) => {
-          this.internal.JSON.blockIconURI = t;
-        }),
-        (this.runHat = (t) => {
-          this.runtime.startHats(this.internal.JSON.id + "_" + t);
-        }),
-        (this.getInfo = () => this.internal.JSON),
-        (this.register = () => {
-          Scratch.extensions.register(this);
-        });
-    }
-  }
+  class ExtensionBuilder{constructor(t,n,i,l){this.internal={},this.internal.JSON={blocks:[],menus:{}},this.runtime=Scratch.vm.runtime,this.internal.defaultFunction={code(){console.log("This block has no code")},arguments:{}},this.addDocs=t=>{this.internal.JSON.docsURI=t},this.addBlock=(t,n,i,l,e,s)=>{l=l||this.internal.defaultFunction.code,this[n]=l,s=s||{};let o=s;o.disableMonitor||(o.disableMonitor=!0),o.opcode=n,o.blockType=i,o.text=t,o.arguments=e||this.internal.defaultFunction.arguments;let r=this.internal.JSON.blocks.length;return this.internal.JSON.blocks.push(o),this.internal.JSON.blocks[r].addArgument=(t,n,i,l)=>{if(null==(i=i||null))switch(typeof n){case"string":default:i=Scratch.ArgumentType.STRING;break;case"boolean":i=Scratch.ArgumentType.BOOLEAN;break;case"number":case"bigint":i=Scratch.ArgumentType.NUMBER}return null==n?this.internal.JSON.blocks[r].arguments[t]={type:i}:this.internal.JSON.blocks[r].arguments[t]={type:i,defaultValue:n},(l=l||null)&&"string"==typeof l&&(this.internal.JSON.blocks[r].arguments[t].menu=l),this.internal.JSON.blocks[r]},this.internal.JSON.blocks[r].setIcon=t=>(this.internal.JSON.blocks[r].blockIconURI=t,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].setFilter=t=>(t=t||Scratch.TargetType.SPRITE,this.internal.JSON.blocks[r].filter=t,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].hideBlock=()=>(this.internal.JSON.blocks[r].hideFromPalette=!0,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].stopMoniter=()=>(this.internal.JSON.blocks[r].disableMonitor=!0,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].setEdgeActivation=t=>(this.internal.JSON.blocks[r].isEdgeActivated=t,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].addImage=(t,n,i)=>{i=i||!1;let l={type:Scratch.ArgumentType.IMAGE,dataURI:n,flipRTL:i};return this.internal.JSON.blocks[r].arguments[t]=l,this.internal.JSON.blocks[r]},this.internal.JSON.blocks[r]},this.addMenu=(t,n,i)=>{i=i||!1,"function"==typeof n?(this[t+"Function"]=n,this.internal.JSON.menus[t]={items:t+"Function"}):this.internal.JSON.menus[t]={items:n},this.internal.JSON.menus[t].acceptReporters=i},this.addButton=(t,n,i)=>{n=n||this.internal.defaultFunction.code,i=i||"Button",this["button_"+t]=n;let l={};l.func="button_"+t,l.blockType=Scratch.BlockType.BUTTON,l.text=i;let e=this.internal.JSON.blocks.length;return this.internal.JSON.blocks[e]=l,this.internal.JSON.blocks[e]},this.addDivider=()=>{this.internal.JSON.blocks.push("---")},this.addLabel=t=>{t=t||"N/A";let n={opcode:"__NOUSEOPCODE",blockType:"label",text:t};this.internal.JSON.blocks.push(n)},this.__NOUSEOPCODE=()=>{},this.internal.createBase=()=>{if(t=t||"Extension",n=n||"extension",this.internal.JSON.name=t,this.internal.JSON.id=n,(i=i||{}).blockColor=i.blockColor||null,i.inputColor=i.inputColor||null,i.outlineColor=i.outlineColor||null,null!=i.blockColor){let e=i.blockColor;e>8947848?this.internal.colors=[e,e-197379,e-394758,]:this.internal.colors=[e,e+197379,e+394758,],i.inputColor,this.internal.colors[1]=i.inputColor,i.outlineColor,this.internal.colors[2]=i.outlineColor,this.internal.JSON.color1=this.internal.colors[0],this.internal.JSON.color2=this.internal.colors[1],this.internal.JSON.color3=this.internal.colors[2]}(l=l||{}).blockIconUri=l.blockIconUri||null,l.menuIconUri=l.menuIconUri||l.blockIconUri||null,this.menuUri=l.menuIconUri,this.blockIco=l.blockIconUri,this.docsUri=null},this.internal.createBase(),this.setColors=(t,n,i)=>{t="string"==typeof t?t:(t+0).toString(16),n="string"==typeof n?n:(n+0).toString(16),i="string"==typeof i?i:(i+0).toString(16),this.internal.colors=[0,0,0],this.internal.colors[0]=t,this.internal.colors[1]=n,this.internal.colors[2]=i,this.internal.JSON.color1=t,this.internal.JSON.color2=n,this.internal.JSON.color3=i},this.setMenuIcon=t=>{this.internal.JSON.menuIconURI=t},this.setGlobalBlockIcon=t=>{this.internal.JSON.blockIconURI=t},this.runHat=t=>{this.runtime.startHats(this.internal.JSON.id+"_"+t)},this.getInfo=()=>this.internal.JSON,this.register=()=>{Scratch.extensions.register(this)}}}
   /* eslint-enable */
 
   const menuIco =
@@ -267,13 +91,13 @@
   //*Define PEN+ variables >:)
   const triangleDefaultAttributes = [
     // U V  TINT R G B  Z W transparency U V  TINT R G B  Z W transparency U V  TINT R G B  Z W transparency
-       0,
-0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1,
+    0,
+    0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1,
     1,
   ];
   const squareDefaultAttributes = [
     // width* height*  rotation  u-mul u     v-mul   v    r g b transparency
-       1,     1,       90,       1,    0,    1,      0,   1,1,1,1
+    1, 1, 90, 1, 0, 1, 0, 1, 1, 1, 1,
   ];
 
   const triangleAttributesOfAllSprites = {}; //!it dawned on me I have to do this
@@ -437,7 +261,6 @@
     "u_texture"
   );
 
-
   //?Enables Attributes
   gl.enableVertexAttribArray(a_position_Location_text);
   gl.enableVertexAttribArray(a_color_Location_text);
@@ -480,7 +303,7 @@
         penColor[0] * triAttribs[2],
         penColor[1] * triAttribs[3],
         penColor[2] * triAttribs[4],
-        penColor[3] * triAttribs[9],
+        penColor[3] * triAttribs[7],
 
         x2,
         -y2,
@@ -743,11 +566,11 @@
       //Clamp to 0 so we can't go behind the stage.
       //Z
       case 5:
-        if (value < 1){
+        if (value < 1) {
           valuetoSet = 1;
           break;
         }
-        valuetoSet = 1 - (1/value);
+        valuetoSet = 1 - 1 / value;
         break;
 
       //Clamp to 1 so we don't accidentally clip.
@@ -778,20 +601,30 @@
   };
 
   //?Ported from Pen+ version 5
-  const penPlusCostumeLibrary = {}
-  let penPlusImportWrapMode = gl.CLAMP_TO_EDGE
+  const penPlusCostumeLibrary = {};
+  let penPlusImportWrapMode = gl.CLAMP_TO_EDGE;
 
-  const createPenPlusTextureInfo = async function(url, name, clamp){
+  const createPenPlusTextureInfo = async function (url, name, clamp) {
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
     // Fill the texture with a 1x1 blue pixel.
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 255, 255]));
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      1,
+      1,
+      0,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      new Uint8Array([0, 0, 255, 255])
+    );
 
     // Let's assume all images are not a power of 2
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, clamp);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, clamp);
     return new Promise((resolve, reject) => {
-      Scratch.canFetch(url).then(allowed => {
+      Scratch.canFetch(url).then((allowed) => {
         if (!allowed) {
           reject(false);
         }
@@ -800,15 +633,22 @@
         const image = new Image();
         image.onload = function () {
           gl.bindTexture(gl.TEXTURE_2D, texture);
-          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+          gl.texImage2D(
+            gl.TEXTURE_2D,
+            0,
+            gl.RGBA,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            image
+          );
           penPlusCostumeLibrary[name] = texture;
           resolve(texture);
         };
-        image.crossOrigin = 'anonymous';
+        image.crossOrigin = "anonymous";
         image.src = url;
       });
-    })
-  }
+    });
+  };
 
   //? Define the menus
   extension.addMenu("orderMenu", ["off", "on"]);
@@ -904,6 +744,29 @@
   );
 
   extension.addMenu(
+    "wholeTriAttribute",
+    [
+      {
+        text: "red tint",
+        value: "2",
+      },
+      {
+        text: "green tint",
+        value: "3",
+      },
+      {
+        text: "blue tint",
+        value: "4",
+      },
+      {
+        text: "transparency",
+        value: "7",
+      },
+    ],
+    true
+  );
+
+  extension.addMenu(
     "filterType",
     [
       {
@@ -944,13 +807,17 @@
     () => {
       const myCostumes = runtime._editingTarget.sprite.costumes;
 
-      let readCostumes = []
-      for (let curCostumeID = 0; curCostumeID < myCostumes.length; curCostumeID++) {
+      let readCostumes = [];
+      for (
+        let curCostumeID = 0;
+        curCostumeID < myCostumes.length;
+        curCostumeID++
+      ) {
         const currentCostume = myCostumes[curCostumeID].name;
         readCostumes.push(currentCostume);
       }
 
-      const keys = Object.keys(penPlusCostumeLibrary)
+      const keys = Object.keys(penPlusCostumeLibrary);
       if (keys.length > 0) {
         for (let curCostumeID = 0; curCostumeID < keys.length; curCostumeID++) {
           const currentCostume = keys[curCostumeID];
@@ -1177,18 +1044,20 @@
           x4 *= dWidth;
           y4 *= dHeight;
 
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][2] = myAttributes[7];
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][3] = myAttributes[8];
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][4] = myAttributes[9];
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][7] = myAttributes[10];
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][10] = myAttributes[7];
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][11] = myAttributes[8];
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][12] = myAttributes[9];
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][15] = myAttributes[10];
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][18] = myAttributes[7];
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][19] = myAttributes[8];
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][20] = myAttributes[9];
-          triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][23] = myAttributes[10];
+          const Attribute_ID = "squareStamp_" + curTarget.id;
+
+          triangleAttributesOfAllSprites[Attribute_ID][2] = myAttributes[7];
+          triangleAttributesOfAllSprites[Attribute_ID][3] = myAttributes[8];
+          triangleAttributesOfAllSprites[Attribute_ID][4] = myAttributes[9];
+          triangleAttributesOfAllSprites[Attribute_ID][7] = myAttributes[10];
+          triangleAttributesOfAllSprites[Attribute_ID][10] = myAttributes[7];
+          triangleAttributesOfAllSprites[Attribute_ID][11] = myAttributes[8];
+          triangleAttributesOfAllSprites[Attribute_ID][12] = myAttributes[9];
+          triangleAttributesOfAllSprites[Attribute_ID][15] = myAttributes[10];
+          triangleAttributesOfAllSprites[Attribute_ID][18] = myAttributes[7];
+          triangleAttributesOfAllSprites[Attribute_ID][19] = myAttributes[8];
+          triangleAttributesOfAllSprites[Attribute_ID][20] = myAttributes[9];
+          triangleAttributesOfAllSprites[Attribute_ID][23] = myAttributes[10];
 
           drawTri(
             gl.getParameter(gl.CURRENT_PROGRAM),
@@ -1199,7 +1068,7 @@
             x3,
             y3,
             attrib.color4f,
-            "squareStamp"
+            Attribute_ID
           );
 
           drawTri(
@@ -1211,7 +1080,7 @@
             x4,
             y4,
             attrib.color4f,
-            "squareStamp_" + curTarget.id
+            Attribute_ID
           );
         }
       )
@@ -1226,11 +1095,10 @@
           //Just a simple thing to allow for pen drawing
           const curTarget = util.target;
 
-          let currentTexture = null
-          if (penPlusCostumeLibrary[tex]){
-            currentTexture = penPlusCostumeLibrary[tex]
-          }
-          else{
+          let currentTexture = null;
+          if (penPlusCostumeLibrary[tex]) {
+            currentTexture = penPlusCostumeLibrary[tex];
+          } else {
             const costIndex = curTarget.getCostumeIndexByName(
               Scratch.Cast.toString(tex)
             );
@@ -1239,8 +1107,9 @@
               if (costIndex != curTarget.currentCostume) {
                 curTarget.setCostume(costIndex);
               }
-    
-              currentTexture = renderer._allSkins[curCostume.skinId].getTexture();
+
+              currentTexture =
+                renderer._allSkins[curCostume.skinId].getTexture();
             }
           }
 
@@ -1344,29 +1213,36 @@
           y4 *= dHeight;
 
           if (currentTexture != null && typeof currentTexture != "undefined") {
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][0] = (0 + myAttributes[4]) * myAttributes[3];
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][1] =  (1 + myAttributes[6]) * myAttributes[5];
+            const Attribute_ID = "squareStamp_" + curTarget.id;
+            triangleAttributesOfAllSprites[Attribute_ID][0] =
+              (0 + myAttributes[4]) * myAttributes[3];
+            triangleAttributesOfAllSprites[Attribute_ID][1] =
+              (1 + myAttributes[6]) * myAttributes[5];
 
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][2] = myAttributes[7];
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][3] = myAttributes[8];
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][4] = myAttributes[9];
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][7] = myAttributes[10];
+            triangleAttributesOfAllSprites[Attribute_ID][2] = myAttributes[7];
+            triangleAttributesOfAllSprites[Attribute_ID][3] = myAttributes[8];
+            triangleAttributesOfAllSprites[Attribute_ID][4] = myAttributes[9];
+            triangleAttributesOfAllSprites[Attribute_ID][7] = myAttributes[10];
 
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][8] = (1 + myAttributes[4]) * myAttributes[3];
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][9] = (1 + myAttributes[6]) * myAttributes[5];
+            triangleAttributesOfAllSprites[Attribute_ID][8] =
+              (1 + myAttributes[4]) * myAttributes[3];
+            triangleAttributesOfAllSprites[Attribute_ID][9] =
+              (1 + myAttributes[6]) * myAttributes[5];
 
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][10] = myAttributes[7];
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][11] = myAttributes[8];
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][12] = myAttributes[9];
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][15] = myAttributes[10];
+            triangleAttributesOfAllSprites[Attribute_ID][10] = myAttributes[7];
+            triangleAttributesOfAllSprites[Attribute_ID][11] = myAttributes[8];
+            triangleAttributesOfAllSprites[Attribute_ID][12] = myAttributes[9];
+            triangleAttributesOfAllSprites[Attribute_ID][15] = myAttributes[10];
 
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][16] = (1 + myAttributes[4]) * myAttributes[3];
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][17] = (0 + myAttributes[6]) * myAttributes[5];
+            triangleAttributesOfAllSprites[Attribute_ID][16] =
+              (1 + myAttributes[4]) * myAttributes[3];
+            triangleAttributesOfAllSprites[Attribute_ID][17] =
+              (0 + myAttributes[6]) * myAttributes[5];
 
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][18] = myAttributes[7];
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][19] = myAttributes[8];
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][20] = myAttributes[9];
-            triangleAttributesOfAllSprites["squareStamp_" + curTarget.id][23] = myAttributes[10];
+            triangleAttributesOfAllSprites[Attribute_ID][18] = myAttributes[7];
+            triangleAttributesOfAllSprites[Attribute_ID][19] = myAttributes[8];
+            triangleAttributesOfAllSprites[Attribute_ID][20] = myAttributes[9];
+            triangleAttributesOfAllSprites[Attribute_ID][23] = myAttributes[10];
 
             drawTextTri(
               gl.getParameter(gl.CURRENT_PROGRAM),
@@ -1376,30 +1252,24 @@
               y2,
               x3,
               y3,
-              "squareStamp_" + curTarget.id,
+              Attribute_ID,
               currentTexture
             );
 
-            triangleAttributesOfAllSprites[
-              "squareStamp_" + curTarget.id
-            ][0] = (0 + myAttributes[4]) * myAttributes[3];
-            triangleAttributesOfAllSprites[
-              "squareStamp_" + curTarget.id
-            ][1] = (1 + myAttributes[6]) * myAttributes[5];
+            triangleAttributesOfAllSprites[Attribute_ID][0] =
+              (0 + myAttributes[4]) * myAttributes[3];
+            triangleAttributesOfAllSprites[Attribute_ID][1] =
+              (1 + myAttributes[6]) * myAttributes[5];
 
-            triangleAttributesOfAllSprites[
-              "squareStamp_" + curTarget.id
-            ][8] = (1 + myAttributes[4]) * myAttributes[3];
-            triangleAttributesOfAllSprites[
-              "squareStamp_" + curTarget.id
-            ][9] = (0 + myAttributes[6]) * myAttributes[5];
+            triangleAttributesOfAllSprites[Attribute_ID][8] =
+              (1 + myAttributes[4]) * myAttributes[3];
+            triangleAttributesOfAllSprites[Attribute_ID][9] =
+              (0 + myAttributes[6]) * myAttributes[5];
 
-            triangleAttributesOfAllSprites[
-              "squareStamp_" + curTarget.id
-            ][16] = (0 + myAttributes[4]) * myAttributes[3];
-            triangleAttributesOfAllSprites[
-              "squareStamp_" + curTarget.id
-            ][17] = (0 + myAttributes[6]) * myAttributes[5];
+            triangleAttributesOfAllSprites[Attribute_ID][16] =
+              (0 + myAttributes[4]) * myAttributes[3];
+            triangleAttributesOfAllSprites[Attribute_ID][17] =
+              (0 + myAttributes[6]) * myAttributes[5];
 
             drawTextTri(
               gl.getParameter(gl.CURRENT_PROGRAM),
@@ -1409,7 +1279,7 @@
               y3,
               x4,
               y4,
-              "squareStamp_" + curTarget.id,
+              Attribute_ID,
               currentTexture
             );
           }
@@ -1429,11 +1299,12 @@
             squareAttributesOfAllSprites[curTarget.id] =
               squareDefaultAttributes;
           }
-          
-          const attributeNum = Scratch.Cast.toNumber(target)
-          if (attributeNum >= 7){
-            squareAttributesOfAllSprites[curTarget.id][attributeNum] = Math.min(Math.max(number, 0), 100) * 0.01;
-            return
+
+          const attributeNum = Scratch.Cast.toNumber(target);
+          if (attributeNum >= 7) {
+            squareAttributesOfAllSprites[curTarget.id][attributeNum] =
+              Math.min(Math.max(number, 0), 100) * 0.01;
+            return;
           }
           squareAttributesOfAllSprites[curTarget.id][attributeNum] = number;
         }
@@ -1454,11 +1325,25 @@
               squareDefaultAttributes;
           }
 
-          return squareAttributesOfAllSprites[curTarget.id][Scratch.Cast.toNumber(target)];
+          return squareAttributesOfAllSprites[curTarget.id][
+            Scratch.Cast.toNumber(target)
+          ];
         }
       )
       .addArgument("target", 0, Scratch.ArgumentType.NUMBER, "stampSquare")
       .setFilter();
+
+    extension.addBlock(
+      "Reset square Attributes",
+      "resetSquareAttributes",
+      Scratch.BlockType.COMMAND,
+      (args, util) => {
+        const curTarget = util.target;
+        squareAttributesOfAllSprites[curTarget.id] = [
+          1, 1, 90, 1, 0, 1, 0, 1, 1, 1, 1,
+        ];
+      }
+    );
 
     extension.addLabel("Triangle Blocks");
 
@@ -1498,7 +1383,42 @@
         }
       )
       .addArgument("point", "1", null, "pointMenu")
-      .addArgument("attribute", "2", Scratch.ArgumentType.NUMBER, "triAttribute")
+      .addArgument(
+        "attribute",
+        "2",
+        Scratch.ArgumentType.NUMBER,
+        "triAttribute"
+      )
+      .addArgument("value", 1)
+      .setFilter();
+
+    extension
+      .addBlock(
+        "Set triangle's [wholeAttribute] to [value]",
+        "setWholeTrianglePointAttribute",
+        Scratch.BlockType.COMMAND,
+        ({ wholeAttribute, value }, util) => {
+          const targetId = util.target.id;
+
+          if (!triangleAttributesOfAllSprites[targetId]) {
+            triangleAttributesOfAllSprites[targetId] =
+              triangleDefaultAttributes;
+          }
+          setValueAccordingToCaseTriangle(
+            targetId,
+            Scratch.Cast.toNumber(attribute),
+            value,
+            true,
+            0
+          );
+        }
+      )
+      .addArgument(
+        "wholeAttribute",
+        "2",
+        Scratch.ArgumentType.NUMBER,
+        "wholeTriAttribute"
+      )
       .addArgument("value", 1)
       .setFilter();
 
@@ -1529,8 +1449,22 @@
       )
       .addArgument("point", "1", null, "pointMenu")
       .addArgument("attribute", 2, null, "triAttribute")
-      .addArgument("value", 1)
       .setFilter();
+
+    extension.addBlock(
+      "Reset triangle attributes",
+      "resetWholeTriangleAttributes",
+      Scratch.BlockType.COMMAND,
+      (args, util) => {
+        const targetId = util.target.id;
+        console.log(triangleAttributesOfAllSprites[targetId]);
+        triangleAttributesOfAllSprites[targetId] = [
+          0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1,
+          1, 1, 1, 1,
+        ];
+        console.log(triangleAttributesOfAllSprites[targetId]);
+      }
+    );
 
     extension
       .addBlock(
@@ -1602,11 +1536,10 @@
         Scratch.BlockType.COMMAND,
         ({ x1, y1, x2, y2, x3, y3, tex }, util) => {
           const curTarget = util.target;
-          let currentTexture = null
-          if (penPlusCostumeLibrary[tex]){
-            currentTexture = penPlusCostumeLibrary[tex]
-          }
-          else{
+          let currentTexture = null;
+          if (penPlusCostumeLibrary[tex]) {
+            currentTexture = penPlusCostumeLibrary[tex];
+          } else {
             const costIndex = curTarget.getCostumeIndexByName(
               Scratch.Cast.toString(tex)
             );
@@ -1615,8 +1548,9 @@
               if (costIndex != curTarget.currentCostume) {
                 curTarget.setCostume(costIndex);
               }
-    
-              currentTexture = renderer._allSkins[curCostume.skinId].getTexture();
+
+              currentTexture =
+                renderer._allSkins[curCostume.skinId].getTexture();
             }
           }
 
@@ -1676,19 +1610,23 @@
       .addArgument("tex", null, Scratch.ArgumentType.STRING, "costumeMenu")
       .setFilter();
 
-
-    extension.addLabel("Images")
+    extension.addLabel("Images");
 
     extension
       .addBlock(
         "Set imported image wrap mode to [clampMode]",
         "setDURIclampmode",
         Scratch.BlockType.COMMAND,
-        ({clampMode}) => {
+        ({ clampMode }) => {
           penPlusImportWrapMode = clampMode;
         }
       )
-      .addArgument("clampMode", Scratch.Cast.toString(gl.CLAMP_TO_EDGE), Scratch.ArgumentType.STRING,"wrapType")
+      .addArgument(
+        "clampMode",
+        Scratch.Cast.toString(gl.CLAMP_TO_EDGE),
+        Scratch.ArgumentType.STRING,
+        "wrapType"
+      )
       .setFilter();
 
     extension
@@ -1696,9 +1634,9 @@
         "Add image named [name] from [dataURI] to Pen+ Library",
         "addIMGfromDURI",
         Scratch.BlockType.COMMAND,
-        ({dataURI,name}, util) => {
+        ({ dataURI, name }, util) => {
           //Just a simple thing to allow for pen drawing
-          createPenPlusTextureInfo(dataURI,"!" + name,penPlusImportWrapMode);
+          createPenPlusTextureInfo(dataURI, "!" + name, penPlusImportWrapMode);
         }
       )
       .addArgument("dataURI", "https://extensions.turbowarp.org/dango.png")
@@ -1710,9 +1648,9 @@
         "Remove image named [name] from Pen+ Library",
         "removeIMGfromDURI",
         Scratch.BlockType.COMMAND,
-        ({name}, util) => {
+        ({ name }, util) => {
           //Just a simple thing to allow for pen drawing
-          if(penPlusCostumeLibrary["!" + name]){
+          if (penPlusCostumeLibrary["!" + name]) {
             delete penPlusCostumeLibrary["!" + name];
           }
         }
@@ -1737,7 +1675,7 @@
     0
   );
 
-  extension.addDocs("https://extensions.turbowarp.org/penplus")
+  extension.addDocs("https://extensions.turbowarp.org/penplus");
 
   extension.register();
 })(window.Scratch);
