@@ -272,8 +272,8 @@
     1,
   ];
   const squareDefaultAttributes = [
-    // width* height*  rotation
-    1, 1, 90,
+    // width* height*  rotation  u-mul u     v-mul   v
+       1,     1,       90,       1,    0,    1,      0
   ];
 
   const triangleAttributesOfAllSprites = {}; //!it dawned on me I have to do this
@@ -431,11 +431,14 @@
     "a_texCoord"
   );
 
+  //?Uniforms
   const u_texture_Location_text = gl.getUniformLocation(
     penPlusShaders.textured.ProgramInf.program,
     "u_texture"
   );
 
+
+  //?Enables Attributes
   gl.enableVertexAttribArray(a_position_Location_text);
   gl.enableVertexAttribArray(a_color_Location_text);
   gl.enableVertexAttribArray(a_textCoord_Location_text);
@@ -774,6 +777,39 @@
     }
   };
 
+  //?Ported from Pen+ version 5
+  const penPlusCostumeLibrary = {}
+  let penPlusImportWrapMode = gl.CLAMP_TO_EDGE
+
+  const createPenPlusTextureInfo = async function(url, name, clamp){
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    // Fill the texture with a 1x1 blue pixel.
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 255, 255]));
+
+    // Let's assume all images are not a power of 2
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, clamp);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, clamp);
+    return new Promise((resolve, reject) => {
+      Scratch.canFetch(url).then(allowed => {
+        if (!allowed) {
+          reject(false);
+        }
+        // Permission is checked earlier.
+        // eslint-disable-next-line no-restricted-syntax
+        const image = new Image();
+        image.onload = function () {
+          gl.bindTexture(gl.TEXTURE_2D, texture);
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+          penPlusCostumeLibrary[name] = texture;
+          resolve(texture);
+        };
+        image.crossOrigin = 'anonymous';
+        image.src = url;
+      });
+    })
+  }
+
   //? Define the menus
   extension.addMenu("orderMenu", ["off", "on"]);
   extension.addMenu(
@@ -787,15 +823,31 @@
     [
       {
         text: "Width",
-        value: 0,
+        value: "0",
       },
       {
         text: "Height",
-        value: 1,
+        value: "1",
       },
       {
         text: "Rotation",
-        value: 2,
+        value: "2",
+      },
+      {
+        text: "U-Multiplier",
+        value: "3",
+      },
+      {
+        text: "U-Offset",
+        value: "4",
+      },
+      {
+        text: "V-Multiplier",
+        value: "5",
+      },
+      {
+        text: "V-Offset",
+        value: "6",
       },
     ],
     true
@@ -855,29 +907,43 @@
     [
       {
         text: "Clamp",
-        value: gl.CLAMP_TO_EDGE,
+        value: Scratch.Cast.toString(gl.CLAMP_TO_EDGE),
       },
       {
         text: "Repeat",
-        value: gl.REPEAT,
+        value: Scratch.Cast.toString(gl.REPEAT),
       },
       {
         text: "Mirrored",
-        value: gl.MIRRORED_REPEAT,
+        value: Scratch.Cast.toString(gl.MIRRORED_REPEAT),
       },
     ],
     true
   );
 
   extension.addMenu("pointMenu", ["1", "2", "3"], true);
+
   extension.addMenu(
-    "blendMenu",
-    [
-      {
-        text: "additive",
-        value: gl.ONE_MINUS_SRC_ALPHA,
-      },
-    ],
+    "costumeMenu",
+    () => {
+      const myCostumes = runtime._editingTarget.sprite.costumes;
+
+      let readCostumes = []
+      for (let curCostumeID = 0; curCostumeID < myCostumes.length; curCostumeID++) {
+        const currentCostume = myCostumes[curCostumeID].name;
+        readCostumes.push(currentCostume);
+      }
+
+      const keys = Object.keys(penPlusCostumeLibrary)
+      if (keys.length > 0) {
+        for (let curCostumeID = 0; curCostumeID < keys.length; curCostumeID++) {
+          const currentCostume = keys[curCostumeID];
+          readCostumes.push(currentCostume);
+        }
+      }
+
+      return readCostumes;
+    },
     true
   );
 
@@ -1133,17 +1199,23 @@
           //Just a simple thing to allow for pen drawing
           const curTarget = util.target;
 
-          const costIndex = curTarget.getCostumeIndexByName(
-            Scratch.Cast.toString(tex)
-          );
-
-          const curCostume = curTarget.sprite.costumes_[costIndex];
-          if (costIndex != curTarget.currentCostume) {
-            curTarget.setCostume(costIndex);
+          let currentTexture = null
+          if (penPlusCostumeLibrary[tex]){
+            currentTexture = penPlusCostumeLibrary[tex]
           }
-
-          const currentTexture =
-            renderer._allSkins[curCostume.skinId].getTexture();
+          else{
+            const costIndex = curTarget.getCostumeIndexByName(
+              Scratch.Cast.toString(tex)
+            );
+            if (costIndex >= 0) {
+              const curCostume = curTarget.sprite.costumes_[costIndex];
+              if (costIndex != curTarget.currentCostume) {
+                curTarget.setCostume(costIndex);
+              }
+    
+              currentTexture = renderer._allSkins[curCostume.skinId].getTexture();
+            }
+          }
 
           checkForPen(util);
 
@@ -1247,24 +1319,24 @@
           if (currentTexture != null && typeof currentTexture != "undefined") {
             triangleAttributesOfAllSprites[
               "squareStamp_" + curTarget.id
-            ][0] = 0;
+            ][0] = (0 + myAttributes[4]) * myAttributes[3];
             triangleAttributesOfAllSprites[
               "squareStamp_" + curTarget.id
-            ][1] = 1;
+            ][1] =  (1 + myAttributes[6]) * myAttributes[5];
 
             triangleAttributesOfAllSprites[
               "squareStamp_" + curTarget.id
-            ][8] = 1;
+            ][8] = (1 + myAttributes[4]) * myAttributes[3];
             triangleAttributesOfAllSprites[
               "squareStamp_" + curTarget.id
-            ][9] = 1;
+            ][9] = (1 + myAttributes[6]) * myAttributes[5];
 
             triangleAttributesOfAllSprites[
               "squareStamp_" + curTarget.id
-            ][16] = 1;
+            ][16] = (1 + myAttributes[4]) * myAttributes[3];
             triangleAttributesOfAllSprites[
               "squareStamp_" + curTarget.id
-            ][17] = 0;
+            ][17] = (0 + myAttributes[6]) * myAttributes[5];
 
             drawTextTri(
               gl.getParameter(gl.CURRENT_PROGRAM),
@@ -1280,24 +1352,24 @@
 
             triangleAttributesOfAllSprites[
               "squareStamp_" + curTarget.id
-            ][0] = 0;
+            ][0] = (0 + myAttributes[4]) * myAttributes[3];
             triangleAttributesOfAllSprites[
               "squareStamp_" + curTarget.id
-            ][1] = 1;
+            ][1] = (1 + myAttributes[6]) * myAttributes[5];
 
             triangleAttributesOfAllSprites[
               "squareStamp_" + curTarget.id
-            ][8] = 1;
+            ][8] = (1 + myAttributes[4]) * myAttributes[3];
             triangleAttributesOfAllSprites[
               "squareStamp_" + curTarget.id
-            ][9] = 0;
+            ][9] = (0 + myAttributes[6]) * myAttributes[5];
 
             triangleAttributesOfAllSprites[
               "squareStamp_" + curTarget.id
-            ][16] = 0;
+            ][16] = (0 + myAttributes[4]) * myAttributes[3];
             triangleAttributesOfAllSprites[
               "squareStamp_" + curTarget.id
-            ][17] = 0;
+            ][17] = (0 + myAttributes[6]) * myAttributes[5];
 
             drawTextTri(
               gl.getParameter(gl.CURRENT_PROGRAM),
@@ -1313,7 +1385,7 @@
           }
         }
       )
-      .addArgument("tex", null, Scratch.ArgumentType.COSTUME)
+      .addArgument("tex", null, Scratch.ArgumentType.STRING, "costumeMenu")
       .setFilter();
 
     extension
@@ -1328,7 +1400,7 @@
               squareDefaultAttributes;
           }
 
-          squareAttributesOfAllSprites[curTarget.id][target] = number;
+          squareAttributesOfAllSprites[curTarget.id][Scratch.Cast.toNumber(target)] = number;
         }
       )
       .addArgument("target", 0, Scratch.ArgumentType.NUMBER, "stampSquare")
@@ -1347,7 +1419,7 @@
               squareDefaultAttributes;
           }
 
-          return squareAttributesOfAllSprites[curTarget.id][target];
+          return squareAttributesOfAllSprites[curTarget.id][Scratch.Cast.toNumber(target)];
         }
       )
       .addArgument("target", 0, Scratch.ArgumentType.NUMBER, "stampSquare")
@@ -1495,16 +1567,23 @@
         Scratch.BlockType.COMMAND,
         ({ x1, y1, x2, y2, x3, y3, tex }, util) => {
           const curTarget = util.target;
-          const costIndex = curTarget.getCostumeIndexByName(
-            Scratch.Cast.toString(tex)
-          );
-          const curCostume = curTarget.sprite.costumes_[costIndex];
-          if (costIndex != curTarget.currentCostume) {
-            curTarget.setCostume(costIndex);
+          let currentTexture = null
+          if (penPlusCostumeLibrary[tex]){
+            currentTexture = penPlusCostumeLibrary[tex]
           }
-
-          const currentTexture =
-            renderer._allSkins[curCostume.skinId].getTexture();
+          else{
+            const costIndex = curTarget.getCostumeIndexByName(
+              Scratch.Cast.toString(tex)
+            );
+            if (costIndex >= 0) {
+              const curCostume = curTarget.sprite.costumes_[costIndex];
+              if (costIndex != curTarget.currentCostume) {
+                curTarget.setCostume(costIndex);
+              }
+    
+              currentTexture = renderer._allSkins[curCostume.skinId].getTexture();
+            }
+          }
 
           const nativeSize = renderer.useHighQualityRender
             ? [canvas.width, canvas.height]
@@ -1559,7 +1638,52 @@
       .addArgument("y2", 10)
       .addArgument("x3", 10)
       .addArgument("y3", 0)
-      .addArgument("tex", null, Scratch.ArgumentType.COSTUME)
+      .addArgument("tex", null, Scratch.ArgumentType.STRING, "costumeMenu")
+      .setFilter();
+
+
+    extension.addLabel("Images")
+
+    extension
+      .addBlock(
+        "Set imported image wrap mode to [clampMode]",
+        "setDURIclampmode",
+        Scratch.BlockType.COMMAND,
+        ({clampMode}) => {
+          penPlusImportWrapMode = clampMode;
+        }
+      )
+      .addArgument("clampMode", Scratch.Cast.toString(gl.CLAMP_TO_EDGE), Scratch.ArgumentType.STRING,"wrapType")
+      .setFilter();
+
+    extension
+      .addBlock(
+        "Add image named [name] from [dataURI] to Pen+ Library",
+        "addIMGfromDURI",
+        Scratch.BlockType.COMMAND,
+        ({dataURI,name}, util) => {
+          //Just a simple thing to allow for pen drawing
+          createPenPlusTextureInfo(dataURI,"!" + name,penPlusImportWrapMode);
+        }
+      )
+      .addArgument("dataURI", "https://extensions.turbowarp.org/dango.png")
+      .addArgument("name", "Image")
+      .setFilter();
+
+    extension
+      .addBlock(
+        "Remove image named [name] from Pen+ Library",
+        "removeIMGfromDURI",
+        Scratch.BlockType.COMMAND,
+        ({name}, util) => {
+          //Just a simple thing to allow for pen drawing
+          if(penPlusCostumeLibrary["!" + name]){
+            delete penPlusCostumeLibrary["!" + name];
+          }
+        }
+      )
+      .addArgument("dataURI", "https://extensions.turbowarp.org/dango.png")
+      .addArgument("name", "Image")
       .setFilter();
   };
 
