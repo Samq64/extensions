@@ -1655,7 +1655,19 @@
           }
         }
       )
-      .addArgument("dataURI", "https://extensions.turbowarp.org/dango.png")
+      .addArgument("name", "Image")
+      .setFilter();
+
+    extension
+      .addBlock(
+        "Does [name] exist in Pen+ Library",
+        "doesIMGexist",
+        Scratch.BlockType.BOOLEAN,
+        ({ name }, util) => {
+          //Just a simple thing to allow for pen drawing
+          return typeof penPlusCostumeLibrary["!" + name] != "undefined";
+        }
+      )
       .addArgument("name", "Image")
       .setFilter();
   };
