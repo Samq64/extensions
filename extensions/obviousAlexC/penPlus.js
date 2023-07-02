@@ -650,6 +650,30 @@
     });
   };
 
+  //?Color Library
+  const hexToRgb = (hex) => {
+    if (typeof hex === 'string') {
+      const splitHex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return {
+        r: parseInt(splitHex[1], 16),
+        g: parseInt(splitHex[2], 16),
+        b: parseInt(splitHex[3], 16)
+      };
+    }
+    return {
+      r: Math.floor(hex / 65536),
+      g: Math.floor(hex / 256) % 256,
+      b: hex % 256
+    };
+  }
+
+  const rgbtoSColor = ({ R, G, B }) => {
+    R = Math.min(Math.max(R, 0), 100) * 2.55;
+    G = Math.min(Math.max(G, 0), 100) * 2.55;
+    B = Math.min(Math.max(B, 0), 100) * 2.55;
+    return (((Math.floor(R) * 256) + Math.floor(G)) * 256) + Math.floor(B);
+  }
+
   //? Define the menus
   extension.addMenu("orderMenu", ["off", "on"]);
   extension.addMenu(
@@ -837,7 +861,7 @@
 
     extension
       .addBlock(
-        "Pen down?",
+        "is pen down?",
         "isPenDown",
         Scratch.BlockType.BOOLEAN,
         (args, util) => {
@@ -850,7 +874,7 @@
 
     extension
       .addBlock(
-        "Pen [HSV]",
+        "pen [HSV]",
         "getPenHSV",
         Scratch.BlockType.REPORTER,
         ({ HSV }, util) => {
@@ -870,7 +894,7 @@
 
     extension
       .addBlock(
-        "Draw dot at [x] [y]",
+        "draw dot at [x] [y]",
         "drawDot",
         Scratch.BlockType.COMMAND,
         ({ x, y }, util) => {
@@ -896,7 +920,7 @@
 
     extension
       .addBlock(
-        "Draw line from [x1] [y1] to [x2] [y2]",
+        "draw line from [x1] [y1] to [x2] [y2]",
         "drawLine",
         Scratch.BlockType.COMMAND,
         ({ x1, y1, x2, y2 }, util) => {
@@ -928,7 +952,7 @@
 
     extension
       .addBlock(
-        "Stamp pen square",
+        "stamp pen square",
         "squareDown",
         Scratch.BlockType.COMMAND,
         (arg, util) => {
@@ -1084,7 +1108,7 @@
 
     extension
       .addBlock(
-        "Stamp pen square with the texture of [tex]",
+        "stamp pen square with the texture of [tex]",
         "squareTexDown",
         Scratch.BlockType.COMMAND,
         ({ tex }, util) => {
@@ -1286,7 +1310,7 @@
 
     extension
       .addBlock(
-        "Set pen square's [target] to [number]",
+        "set pen square's [target] to [number]",
         "setStampAttribute",
         Scratch.BlockType.COMMAND,
         ({ target, number }, util) => {
@@ -1311,7 +1335,7 @@
 
     extension
       .addBlock(
-        "get pen square's [target]",
+        "Get pen square's [target]",
         "getStampAttribute",
         Scratch.BlockType.REPORTER,
         ({ target }, util) => {
@@ -1330,7 +1354,28 @@
       .setFilter();
 
     extension.addBlock(
-      "Reset square Attributes",
+      "tint pen square to [color]",
+      "tintSquare",
+      Scratch.BlockType.COMMAND,
+      ({color}, util) => {
+        const curTarget = util.target;
+
+        if (!squareAttributesOfAllSprites[curTarget.id]) {
+          squareAttributesOfAllSprites[curTarget.id] =
+            squareDefaultAttributes;
+        }
+
+        const calcColor = hexToRgb(color);
+
+        squareAttributesOfAllSprites[curTarget.id][7] = calcColor.r/255;
+        squareAttributesOfAllSprites[curTarget.id][8] = calcColor.g/255;
+        squareAttributesOfAllSprites[curTarget.id][9] = calcColor.b/255;
+      }
+    )
+    .addArgument("color","#0000ff",Scratch.ArgumentType.COLOR);
+
+    extension.addBlock(
+      "reset square Attributes",
       "resetSquareAttributes",
       Scratch.BlockType.COMMAND,
       (args, util) => {
@@ -1345,7 +1390,7 @@
 
     extension
       .addBlock(
-        "Set triangle filter mode to [filter]",
+        "set triangle filter mode to [filter]",
         "setTriangleFilterMode",
         Scratch.BlockType.COMMAND,
         ({ filter }) => {
@@ -1357,7 +1402,7 @@
 
     extension
       .addBlock(
-        "Set triangle point [point]'s [attribute] to [value]",
+        "set triangle point [point]'s [attribute] to [value]",
         "setTrianglePointAttribute",
         Scratch.BlockType.COMMAND,
         ({ point, attribute, value }, util) => {
@@ -1390,7 +1435,7 @@
 
     extension
       .addBlock(
-        "Set triangle's [wholeAttribute] to [value]",
+        "set triangle's [wholeAttribute] to [value]",
         "setWholeTrianglePointAttribute",
         Scratch.BlockType.COMMAND,
         ({ wholeAttribute, value }, util) => {
@@ -1418,9 +1463,101 @@
       .addArgument("value", 1)
       .setFilter();
 
+    extension.addBlock(
+      "tint triangle point [point] to [color]",
+      "tintTriPoint",
+      Scratch.BlockType.COMMAND,
+      ({point,color}, util) => {
+        const curTarget = util.target;
+  
+        const trianglePointStart = (point - 1) * 8;
+
+        const targetId = util.target.id;
+
+        if (!triangleAttributesOfAllSprites[targetId]) {
+          triangleAttributesOfAllSprites[targetId] =
+            triangleDefaultAttributes;
+        }
+  
+        const calcColor = hexToRgb(color);
+
+        setValueAccordingToCaseTriangle(
+          targetId,
+          2,
+          calcColor.r/2.55,
+          false,
+          trianglePointStart
+        );
+
+        setValueAccordingToCaseTriangle(
+          targetId,
+          3,
+          calcColor.g/2.55,
+          false,
+          trianglePointStart
+        );
+
+        setValueAccordingToCaseTriangle(
+          targetId,
+          4,
+          calcColor.b/2.55,
+          false,
+          trianglePointStart
+        );
+      }
+    )
+    .addArgument("point", "1", null, "pointMenu")
+    .addArgument("color","#0000ff",Scratch.ArgumentType.COLOR);
+
+    extension.addBlock(
+      "tint triangle to [color]",
+      "tintTri",
+      Scratch.BlockType.COMMAND,
+      ({point,color}, util) => {
+        const curTarget = util.target;
+  
+        const trianglePointStart = (point - 1) * 8;
+
+        const targetId = util.target.id;
+
+        if (!triangleAttributesOfAllSprites[targetId]) {
+          triangleAttributesOfAllSprites[targetId] =
+            triangleDefaultAttributes;
+        }
+  
+        const calcColor = hexToRgb(color);
+
+        setValueAccordingToCaseTriangle(
+          targetId,
+          2,
+          calcColor.r/2.55,
+          true,
+          trianglePointStart
+        );
+
+        setValueAccordingToCaseTriangle(
+          targetId,
+          3,
+          calcColor.g/2.55,
+          true,
+          trianglePointStart
+        );
+
+        setValueAccordingToCaseTriangle(
+          targetId,
+          4,
+          calcColor.b/2.55,
+          true,
+          trianglePointStart
+        );
+      }
+    )
+    .addArgument("point", "1", null, "pointMenu")
+    .addArgument("color","#0000ff",Scratch.ArgumentType.COLOR);
+
     extension
       .addBlock(
-        "Get triangle point [point]'s [attribute]",
+        "get triangle point [point]'s [attribute]",
         "getTrianglePointAttribute",
         Scratch.BlockType.REPORTER,
         ({ point, attribute }, util) => {
@@ -1448,7 +1585,7 @@
       .setFilter();
 
     extension.addBlock(
-      "Reset triangle attributes",
+      "reset triangle attributes",
       "resetWholeTriangleAttributes",
       Scratch.BlockType.COMMAND,
       (args, util) => {
@@ -1464,7 +1601,7 @@
 
     extension
       .addBlock(
-        "Draw triangle between [x1] [y1], [x2] [y2] and [x3] [y3]",
+        "draw triangle between [x1] [y1], [x2] [y2] and [x3] [y3]",
         "drawSolidTri",
         Scratch.BlockType.COMMAND,
         ({ x1, y1, x2, y2, x3, y3 }, util) => {
@@ -1527,7 +1664,7 @@
 
     extension
       .addBlock(
-        "Draw textured triangle between [x1] [y1], [x2] [y2] and [x3] [y3] with the texture [tex]",
+        "draw textured triangle between [x1] [y1], [x2] [y2] and [x3] [y3] with the texture [tex]",
         "drawTexTri",
         Scratch.BlockType.COMMAND,
         ({ x1, y1, x2, y2, x3, y3, tex }, util) => {
@@ -1606,11 +1743,71 @@
       .addArgument("tex", null, Scratch.ArgumentType.STRING, "costumeMenu")
       .setFilter();
 
+    extension.addLabel("Color")
+
+    extension
+      .addBlock(
+        "Red [R] Green [G] Blue [B]",
+        "RGB2HEX",
+        Scratch.BlockType.REPORTER,
+        ({ R, G, B }) => {
+          return rgbtoSColor({ R: R, G: G, B: B });
+        }
+      )
+      .addArgument("R",0)
+      .addArgument("G",0)
+      .addArgument("B",100);
+
+    extension
+      .addBlock(
+        "Hue [H] Saturation [S] Value [V]",
+        "HSV2RGB",
+        Scratch.BlockType.REPORTER,
+        ({ H, S, V }) => {
+          S = S / 100;
+          V = V / 100;
+          S = Math.min(Math.max(S, 0), 1);
+          V = Math.min(Math.max(V, 0), 1);
+          H = H % 360;
+          const C = V * S;
+          const X = C * (1 - Math.abs((H / 60) % 2 - 1));
+          const M = V - C;
+          let Primes = [0, 0, 0];
+          if (H >= 0 && H < 60) {
+            Primes[0] = C;
+            Primes[1] = X;
+          } else if (H >= 60 && H < 120) {
+            Primes[0] = X;
+            Primes[1] = C;
+          } else if (H >= 120 && H < 180) {
+            Primes[1] = C;
+            Primes[2] = X;
+          } else if (H >= 180 && H < 240) {
+            Primes[1] = X;
+            Primes[2] = C;
+          } else if (H >= 240 && H < 300) {
+            Primes[0] = X;
+            Primes[2] = C;
+          }
+          if (H >= 300 && H < 360) {
+            Primes[0] = C;
+            Primes[2] = X;
+          }
+          Primes[0] = (Primes[0] + M) * 255;
+          Primes[1] = (Primes[1] + M) * 255;
+          Primes[2] = (Primes[2] + M) * 255;
+          return rgbtoSColor({ R: Primes[0] / 2.55, G: Primes[1] / 2.55, B: Primes[2] / 2.55 });
+        }
+      )
+      .addArgument("H",0)
+      .addArgument("S",100)
+      .addArgument("V",100)
+
     extension.addLabel("Images");
 
     extension
       .addBlock(
-        "Set imported image wrap mode to [clampMode]",
+        "set imported image wrap mode to [clampMode]",
         "setDURIclampmode",
         Scratch.BlockType.COMMAND,
         ({ clampMode }) => {
@@ -1627,7 +1824,7 @@
 
     extension
       .addBlock(
-        "Add image named [name] from [dataURI] to Pen+ Library",
+        "add image named [name] from [dataURI] to Pen+ Library",
         "addIMGfromDURI",
         Scratch.BlockType.COMMAND,
         ({ dataURI, name }, util) => {
@@ -1641,7 +1838,7 @@
 
     extension
       .addBlock(
-        "Remove image named [name] from Pen+ Library",
+        "remove image named [name] from Pen+ Library",
         "removeIMGfromDURI",
         Scratch.BlockType.COMMAND,
         ({ name }, util) => {
@@ -1656,7 +1853,7 @@
 
     extension
       .addBlock(
-        "Does [name] exist in Pen+ Library",
+        "does [name] exist in Pen+ Library",
         "doesIMGexist",
         Scratch.BlockType.BOOLEAN,
         ({ name }, util) => {
