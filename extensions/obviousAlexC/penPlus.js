@@ -652,27 +652,27 @@
 
   //?Color Library
   const hexToRgb = (hex) => {
-    if (typeof hex === 'string') {
+    if (typeof hex === "string") {
       const splitHex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
       return {
         r: parseInt(splitHex[1], 16),
         g: parseInt(splitHex[2], 16),
-        b: parseInt(splitHex[3], 16)
+        b: parseInt(splitHex[3], 16),
       };
     }
     return {
       r: Math.floor(hex / 65536),
       g: Math.floor(hex / 256) % 256,
-      b: hex % 256
+      b: hex % 256,
     };
-  }
+  };
 
   const rgbtoSColor = ({ R, G, B }) => {
     R = Math.min(Math.max(R, 0), 100) * 2.55;
     G = Math.min(Math.max(G, 0), 100) * 2.55;
     B = Math.min(Math.max(B, 0), 100) * 2.55;
-    return (((Math.floor(R) * 256) + Math.floor(G)) * 256) + Math.floor(B);
-  }
+    return (Math.floor(R) * 256 + Math.floor(G)) * 256 + Math.floor(B);
+  };
 
   //? Define the menus
   extension.addMenu("orderMenu", ["off", "on"]);
@@ -856,12 +856,11 @@
 
   //? Seperate blocks from the rest of the code to just clean up the workspace a bit
   const addBlocks = () => {
-
     extension.addLabel("Pen Properties");
 
     extension
       .addBlock(
-        "is pen down?",
+        "pen is down?", // Thanks lily
         "isPenDown",
         Scratch.BlockType.BOOLEAN,
         (args, util) => {
@@ -1353,26 +1352,27 @@
       .addArgument("target", 0, Scratch.ArgumentType.NUMBER, "stampSquare")
       .setFilter();
 
-    extension.addBlock(
-      "tint pen square to [color]",
-      "tintSquare",
-      Scratch.BlockType.COMMAND,
-      ({color}, util) => {
-        const curTarget = util.target;
+    extension
+      .addBlock(
+        "tint pen square to [color]",
+        "tintSquare",
+        Scratch.BlockType.COMMAND,
+        ({ color }, util) => {
+          const curTarget = util.target;
 
-        if (!squareAttributesOfAllSprites[curTarget.id]) {
-          squareAttributesOfAllSprites[curTarget.id] =
-            squareDefaultAttributes;
+          if (!squareAttributesOfAllSprites[curTarget.id]) {
+            squareAttributesOfAllSprites[curTarget.id] =
+              squareDefaultAttributes;
+          }
+
+          const calcColor = hexToRgb(color);
+
+          squareAttributesOfAllSprites[curTarget.id][7] = calcColor.r / 255;
+          squareAttributesOfAllSprites[curTarget.id][8] = calcColor.g / 255;
+          squareAttributesOfAllSprites[curTarget.id][9] = calcColor.b / 255;
         }
-
-        const calcColor = hexToRgb(color);
-
-        squareAttributesOfAllSprites[curTarget.id][7] = calcColor.r/255;
-        squareAttributesOfAllSprites[curTarget.id][8] = calcColor.g/255;
-        squareAttributesOfAllSprites[curTarget.id][9] = calcColor.b/255;
-      }
-    )
-    .addArgument("color","#0000ff",Scratch.ArgumentType.COLOR);
+      )
+      .addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR);
 
     extension.addBlock(
       "reset square Attributes",
@@ -1463,97 +1463,99 @@
       .addArgument("value", 1)
       .setFilter();
 
-    extension.addBlock(
-      "tint triangle point [point] to [color]",
-      "tintTriPoint",
-      Scratch.BlockType.COMMAND,
-      ({point,color}, util) => {
-        const curTarget = util.target;
-  
-        const trianglePointStart = (point - 1) * 8;
+    extension
+      .addBlock(
+        "tint triangle point [point] to [color]",
+        "tintTriPoint",
+        Scratch.BlockType.COMMAND,
+        ({ point, color }, util) => {
+          const curTarget = util.target;
 
-        const targetId = util.target.id;
+          const trianglePointStart = (point - 1) * 8;
 
-        if (!triangleAttributesOfAllSprites[targetId]) {
-          triangleAttributesOfAllSprites[targetId] =
-            triangleDefaultAttributes;
+          const targetId = util.target.id;
+
+          if (!triangleAttributesOfAllSprites[targetId]) {
+            triangleAttributesOfAllSprites[targetId] =
+              triangleDefaultAttributes;
+          }
+
+          const calcColor = hexToRgb(color);
+
+          setValueAccordingToCaseTriangle(
+            targetId,
+            2,
+            calcColor.r / 2.55,
+            false,
+            trianglePointStart
+          );
+
+          setValueAccordingToCaseTriangle(
+            targetId,
+            3,
+            calcColor.g / 2.55,
+            false,
+            trianglePointStart
+          );
+
+          setValueAccordingToCaseTriangle(
+            targetId,
+            4,
+            calcColor.b / 2.55,
+            false,
+            trianglePointStart
+          );
         }
-  
-        const calcColor = hexToRgb(color);
+      )
+      .addArgument("point", "1", null, "pointMenu")
+      .addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR);
 
-        setValueAccordingToCaseTriangle(
-          targetId,
-          2,
-          calcColor.r/2.55,
-          false,
-          trianglePointStart
-        );
+    extension
+      .addBlock(
+        "tint triangle to [color]",
+        "tintTri",
+        Scratch.BlockType.COMMAND,
+        ({ point, color }, util) => {
+          const curTarget = util.target;
 
-        setValueAccordingToCaseTriangle(
-          targetId,
-          3,
-          calcColor.g/2.55,
-          false,
-          trianglePointStart
-        );
+          const trianglePointStart = (point - 1) * 8;
 
-        setValueAccordingToCaseTriangle(
-          targetId,
-          4,
-          calcColor.b/2.55,
-          false,
-          trianglePointStart
-        );
-      }
-    )
-    .addArgument("point", "1", null, "pointMenu")
-    .addArgument("color","#0000ff",Scratch.ArgumentType.COLOR);
+          const targetId = util.target.id;
 
-    extension.addBlock(
-      "tint triangle to [color]",
-      "tintTri",
-      Scratch.BlockType.COMMAND,
-      ({point,color}, util) => {
-        const curTarget = util.target;
-  
-        const trianglePointStart = (point - 1) * 8;
+          if (!triangleAttributesOfAllSprites[targetId]) {
+            triangleAttributesOfAllSprites[targetId] =
+              triangleDefaultAttributes;
+          }
 
-        const targetId = util.target.id;
+          const calcColor = hexToRgb(color);
 
-        if (!triangleAttributesOfAllSprites[targetId]) {
-          triangleAttributesOfAllSprites[targetId] =
-            triangleDefaultAttributes;
+          setValueAccordingToCaseTriangle(
+            targetId,
+            2,
+            calcColor.r / 2.55,
+            true,
+            trianglePointStart
+          );
+
+          setValueAccordingToCaseTriangle(
+            targetId,
+            3,
+            calcColor.g / 2.55,
+            true,
+            trianglePointStart
+          );
+
+          setValueAccordingToCaseTriangle(
+            targetId,
+            4,
+            calcColor.b / 2.55,
+            true,
+            trianglePointStart
+          );
         }
-  
-        const calcColor = hexToRgb(color);
-
-        setValueAccordingToCaseTriangle(
-          targetId,
-          2,
-          calcColor.r/2.55,
-          true,
-          trianglePointStart
-        );
-
-        setValueAccordingToCaseTriangle(
-          targetId,
-          3,
-          calcColor.g/2.55,
-          true,
-          trianglePointStart
-        );
-
-        setValueAccordingToCaseTriangle(
-          targetId,
-          4,
-          calcColor.b/2.55,
-          true,
-          trianglePointStart
-        );
-      }
-    )
-    .addArgument("point", "1", null, "pointMenu")
-    .addArgument("color","#0000ff",Scratch.ArgumentType.COLOR);
+      )
+      .addArgument("point", "1", null, "pointMenu")
+      .addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR);
 
     extension
       .addBlock(
@@ -1743,7 +1745,7 @@
       .addArgument("tex", null, Scratch.ArgumentType.STRING, "costumeMenu")
       .setFilter();
 
-    extension.addLabel("Color")
+    extension.addLabel("Color");
 
     extension
       .addBlock(
@@ -1754,9 +1756,9 @@
           return rgbtoSColor({ R: R, G: G, B: B });
         }
       )
-      .addArgument("R",0)
-      .addArgument("G",0)
-      .addArgument("B",100);
+      .addArgument("R", 0)
+      .addArgument("G", 0)
+      .addArgument("B", 100);
 
     extension
       .addBlock(
@@ -1770,7 +1772,7 @@
           V = Math.min(Math.max(V, 0), 1);
           H = H % 360;
           const C = V * S;
-          const X = C * (1 - Math.abs((H / 60) % 2 - 1));
+          const X = C * (1 - Math.abs(((H / 60) % 2) - 1));
           const M = V - C;
           let Primes = [0, 0, 0];
           if (H >= 0 && H < 60) {
@@ -1796,12 +1798,16 @@
           Primes[0] = (Primes[0] + M) * 255;
           Primes[1] = (Primes[1] + M) * 255;
           Primes[2] = (Primes[2] + M) * 255;
-          return rgbtoSColor({ R: Primes[0] / 2.55, G: Primes[1] / 2.55, B: Primes[2] / 2.55 });
+          return rgbtoSColor({
+            R: Primes[0] / 2.55,
+            G: Primes[1] / 2.55,
+            B: Primes[2] / 2.55,
+          });
         }
       )
-      .addArgument("H",0)
-      .addArgument("S",100)
-      .addArgument("V",100)
+      .addArgument("H", 0)
+      .addArgument("S", 100)
+      .addArgument("V", 100);
 
     extension.addLabel("Images");
 
