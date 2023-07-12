@@ -289,6 +289,12 @@
   let vertexBufferData = null;
   let texVertexBufferData = null;
 
+  //Pen+ advanced options update
+  //I plan to add more later
+  const penPlusAdvancedSettings = {
+    wValueUnderFlow:false
+  }
+
   //?Have this here for ez pz tri drawing on the canvas
   const drawTri = (curProgram, x1, y1, x2, y2, x3, y3, penColor, targetID) => {
     //? get triangle attributes for current sprite.
@@ -576,7 +582,12 @@
       //Clamp to 1 so we don't accidentally clip.
       //W
       case 6:
-        valuetoSet = Math.max(value, 1);
+        if (penPlusAdvancedSettings.wValueUnderFlow == true){
+          valuetoSet = value;
+        }
+        else {
+          valuetoSet = Math.max(value, 1);
+        }
         break;
       //Transparency
       //Same story as color
@@ -675,7 +686,6 @@
   };
 
   //? Define the menus
-  extension.addMenu("orderMenu", ["off", "on"]);
   extension.addMenu(
     "hsvMenu",
     ["color", "saturation", "brightness", "transparency", "size"],
@@ -855,6 +865,16 @@
     },
     true
   );
+
+  extension.addMenu("advancedSettingsMenu",
+  [
+    {
+      text: "allow 'Corner Pinch < 1'",
+      value:"wValueUnderFlow",
+    },
+  ],
+  true
+  )
 
   //? Seperate blocks from the rest of the code to just clean up the workspace a bit
   const addBlocks = () => {
@@ -1374,7 +1394,7 @@
           squareAttributesOfAllSprites[curTarget.id][9] = calcColor.b / 255;
         }
       )
-      .addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR);
+      .addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR).setFilter();
 
     extension.addBlock(
       "reset square Attributes",
@@ -1386,7 +1406,7 @@
           1, 1, 90, 1, 0, 1, 0, 1, 1, 1, 1,
         ];
       }
-    );
+    ).setFilter();
 
     extension.addLabel("Triangle Blocks");
 
@@ -1510,7 +1530,7 @@
         }
       )
       .addArgument("point", "1", null, "pointMenu")
-      .addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR);
+      .addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR).setFilter();
 
     extension
       .addBlock(
@@ -1557,7 +1577,7 @@
         }
       )
       .addArgument("point", "1", null, "pointMenu")
-      .addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR);
+      .addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR).setFilter();
 
     extension
       .addBlock(
@@ -1601,7 +1621,7 @@
         ];
         console.log(triangleAttributesOfAllSprites[targetId]);
       }
-    );
+    ).setFilter();
 
     extension
       .addBlock(
@@ -1889,7 +1909,7 @@
           }
         }
       )
-      .addArgument("costume", undefined, undefined,
+      .addArgument("costume", null, null,
       () => {
         const myCostumes = runtime._editingTarget.sprite.costumes;
   
@@ -1906,6 +1926,24 @@
         return readCostumes;
       })
       .setFilter();
+
+    extension.addLabel("Advanced options");
+
+    extension
+    .addBlock(
+      "turn advanced setting [Setting] [onOrOff]",
+      "turnAdvancedSettingOff",
+      Scratch.BlockType.COMMAND,
+      ({ Setting, onOrOff }) => {
+        if (onOrOff == "on"){
+          penPlusAdvancedSettings[Setting] = true;
+          return;
+        }
+        penPlusAdvancedSettings[Setting] = false;
+      }
+    )
+    .addArgument("Setting", null, null,"advancedSettingsMenu")
+    .addArgument("onOrOff", null, null,"onOffMenu");
   };
 
   addBlocks();
