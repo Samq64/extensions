@@ -1,4 +1,6 @@
 (function (Scratch) {
+  //Highly looking for new block ideas
+  
   "use strict";
 
   //put these back here so I don't have to define scratch.cast again.
