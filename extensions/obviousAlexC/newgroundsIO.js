@@ -1,6 +1,14 @@
 (function (Scratch) {
   'use strict';
 
+  /* A message to Sharkpool
+
+  I ask of you one very simple thing. Do not try to edit or add anything to pen+
+  Though this may come off as rude (and trust me I went through this phase too) its better you
+  learn extension dev through making your own extensions and experimenting.
+  As editing the newgrounds api to try to add things that are private won't help with any of that.
+  */
+
   /*!
   The following code is from NewgroundsIO-JS
   The original code is available at https://github.com/PsychoGoldfishNG/NewgroundsIO-JS
