@@ -18,14 +18,6 @@ Depracated spacial transformation block
 Added spacial changing block
 Other various small fixes
 */
-
-/* A message to Sharkpool
-
-I ask of you one very simple thing. Do not try to edit or add anything to pen+
-Though this may come off as rude (and trust me I went through this phase too) its better you
-learn extension dev through making your own extensions and experimenting.
-As editing pen+ won't help with any of that.
-*/
 (function (Scratch) {
   'use strict';
 
