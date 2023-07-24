@@ -11,7 +11,6 @@
 // Geotale
 // Garbomuffin
 // CST1229
-// KryptoScratcher
 //
 //Thanks
 
@@ -415,7 +414,9 @@ Though this may come off as rude.
                 void main()
                 {
                   gl_FragColor = v_color;
-                  if (v_depth > texture2D(u_depthTexture,gl_FragCoord.xy/u_res).r){
+                  highp vec4 v_depthPart = texture2D(u_depthTexture,gl_FragCoord.xy/u_res);
+                  highp float v_depthcalc = (v_depthPart.r+v_depthPart.g+v_depthPart.b)/3.0;
+                  if (v_depth > v_depthcalc){
                     gl_FragColor.a = 0.0;
                   }
                   gl_FragColor.rgb *= gl_FragColor.a;
@@ -1788,6 +1789,7 @@ Though this may come off as rude.
             triangleAttributesOfAllSprites[Attribute_ID][2] = myAttributes[7];
             triangleAttributesOfAllSprites[Attribute_ID][3] = myAttributes[8];
             triangleAttributesOfAllSprites[Attribute_ID][4] = myAttributes[9];
+            triangleAttributesOfAllSprites[Attribute_ID][5] = myAttributes[11];
             triangleAttributesOfAllSprites[Attribute_ID][7] = myAttributes[10];
 
             triangleAttributesOfAllSprites[Attribute_ID][8] =
@@ -1798,6 +1800,7 @@ Though this may come off as rude.
             triangleAttributesOfAllSprites[Attribute_ID][10] = myAttributes[7];
             triangleAttributesOfAllSprites[Attribute_ID][11] = myAttributes[8];
             triangleAttributesOfAllSprites[Attribute_ID][12] = myAttributes[9];
+            triangleAttributesOfAllSprites[Attribute_ID][13] = myAttributes[11];
             triangleAttributesOfAllSprites[Attribute_ID][15] = myAttributes[10];
 
             triangleAttributesOfAllSprites[Attribute_ID][16] =
@@ -1808,6 +1811,7 @@ Though this may come off as rude.
             triangleAttributesOfAllSprites[Attribute_ID][18] = myAttributes[7];
             triangleAttributesOfAllSprites[Attribute_ID][19] = myAttributes[8];
             triangleAttributesOfAllSprites[Attribute_ID][20] = myAttributes[9];
+            triangleAttributesOfAllSprites[Attribute_ID][21] = myAttributes[11];
             triangleAttributesOfAllSprites[Attribute_ID][23] = myAttributes[10];
 
             drawTextTri(
