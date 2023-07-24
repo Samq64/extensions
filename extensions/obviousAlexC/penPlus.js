@@ -1,9 +1,17 @@
 //If source code is modified or reused please credit ObviousAlexC or Pinksheep2917
 //Ideas taken from:
-//  ThatOneWierdo92
-//  SkyIsTumbling
-//  Alltrue
-//  TheShovel
+// TheShovel
+// LilyMakesThings
+// SkyIsTumbling
+// Alltrue
+// LittleBunny06
+// ggenije
+// JeremyGamer13
+// Scratchtomv
+// Geotale
+// Garbomuffin
+// CST1229
+// KryptoScratcher
 //
 //Thanks
 
@@ -20,9 +28,197 @@ Though this may come off as rude.
   //?Also I really like the syntax compared to JSON.
 
   /* eslint-disable */
-  class ExtensionBuilder{constructor(t,n,i,e){this.internal={},this.internal.JSON={blocks:[],menus:{}},this.runtime=Scratch.vm.runtime,this.internal.defaultFunction={code(){console.log("This block has no code")},arguments:{}},this.addDocs=t=>{this.internal.JSON.docsURI=t},this.addBlock=(t,n,i,e,l,s)=>{e=e||this.internal.defaultFunction.code,this[n]=e,s=s||{};let o=s;o.disableMonitor||(o.disableMonitor=!0),o.opcode=n,o.blockType=i,o.text=t,o.arguments=l||JSON.parse(JSON.stringify(this.internal.defaultFunction.arguments));let r=this.internal.JSON.blocks.length;return this.internal.JSON.blocks.push(o),this.internal.JSON.blocks[r].addArgument=(t,i,e,l)=>{if(null==(e=e||null))switch(typeof i){case"string":default:e=Scratch.ArgumentType.STRING;break;case"boolean":e=Scratch.ArgumentType.BOOLEAN;break;case"number":case"bigint":e=Scratch.ArgumentType.NUMBER}return null==i?this.internal.JSON.blocks[r].arguments[t]={type:e}:this.internal.JSON.blocks[r].arguments[t]={type:e,defaultValue:i},(l=l||null)&&("string"==typeof l?this.internal.JSON.blocks[r].arguments[t].menu=l:"function"==typeof l||"object"==typeof l?(this.addMenu(n+"_"+t+"_Menu",l,!0),this.internal.JSON.blocks[r].arguments[t].menu=n+"_"+t+"_Menu"):console.error("Menu '"+n+"_"+t+"_Menu'is not valid!")),this.internal.JSON.blocks[r]},this.internal.JSON.blocks[r].setIcon=t=>(this.internal.JSON.blocks[r].blockIconURI=t,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].setFilter=t=>(t=t||Scratch.TargetType.SPRITE,this.internal.JSON.blocks[r].filter=t,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].hideBlock=()=>(this.internal.JSON.blocks[r].hideFromPalette=!0,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].stopMoniter=()=>(this.internal.JSON.blocks[r].disableMonitor=!0,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].setEdgeActivation=t=>(this.internal.JSON.blocks[r].isEdgeActivated=t,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].addImage=(t,n,i)=>{i=i||!1;let e={type:Scratch.ArgumentType.IMAGE,dataURI:n,flipRTL:i};return this.internal.JSON.blocks[r].arguments[t]=e,this.internal.JSON.blocks[r]},this.internal.JSON.blocks[r]},this.addMenu=(t,n,i)=>{i=i||!1,"function"==typeof n?(this[t+"Function"]=n,this.internal.JSON.menus[t]={items:t+"Function"}):this.internal.JSON.menus[t]={items:n},this.internal.JSON.menus[t].acceptReporters=i},this.addButton=(t,n,i)=>{n=n||this.internal.defaultFunction.code,i=i||"Button",this["button_"+t]=n;let e={};e.func="button_"+t,e.blockType=Scratch.BlockType.BUTTON,e.text=i;let l=this.internal.JSON.blocks.length;return this.internal.JSON.blocks[l]=e,this.internal.JSON.blocks[l]},this.addDivider=()=>{this.internal.JSON.blocks.push("---")},this.addLabel=t=>{t=t||"N/A";let n={opcode:"__NOUSEOPCODE",blockType:"label",text:t};this.internal.JSON.blocks.push(n)},this.__NOUSEOPCODE=()=>{},this.internal.createBase=()=>{if(t=t||"Extension",n=n||"extension",this.internal.JSON.name=t,this.internal.JSON.id=n,(i=i||{}).blockColor=i.blockColor||null,i.inputColor=i.inputColor||null,i.outlineColor=i.outlineColor||null,null!=i.blockColor){let l=i.blockColor;l>8947848?this.internal.colors=[l,l-197379,l-394758,]:this.internal.colors=[l,l+197379,l+394758,],i.inputColor,this.internal.colors[1]=i.inputColor,i.outlineColor,this.internal.colors[2]=i.outlineColor,this.internal.JSON.color1=this.internal.colors[0],this.internal.JSON.color2=this.internal.colors[1],this.internal.JSON.color3=this.internal.colors[2]}(e=e||{}).blockIconUri=e.blockIconUri||null,e.menuIconUri=e.menuIconUri||e.blockIconUri||null,this.menuUri=e.menuIconUri,this.blockIco=e.blockIconUri,this.docsUri=null},this.internal.createBase(),this.setColors=(t,n,i)=>{t="string"==typeof t?t:(t+0).toString(16),n="string"==typeof n?n:(n+0).toString(16),i="string"==typeof i?i:(i+0).toString(16),this.internal.colors=[0,0,0],this.internal.colors[0]=t,this.internal.colors[1]=n,this.internal.colors[2]=i,this.internal.JSON.color1=t,this.internal.JSON.color2=n,this.internal.JSON.color3=i},this.setMenuIcon=t=>{this.internal.JSON.menuIconURI=t},this.setGlobalBlockIcon=t=>{this.internal.JSON.blockIconURI=t},this.runHat=t=>{this.runtime.startHats(this.internal.JSON.id+"_"+t)},this.getInfo=()=>this.internal.JSON,this.register=()=>{Scratch.extensions.register(this)}}}
+  class ExtensionBuilder {
+    constructor(t, n, i, e) {
+      (this.internal = {}),
+        (this.internal.JSON = { blocks: [], menus: {} }),
+        (this.runtime = Scratch.vm.runtime),
+        (this.internal.defaultFunction = {
+          code() {
+            console.log("This block has no code");
+          },
+          arguments: {},
+        }),
+        (this.addDocs = (t) => {
+          this.internal.JSON.docsURI = t;
+        }),
+        (this.addBlock = (t, n, i, e, l, s) => {
+          (e = e || this.internal.defaultFunction.code),
+            (this[n] = e),
+            (s = s || {});
+          let o = s;
+          o.disableMonitor || (o.disableMonitor = !0),
+            (o.opcode = n),
+            (o.blockType = i),
+            (o.text = t),
+            (o.arguments =
+              l ||
+              JSON.parse(
+                JSON.stringify(this.internal.defaultFunction.arguments)
+              ));
+          let r = this.internal.JSON.blocks.length;
+          return (
+            this.internal.JSON.blocks.push(o),
+            (this.internal.JSON.blocks[r].addArgument = (t, i, e, l) => {
+              if (null == (e = e || null))
+                switch (typeof i) {
+                  case "string":
+                  default:
+                    e = Scratch.ArgumentType.STRING;
+                    break;
+                  case "boolean":
+                    e = Scratch.ArgumentType.BOOLEAN;
+                    break;
+                  case "number":
+                  case "bigint":
+                    e = Scratch.ArgumentType.NUMBER;
+                }
+              return (
+                null == i
+                  ? (this.internal.JSON.blocks[r].arguments[t] = { type: e })
+                  : (this.internal.JSON.blocks[r].arguments[t] = {
+                      type: e,
+                      defaultValue: i,
+                    }),
+                (l = l || null) &&
+                  ("string" == typeof l
+                    ? (this.internal.JSON.blocks[r].arguments[t].menu = l)
+                    : "function" == typeof l || "object" == typeof l
+                    ? (this.addMenu(n + "_" + t + "_Menu", l, !0),
+                      (this.internal.JSON.blocks[r].arguments[t].menu =
+                        n + "_" + t + "_Menu"))
+                    : console.error(
+                        "Menu '" + n + "_" + t + "_Menu'is not valid!"
+                      )),
+                this.internal.JSON.blocks[r]
+              );
+            }),
+            (this.internal.JSON.blocks[r].setIcon = (t) => (
+              (this.internal.JSON.blocks[r].blockIconURI = t),
+              this.internal.JSON.blocks[r]
+            )),
+            (this.internal.JSON.blocks[r].setFilter = (t) => (
+              (t = t || Scratch.TargetType.SPRITE),
+              (this.internal.JSON.blocks[r].filter = t),
+              this.internal.JSON.blocks[r]
+            )),
+            (this.internal.JSON.blocks[r].hideBlock = () => (
+              (this.internal.JSON.blocks[r].hideFromPalette = !0),
+              this.internal.JSON.blocks[r]
+            )),
+            (this.internal.JSON.blocks[r].stopMoniter = () => (
+              (this.internal.JSON.blocks[r].disableMonitor = !0),
+              this.internal.JSON.blocks[r]
+            )),
+            (this.internal.JSON.blocks[r].setEdgeActivation = (t) => (
+              (this.internal.JSON.blocks[r].isEdgeActivated = t),
+              this.internal.JSON.blocks[r]
+            )),
+            (this.internal.JSON.blocks[r].addImage = (t, n, i) => {
+              i = i || !1;
+              let e = {
+                type: Scratch.ArgumentType.IMAGE,
+                dataURI: n,
+                flipRTL: i,
+              };
+              return (
+                (this.internal.JSON.blocks[r].arguments[t] = e),
+                this.internal.JSON.blocks[r]
+              );
+            }),
+            this.internal.JSON.blocks[r]
+          );
+        }),
+        (this.addMenu = (t, n, i) => {
+          (i = i || !1),
+            "function" == typeof n
+              ? ((this[t + "Function"] = n),
+                (this.internal.JSON.menus[t] = { items: t + "Function" }))
+              : (this.internal.JSON.menus[t] = { items: n }),
+            (this.internal.JSON.menus[t].acceptReporters = i);
+        }),
+        (this.addButton = (t, n, i) => {
+          (n = n || this.internal.defaultFunction.code),
+            (i = i || "Button"),
+            (this["button_" + t] = n);
+          let e = {};
+          (e.func = "button_" + t),
+            (e.blockType = Scratch.BlockType.BUTTON),
+            (e.text = i);
+          let l = this.internal.JSON.blocks.length;
+          return (
+            (this.internal.JSON.blocks[l] = e), this.internal.JSON.blocks[l]
+          );
+        }),
+        (this.addDivider = () => {
+          this.internal.JSON.blocks.push("---");
+        }),
+        (this.addLabel = (t) => {
+          t = t || "N/A";
+          let n = { opcode: "__NOUSEOPCODE", blockType: "label", text: t };
+          this.internal.JSON.blocks.push(n);
+        }),
+        (this.__NOUSEOPCODE = () => {}),
+        (this.internal.createBase = () => {
+          if (
+            ((t = t || "Extension"),
+            (n = n || "extension"),
+            (this.internal.JSON.name = t),
+            (this.internal.JSON.id = n),
+            ((i = i || {}).blockColor = i.blockColor || null),
+            (i.inputColor = i.inputColor || null),
+            (i.outlineColor = i.outlineColor || null),
+            null != i.blockColor)
+          ) {
+            let l = i.blockColor;
+            l > 8947848
+              ? (this.internal.colors = [l, l - 197379, l - 394758])
+              : (this.internal.colors = [l, l + 197379, l + 394758]),
+              i.inputColor,
+              (this.internal.colors[1] = i.inputColor),
+              i.outlineColor,
+              (this.internal.colors[2] = i.outlineColor),
+              (this.internal.JSON.color1 = this.internal.colors[0]),
+              (this.internal.JSON.color2 = this.internal.colors[1]),
+              (this.internal.JSON.color3 = this.internal.colors[2]);
+          }
+          ((e = e || {}).blockIconUri = e.blockIconUri || null),
+            (e.menuIconUri = e.menuIconUri || e.blockIconUri || null),
+            (this.menuUri = e.menuIconUri),
+            (this.blockIco = e.blockIconUri),
+            (this.docsUri = null);
+        }),
+        this.internal.createBase(),
+        (this.setColors = (t, n, i) => {
+          (t = "string" == typeof t ? t : (t + 0).toString(16)),
+            (n = "string" == typeof n ? n : (n + 0).toString(16)),
+            (i = "string" == typeof i ? i : (i + 0).toString(16)),
+            (this.internal.colors = [0, 0, 0]),
+            (this.internal.colors[0] = t),
+            (this.internal.colors[1] = n),
+            (this.internal.colors[2] = i),
+            (this.internal.JSON.color1 = t),
+            (this.internal.JSON.color2 = n),
+            (this.internal.JSON.color3 = i);
+        }),
+        (this.setMenuIcon = (t) => {
+          this.internal.JSON.menuIconURI = t;
+        }),
+        (this.setGlobalBlockIcon = (t) => {
+          this.internal.JSON.blockIconURI = t;
+        }),
+        (this.runHat = (t) => {
+          this.runtime.startHats(this.internal.JSON.id + "_" + t);
+        }),
+        (this.getInfo = () => this.internal.JSON),
+        (this.register = () => {
+          Scratch.extensions.register(this);
+        });
+    }
+  }
   /* eslint-enable */
 
+  //?set up extension
   const menuIco =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIzMi45OTk3MiIgaGVpZ2h0PSIzMi44ODIwNyIgdmlld0JveD0iMCwwLDMyLjk5OTcyLDMyLjg4MjA3Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjI0LC0xNjMuOTk5OTMpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTIyOC43NTMsMTk0LjYwMmwtNC4yNSwxLjc4bDEuNzgzLC00LjIzN2MxLjIxOCwtMi44OTIgMi45MDcsLTUuNDIzIDUuMDMsLTcuNTM4bDE5Ljc1LC0xOS42NzdjMC44NDYsLTAuODQyIDIuNjUsLTAuNDEgNC4wMzIsMC45NjdjMS4zOCwxLjM3NSAxLjgxNiwzLjE3MyAwLjk3LDQuMDE1bC0xOS43NSwxOS42NzhjLTIuMTIzLDIuMTE2IC00LjY2NCwzLjggLTcuNTY1LDUuMDEyIiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0iIzU3NWU3NSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIzNi44NTgsMTczLjQyOGMwLDAgMi42MTYsMi4yMiA0LjM1LC0xLjU0NmMzLjc1MiwtOC4xNSA4LjIwMiwtNS43NzIgOC4yMDIsLTUuNzcyIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0iIzU3NWU3NSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI1Ni40MiwxNjguODI1YzAsMC40NjMgLTAuMTQsMC44NzMgLTAuNDMyLDEuMTY0bC05LjMzNSw5LjNjMC4yODIsLTAuMjkgMC40MSwtMC42NjggMC40MSwtMS4xMmMwLC0wLjg3NCAtMC41MDcsLTEuOTYzIC0xLjQwNiwtMi44NjhjLTEuMzYyLC0xLjM1OCAtMy4xNDcsLTEuOCAtNC4wMDIsLTAuOTlsOS4zMzUsLTkuMzAxYzAuODQ0LC0wLjg0IDIuNjUsLTAuNDEgNC4wMzUsMC45NmMwLjg5OCwwLjkwNCAxLjM5NiwxLjk4MiAxLjM5NiwyLjg1NU0yMzAuNTE1LDE5My43NzRjLTAuNTczLDAuMzAyIC0xLjE1NywwLjU3IC0xLjc2NCwwLjgzbC00LjI1MSwxLjc3OGwxLjc4NiwtNC4yMzVjMC4yNTgsLTAuNjA0IDAuNTMsLTEuMTg2IDAuODMzLC0xLjc1N2MwLjY5LDAuMTgzIDEuNDQ4LDAuNjI1IDIuMTA4LDEuMjgyYzAuNjYsMC42NTggMS4xMDIsMS40MTIgMS4yODcsMi4xMDIiIGZpbGw9IiM0Yzk3ZmYiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSIjNTc1ZTc1IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjU2LjQ5OCwxNjguNzQ4YzAsMC40NjQgLTAuMTQsMC44NzQgLTAuNDMzLDEuMTY1bC0xOS43NDIsMTkuNjhjLTIuMTMsMi4xMSAtNC42NzMsMy43OTMgLTcuNTcyLDUuMDFsLTQuMjUxLDEuNzc3bDAuOTc0LC0yLjMxNmwxLjkyNSwtMC44MDhjMi44OTgsLTEuMjE4IDUuNDQsLTIuOSA3LjU3LC01LjAxbDE5Ljc0MywtMTkuNjhjMC4yOTIsLTAuMjkyIDAuNDMyLC0wLjcwMiAwLjQzMiwtMS4xNjVjMCwtMC42NDYgLTAuMjcsLTEuNCAtMC43OCwtMi4xMjJjMC4yNSwwLjE3MiAwLjUsMC4zNzcgMC43MzcsMC42MTRjMC44OTgsMC45MDUgMS4zOTYsMS45ODMgMS4zOTYsMi44NTYiIGZpbGw9IiM1NzVlNzUiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSIjNTc1ZTc1IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIG9wYWNpdHk9IjAuMTUiLz48cGF0aCBkPSJNMjM4LjQ1LDE3Mi44M2MwLDAuNSAtMC40MDQsMC45MDUgLTAuOTA0LDAuOTA1Yy0wLjUsMCAtMC45MDUsLTAuNDA1IC0wLjkwNSwtMC45MDRjMCwtMC41IDAuNDA3LC0wLjkwMyAwLjkwNiwtMC45MDNjMC41LDAgMC45MDQsMC40MDQgMC45MDQsMC45MDR6IiBmaWxsPSIjNTc1ZTc1IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0iIzU3NWU3NSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI0NC45OTgwNywxODcuMDUyOThoOS41MTc2NSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIi8+PHBhdGggZD0iTTI0OS43NTY4OSwxOTEuODExOHYtOS41MTc2NSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIi8+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6MTY6MTYuMDAwMDY5MjMwODQyMTQzLS0+";
   const blockIco =
@@ -41,6 +237,9 @@ Though this may come off as rude.
   const f32_10 = 10 * Float32Array.BYTES_PER_ELEMENT;
   const d2r = 0.0174533;
 
+  //? set up depth buffer stuff!
+  let _maxDepth = 1000;
+
   //?Declare most of the main repo's we are going to use around the scratch vm
   const vm = Scratch.vm;
   const runtime = vm.runtime;
@@ -51,6 +250,103 @@ Though this may come off as rude.
   const gl = renderer._gl;
   let currentFilter = gl.NEAREST;
 
+  let nativeSize = [480, 360];
+
+  //?create the depth buffer's texture
+  //*Create it in scratch's gl so that we have it stored in there!
+  let depthBufferTexture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, depthBufferTexture);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texImage2D(
+    gl.TEXTURE_2D,
+    0,
+    gl.RGBA,
+    nativeSize[0],
+    nativeSize[1],
+    0,
+    gl.RGBA,
+    gl.UNSIGNED_BYTE,
+    null
+  );
+
+  gl.activeTexture(gl.TEXTURE1);
+  gl.bindTexture(gl.TEXTURE_2D, depthBufferTexture);
+  gl.activeTexture(gl.TEXTURE0);
+
+  //?Make a function for updating the depth canvas to fit the scratch stage
+  const depthFrameBuffer = gl.createFramebuffer();
+  const depthDepthBuffer = gl.createRenderbuffer();
+
+  let lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+
+  gl.bindFramebuffer(gl.FRAMEBUFFER, depthFrameBuffer);
+  gl.framebufferTexture2D(
+    gl.FRAMEBUFFER,
+    gl.COLOR_ATTACHMENT0,
+    gl.TEXTURE_2D,
+    depthBufferTexture,
+    0
+  );
+
+  gl.bindRenderbuffer(gl.RENDERBUFFER, depthDepthBuffer);
+  gl.renderbufferStorage(
+    gl.RENDERBUFFER,
+    gl.DEPTH_COMPONENT16,
+    nativeSize[0],
+    nativeSize[1]
+  );
+  gl.framebufferRenderbuffer(
+    gl.FRAMEBUFFER,
+    gl.DEPTH_ATTACHMENT,
+    gl.RENDERBUFFER,
+    depthDepthBuffer
+  );
+
+  gl.enable(gl.DEPTH_TEST);
+
+  gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
+
+  const updateCanvasSize = () => {
+    nativeSize = renderer.useHighQualityRender
+      ? [canvas.width, canvas.height]
+      : renderer._nativeSize;
+
+    lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, depthFrameBuffer);
+    gl.bindRenderbuffer(gl.RENDERBUFFER, depthDepthBuffer);
+    gl.renderbufferStorage(
+      gl.RENDERBUFFER,
+      gl.DEPTH_COMPONENT16,
+      nativeSize[0],
+      nativeSize[1]
+    );
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
+  };
+
+  //?Call it to have it consistant
+  updateCanvasSize();
+
+  //?Call every frame because I don't know of a way to detect when the stage is resized
+  vm.runtime.on("BEFORE_EXECUTE", () => {
+    updateCanvasSize();
+  });
+
+  gl.enable(gl.DEPTH_TEST);
+  gl.depthFunc(gl.LEQUAL);
+
+  //?Ported from Pen+ version 5
+  //?Just a costume library for data uris
+  const penPlusCostumeLibrary = {};
+  let penPlusImportWrapMode = gl.CLAMP_TO_EDGE;
+
+  //?Debug for depth
+  //penPlusCostumeLibrary["!Debug_Depth"] = depthBufferTexture;
+
+  //?Make sure pen is loaded!
   if (!Scratch.vm.extensionManager.isExtensionLoaded("pen")) {
     runtime.extensionManager.loadExtensionIdSync("pen");
   }
@@ -74,26 +370,6 @@ Though this may come off as rude.
     }
   };
 
-  let stagePenContext = !Scratch.vm.renderer["_penSkinId"]
-    ? Scratch.vm.renderer.createPenSkin()
-    : renderer["_penSkinId"];
-
-  //?If no pen shader initilize it because we have to.
-  if (shaderManager._shaderCache.line.length == 0) {
-    Scratch.vm.renderer.penLine(
-      Scratch.vm.renderer._penSkinId,
-      {
-        //Default pen attributes
-        color4f: [0, 0, 1, 1],
-        diameter: 1,
-      },
-      0,
-      0,
-      0,
-      0
-    );
-  }
-
   //*Define PEN+ variables >:)
   const triangleDefaultAttributes = [
     // U V  TINT R G B  Z W transparency U V  TINT R G B  Z W transparency U V  TINT R G B  Z W transparency
@@ -103,7 +379,7 @@ Though this may come off as rude.
   ];
   const squareDefaultAttributes = [
     // width* height*  rotation  u-mul u     v-mul   v    r g b transparency
-    1, 1, 90, 1, 0, 1, 0, 1, 1, 1, 1,
+    1, 1, 90, 1, 0, 1, 0, 1, 1, 1, 1, 1,
   ];
 
   const triangleAttributesOfAllSprites = {}; //!it dawned on me I have to do this
@@ -115,22 +391,33 @@ Though this may come off as rude.
     untextured: {
       Shaders: {
         vert: `
-                attribute vec4 a_position;
-                attribute vec4 a_color;
+                attribute highp vec4 a_position;
+                attribute highp vec4 a_color;
                 varying vec4 v_color;
+
+                varying highp float v_depth;
 
                 void main()
                 {
                   v_color = a_color;
-                  gl_Position = a_position * vec4(a_position.w,a_position.w,1,1);
+                  v_depth = a_position.z;
+                  gl_Position = a_position * vec4(a_position.w,a_position.w,0,1);
                 }
             `,
         frag: `
                 varying highp vec4 v_color;
 
+                uniform mediump vec2 u_res;
+                uniform sampler2D u_depthTexture;
+
+                varying highp float v_depth;
+
                 void main()
                 {
                   gl_FragColor = v_color;
+                  if (v_depth > texture2D(u_depthTexture,gl_FragCoord.xy/u_res).r){
+                    gl_FragColor.a = 0.0;
+                  }
                   gl_FragColor.rgb *= gl_FragColor.a;
                 }
             `,
@@ -140,40 +427,134 @@ Though this may come off as rude.
     textured: {
       Shaders: {
         vert: `
-                attribute vec4 a_position;
-                attribute vec4 a_color;
-                attribute vec2 a_texCoord;
+                attribute highp vec4 a_position;
+                attribute highp vec4 a_color;
+                attribute highp vec2 a_texCoord;
                 
-                varying vec4 v_color;
-                varying vec2 v_texCoord;
+                varying highp vec4 v_color;
+                varying highp vec2 v_texCoord;
+
+                varying highp float v_depth;
                 
                 void main()
                 {
                     v_color = a_color;
                     v_texCoord = a_texCoord;
-                    gl_Position = a_position * vec4(a_position.w,a_position.w,1,1);
+                    v_depth = a_position.z;
+                    gl_Position = a_position * vec4(a_position.w,a_position.w,0,1);
                 }
             `,
         frag: `
                 uniform sampler2D u_texture;
 
                 varying highp vec2 v_texCoord;
-
                 varying highp vec4 v_color;
+
+                uniform mediump vec2 u_res;
+                uniform sampler2D u_depthTexture;
+
+                varying highp float v_depth;
                 
                 void main()
                 {
                     gl_FragColor = texture2D(u_texture, v_texCoord) * v_color;
+                    highp vec4 v_depthPart = texture2D(u_depthTexture,gl_FragCoord.xy/u_res);
+                    highp float v_depthcalc = (v_depthPart.r+v_depthPart.g+v_depthPart.b)/3.0;
+                    if (v_depth > v_depthcalc){
+                      gl_FragColor.a = 0.0;
+                    }
                     gl_FragColor.rgb *= gl_FragColor.a;
+                    
+                }
+            `,
+      },
+      ProgramInf: null,
+    },
+    depth: {
+      Shaders: {
+        vert: `
+                attribute highp vec4 a_position;
+                
+                varying highp float v_depth;
+                
+                void main()
+                {
+                    v_depth = a_position.z*3.0;
+                    gl_Position = a_position * vec4(a_position.w,a_position.w,1,1);
+                }
+            `,
+        frag: `
+                varying highp float v_depth;
+                
+                void main()
+                {
+                    gl_FragColor = vec4(v_depth,0,0,1);
+                    if (v_depth>1.0) {
+                      gl_FragColor.r = 1.0;
+                      gl_FragColor.g = v_depth-1.0;
+                      if (v_depth>2.0) {
+                        gl_FragColor.g = 1.0;
+                        gl_FragColor.b = v_depth-2.0;
+                      }
+                    }
                 }
             `,
       },
       ProgramInf: null,
     },
     pen: {
-      program: shaderManager._shaderCache.line[0].program,
+      program: null,
     },
     createAndCompileShaders: (vert, frag) => {
+      //? compile vertex Shader
+      const vertShader = gl.createShader(gl.VERTEX_SHADER);
+      try {
+        gl.shaderSource(vertShader, vert.trim());
+        gl.compileShader(vertShader);
+        if (!gl.getShaderParameter(vertShader, gl.COMPILE_STATUS)) {
+          throw gl.getShaderInfoLog(vertShader);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      //? compile fragment Shader
+      const fragShader = gl.createShader(gl.FRAGMENT_SHADER);
+      try {
+        gl.shaderSource(fragShader, frag.trim());
+        gl.compileShader(fragShader);
+        if (!gl.getShaderParameter(fragShader, gl.COMPILE_STATUS)) {
+          throw gl.getShaderInfoLog(fragShader);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      //? compile program
+      const program = gl.createProgram();
+      try {
+        gl.attachShader(program, vertShader);
+        gl.attachShader(program, fragShader);
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+          throw gl.getProgramInfoLog(program);
+        }
+
+        gl.validateProgram(program);
+        if (!gl.getProgramParameter(program, gl.VALIDATE_STATUS)) {
+          throw gl.getProgramInfoLog(program);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      return {
+        program: program,
+        vert: vertShader,
+        frag: fragShader,
+      };
+    },
+    createAndCompileDepthShaders: (vert, frag) => {
       //? compile vertex Shader
       const vertShader = gl.createShader(gl.VERTEX_SHADER);
       try {
@@ -234,6 +615,11 @@ Though this may come off as rude.
     penPlusShaders.textured.Shaders.frag
   );
 
+  penPlusShaders.depth.ProgramInf = penPlusShaders.createAndCompileShaders(
+    penPlusShaders.depth.Shaders.vert,
+    penPlusShaders.depth.Shaders.frag
+  );
+
   //?Untextured
   const a_position_Location_untext = gl.getAttribLocation(
     penPlusShaders.untextured.ProgramInf.program,
@@ -243,9 +629,6 @@ Though this may come off as rude.
     penPlusShaders.untextured.ProgramInf.program,
     "a_color"
   );
-
-  gl.enableVertexAttribArray(a_position_Location_untext);
-  gl.enableVertexAttribArray(a_color_Location_untext);
 
   //?Textured
   const a_position_Location_text = gl.getAttribLocation(
@@ -267,19 +650,65 @@ Though this may come off as rude.
     "u_texture"
   );
 
+  const u_depthTexture_Location_untext = gl.getUniformLocation(
+    penPlusShaders.untextured.ProgramInf.program,
+    "u_depthTexture"
+  );
+
+  const u_depthTexture_Location_text = gl.getUniformLocation(
+    penPlusShaders.textured.ProgramInf.program,
+    "u_depthTexture"
+  );
+
+  const u_res_Location_untext = gl.getUniformLocation(
+    penPlusShaders.untextured.ProgramInf.program,
+    "u_res"
+  );
+
+  const u_res_Location_text = gl.getUniformLocation(
+    penPlusShaders.textured.ProgramInf.program,
+    "u_res"
+  );
+
+  //?Depth
+  const a_position_Location_depth = gl.getAttribLocation(
+    penPlusShaders.depth.ProgramInf.program,
+    "a_position"
+  );
+
   //?Enables Attributes
+  gl.enableVertexAttribArray(a_position_Location_untext);
+  gl.enableVertexAttribArray(a_color_Location_untext);
   gl.enableVertexAttribArray(a_position_Location_text);
   gl.enableVertexAttribArray(a_color_Location_text);
   gl.enableVertexAttribArray(a_textCoord_Location_text);
+  gl.enableVertexAttribArray(a_position_Location_depth);
 
   const vertexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
+  const depthVertexBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, depthVertexBuffer);
+  gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+  //?Set the depth gl to use the depth shader
+  //depthGL.useProgram(penPlusShaders.depth.ProgramInf.program);
+  //depthGL.clearColor(1, 1, 1, 1)
+
   //?Override pen Clear with pen+
   renderer.penClear = (penSkinID) => {
+    const lastCC = gl.getParameter(gl.COLOR_CLEAR_VALUE);
+    lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
     //Pen+ Overrides default pen Clearing
+    gl.bindFramebuffer(gl.FRAMEBUFFER, depthFrameBuffer);
+    gl.clearColor(1, 1, 1, 1);
     gl.clear(gl.DEPTH_BUFFER_BIT);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
+    gl.clearColor(lastCC[0], lastCC[1], lastCC[2], lastCC[3]);
+
     //? ^ just clear the depth buffer for when its added.
 
     //Old clearing
@@ -288,18 +717,13 @@ Though this may come off as rude.
     skin.clear();
   };
 
-  //define defaults
-  //gl.disable(gl.DEPTH_TEST);
-  //gl.depthFunc(gl.NEVER);
-
   let vertexBufferData = null;
-  let texVertexBufferData = null;
 
   //Pen+ advanced options update
   //I plan to add more later
   const penPlusAdvancedSettings = {
-    wValueUnderFlow:false
-  }
+    wValueUnderFlow: false,
+  };
 
   //?Have this here for ez pz tri drawing on the canvas
   const drawTri = (curProgram, x1, y1, x2, y2, x3, y3, penColor, targetID) => {
@@ -310,7 +734,7 @@ Though this may come off as rude.
       vertexBufferData = new Float32Array([
         x1,
         -y1,
-        -triAttribs[5],
+        triAttribs[5],
         triAttribs[6],
         penColor[0] * triAttribs[2],
         penColor[1] * triAttribs[3],
@@ -319,7 +743,7 @@ Though this may come off as rude.
 
         x2,
         -y2,
-        -triAttribs[13],
+        triAttribs[13],
         triAttribs[14],
         penColor[0] * triAttribs[10],
         penColor[1] * triAttribs[11],
@@ -328,7 +752,7 @@ Though this may come off as rude.
 
         x3,
         -y3,
-        -triAttribs[21],
+        triAttribs[21],
         triAttribs[22],
         penColor[0] * triAttribs[18],
         penColor[1] * triAttribs[19],
@@ -369,7 +793,7 @@ Though this may come off as rude.
     //? Bind Positional Data
 
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.DYNAMIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.STATIC_DRAW);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
     gl.vertexAttribPointer(
@@ -391,8 +815,14 @@ Though this may come off as rude.
 
     gl.useProgram(penPlusShaders.untextured.ProgramInf.program);
 
+    gl.uniform1i(u_depthTexture_Location_untext, 1);
+
+    gl.uniform2fv(u_res_Location_untext, nativeSize);
+
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     //? Hacky fix but it works.
+
+    drawDepthTri(targetID, x1, y1, x2, y2, x3, y3);
     gl.useProgram(penPlusShaders.pen.program);
   };
 
@@ -414,7 +844,7 @@ Though this may come off as rude.
       vertexBufferData = new Float32Array([
         x1,
         -y1,
-        -triAttribs[5],
+        triAttribs[5],
         triAttribs[6],
         triAttribs[2],
         triAttribs[3],
@@ -425,7 +855,7 @@ Though this may come off as rude.
 
         x2,
         -y2,
-        -triAttribs[13],
+        triAttribs[13],
         triAttribs[14],
         triAttribs[10],
         triAttribs[11],
@@ -436,7 +866,7 @@ Though this may come off as rude.
 
         x3,
         -y3,
-        -triAttribs[21],
+        triAttribs[21],
         triAttribs[22],
         triAttribs[18],
         triAttribs[19],
@@ -512,16 +942,83 @@ Though this may come off as rude.
 
     gl.useProgram(penPlusShaders.textured.ProgramInf.program);
 
-    if (gl.getParameter(gl.TEXTURE_BINDING_2D) != texture) {
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, currentFilter);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, currentFilter);
-      gl.uniform1i(u_texture_Location_text, 0);
-    }
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, currentFilter);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, currentFilter);
+    gl.uniform1i(u_texture_Location_text, 0);
+
+    gl.uniform1i(u_depthTexture_Location_text, 1);
+
+    gl.uniform2fv(u_res_Location_text, nativeSize);
 
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     //? Hacky fix but it works.
+    drawDepthTri(targetID, x1, y1, x2, y2, x3, y3);
     gl.useProgram(penPlusShaders.pen.program);
+  };
+
+  //? this is so I don't have to go through the hassle of replacing default scratch shaders
+  //? many of curse words where exchanged between me and a pillow while writing this extension
+  //? but I have previaled!
+  const drawDepthTri = (targetID, x1, y1, x2, y2, x3, y3) => {
+    lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+    const triAttribs = triangleAttributesOfAllSprites[targetID];
+    gl.bindFramebuffer(gl.FRAMEBUFFER, depthFrameBuffer);
+
+    if (triAttribs) {
+      vertexBufferData = new Float32Array([
+        x1,
+        -y1,
+        triAttribs[5],
+        triAttribs[6],
+
+        x2,
+        -y2,
+        triAttribs[13],
+        triAttribs[14],
+
+        x3,
+        -y3,
+        triAttribs[21],
+        triAttribs[22],
+      ]);
+    } else {
+      vertexBufferData = new Float32Array([
+        x1,
+        -y1,
+        0,
+        1,
+
+        x2,
+        -y2,
+        0,
+        1,
+
+        x3,
+        -y3,
+        0,
+        1,
+      ]);
+    }
+
+    //? Bind Positional Data
+    gl.bindBuffer(gl.ARRAY_BUFFER, depthVertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.DYNAMIC_DRAW);
+
+    gl.vertexAttribPointer(
+      a_position_Location_depth,
+      4,
+      gl.FLOAT,
+      false,
+      f32_4,
+      0
+    );
+
+    gl.useProgram(penPlusShaders.depth.ProgramInf.program);
+
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
   };
 
   const lilPenDabble = (nativeSize, curTarget, util) => {
@@ -578,20 +1075,19 @@ Though this may come off as rude.
       //Clamp to 0 so we can't go behind the stage.
       //Z
       case 5:
-        if (value < 1) {
-          valuetoSet = 1;
+        if (value < 0) {
+          valuetoSet = 0;
           break;
         }
-        valuetoSet = 1 - 1 / value;
+        valuetoSet = Math.min(value / _maxDepth, 1);
         break;
 
       //Clamp to 1 so we don't accidentally clip.
       //W
       case 6:
-        if (penPlusAdvancedSettings.wValueUnderFlow == true){
+        if (penPlusAdvancedSettings.wValueUnderFlow == true) {
           valuetoSet = value;
-        }
-        else {
+        } else {
           valuetoSet = Math.max(value, 1);
         }
         break;
@@ -616,10 +1112,6 @@ Though this may come off as rude.
       }
     }
   };
-
-  //?Ported from Pen+ version 5
-  const penPlusCostumeLibrary = {};
-  let penPlusImportWrapMode = gl.CLAMP_TO_EDGE;
 
   const createPenPlusTextureInfo = async function (url, name, clamp) {
     const texture = gl.createTexture();
@@ -745,6 +1237,10 @@ Though this may come off as rude.
         text: "Transparency",
         value: "10",
       },
+      {
+        text: "depth value",
+        value: "11",
+      },
     ],
     true
   );
@@ -779,6 +1275,10 @@ Though this may come off as rude.
         text: "corner pinch",
         value: "6",
       },
+      {
+        text: "depth value",
+        value: "5",
+      },
     ],
     true
   );
@@ -801,6 +1301,10 @@ Though this may come off as rude.
       {
         text: "transparency",
         value: "7",
+      },
+      {
+        text: "depth value",
+        value: "5",
       },
     ],
     true
@@ -842,7 +1346,7 @@ Though this may come off as rude.
 
   extension.addMenu("pointMenu", ["1", "2", "3"], true);
 
-  extension.addMenu("onOffMenu", ["on","off"], true);
+  extension.addMenu("onOffMenu", ["on", "off"], true);
 
   extension.addMenu(
     "costumeMenu",
@@ -872,15 +1376,27 @@ Though this may come off as rude.
     true
   );
 
-  extension.addMenu("advancedSettingsMenu",
-  [
+  extension.addMenu(
+    "advancedSettingsMenu",
+    [
+      {
+        text: "allow 'Corner Pinch < 1'",
+        value: "wValueUnderFlow",
+      },
+      {
+        text: "allow Z Buffer",
+        value: "wValueUnderFlow",
+      },
+    ],
+    true
+  );
+
+  extension.addMenu("advancedSettingValuesMenu", [
     {
-      text: "allow 'Corner Pinch < 1'",
-      value:"wValueUnderFlow",
+      text: "maximum depth value",
+      value: "depthMax",
     },
-  ],
-  true
-  )
+  ]);
 
   //? Seperate blocks from the rest of the code to just clean up the workspace a bit
   const addBlocks = () => {
@@ -991,7 +1507,7 @@ Though this may come off as rude.
           const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
           const diam = attrib.diameter;
 
-          const nativeSize = renderer.useHighQualityRender
+          nativeSize = renderer.useHighQualityRender
             ? [canvas.width, canvas.height]
             : renderer._nativeSize;
 
@@ -1096,14 +1612,17 @@ Though this may come off as rude.
           triangleAttributesOfAllSprites[Attribute_ID][2] = myAttributes[7];
           triangleAttributesOfAllSprites[Attribute_ID][3] = myAttributes[8];
           triangleAttributesOfAllSprites[Attribute_ID][4] = myAttributes[9];
+          triangleAttributesOfAllSprites[Attribute_ID][5] = myAttributes[11];
           triangleAttributesOfAllSprites[Attribute_ID][7] = myAttributes[10];
           triangleAttributesOfAllSprites[Attribute_ID][10] = myAttributes[7];
           triangleAttributesOfAllSprites[Attribute_ID][11] = myAttributes[8];
           triangleAttributesOfAllSprites[Attribute_ID][12] = myAttributes[9];
+          triangleAttributesOfAllSprites[Attribute_ID][13] = myAttributes[11];
           triangleAttributesOfAllSprites[Attribute_ID][15] = myAttributes[10];
           triangleAttributesOfAllSprites[Attribute_ID][18] = myAttributes[7];
           triangleAttributesOfAllSprites[Attribute_ID][19] = myAttributes[8];
           triangleAttributesOfAllSprites[Attribute_ID][20] = myAttributes[9];
+          triangleAttributesOfAllSprites[Attribute_ID][21] = myAttributes[11];
           triangleAttributesOfAllSprites[Attribute_ID][23] = myAttributes[10];
 
           drawTri(
@@ -1165,7 +1684,7 @@ Though this may come off as rude.
           const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
           const diam = attrib.diameter;
 
-          const nativeSize = renderer.useHighQualityRender
+          nativeSize = renderer.useHighQualityRender
             ? [canvas.width, canvas.height]
             : renderer._nativeSize;
 
@@ -1349,6 +1868,11 @@ Though this may come off as rude.
 
           const attributeNum = Scratch.Cast.toNumber(target);
           if (attributeNum >= 7) {
+            if (attributeNum == 11) {
+              squareAttributesOfAllSprites[curTarget.id][attributeNum] =
+                Math.min(Math.max(number / _maxDepth, 0), 1);
+              return;
+            }
             squareAttributesOfAllSprites[curTarget.id][attributeNum] =
               Math.min(Math.max(number, 0), 100) * 0.01;
             return;
@@ -1400,19 +1924,22 @@ Though this may come off as rude.
           squareAttributesOfAllSprites[curTarget.id][9] = calcColor.b / 255;
         }
       )
-      .addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR).setFilter();
+      .addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR)
+      .setFilter();
 
-    extension.addBlock(
-      "reset square Attributes",
-      "resetSquareAttributes",
-      Scratch.BlockType.COMMAND,
-      (args, util) => {
-        const curTarget = util.target;
-        squareAttributesOfAllSprites[curTarget.id] = [
-          1, 1, 90, 1, 0, 1, 0, 1, 1, 1, 1,
-        ];
-      }
-    ).setFilter();
+    extension
+      .addBlock(
+        "reset square Attributes",
+        "resetSquareAttributes",
+        Scratch.BlockType.COMMAND,
+        (args, util) => {
+          const curTarget = util.target;
+          squareAttributesOfAllSprites[curTarget.id] = [
+            1, 1, 90, 1, 0, 1, 0, 1, 1, 1, 1, 0,
+          ];
+        }
+      )
+      .setFilter();
 
     extension.addLabel("Triangle Blocks");
 
@@ -1475,7 +2002,7 @@ Though this may come off as rude.
           }
           setValueAccordingToCaseTriangle(
             targetId,
-            Scratch.Cast.toNumber(attribute),
+            Scratch.Cast.toNumber(wholeAttribute),
             value,
             true,
             0
@@ -1536,7 +2063,8 @@ Though this may come off as rude.
         }
       )
       .addArgument("point", "1", null, "pointMenu")
-      .addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR).setFilter();
+      .addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR)
+      .setFilter();
 
     extension
       .addBlock(
@@ -1583,7 +2111,8 @@ Though this may come off as rude.
         }
       )
       .addArgument("point", "1", null, "pointMenu")
-      .addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR).setFilter();
+      .addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR)
+      .setFilter();
 
     extension
       .addBlock(
@@ -1614,20 +2143,20 @@ Though this may come off as rude.
       .addArgument("attribute", 2, null, "triAttribute")
       .setFilter();
 
-    extension.addBlock(
-      "reset triangle attributes",
-      "resetWholeTriangleAttributes",
-      Scratch.BlockType.COMMAND,
-      (args, util) => {
-        const targetId = util.target.id;
-        console.log(triangleAttributesOfAllSprites[targetId]);
-        triangleAttributesOfAllSprites[targetId] = [
-          0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1,
-          1, 1, 1, 1,
-        ];
-        console.log(triangleAttributesOfAllSprites[targetId]);
-      }
-    ).setFilter();
+    extension
+      .addBlock(
+        "reset triangle attributes",
+        "resetWholeTriangleAttributes",
+        Scratch.BlockType.COMMAND,
+        (args, util) => {
+          const targetId = util.target.id;
+          triangleAttributesOfAllSprites[targetId] = [
+            0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1,
+            1, 1, 1, 1,
+          ];
+        }
+      )
+      .setFilter();
 
     extension
       .addBlock(
@@ -1639,15 +2168,15 @@ Though this may come off as rude.
           checkForPen(util);
           const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
 
-          const nativeSize = renderer.useHighQualityRender
+          nativeSize = renderer.useHighQualityRender
             ? [canvas.width, canvas.height]
             : renderer._nativeSize;
 
-          if (triangleAttributesOfAllSprites[curTarget.id]) {
-            triangleAttributesOfAllSprites[curTarget.id][5] = 1;
-            triangleAttributesOfAllSprites[curTarget.id][13] = 1;
-            triangleAttributesOfAllSprites[curTarget.id][21] = 1;
-          }
+          //if (triangleAttributesOfAllSprites[curTarget.id]) {
+          //  triangleAttributesOfAllSprites[curTarget.id][5] = 1;
+          //  triangleAttributesOfAllSprites[curTarget.id][13] = 1;
+          //  triangleAttributesOfAllSprites[curTarget.id][21] = 1;
+          //}
 
           //?Renderer Freaks out if we don't do this so do it.
           lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
@@ -1717,18 +2246,12 @@ Though this may come off as rude.
             }
           }
 
-          const nativeSize = renderer.useHighQualityRender
+          nativeSize = renderer.useHighQualityRender
             ? [canvas.width, canvas.height]
             : renderer._nativeSize;
 
           //?Renderer Freaks out if we don't do this so do it.
           lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
-
-          if (triangleAttributesOfAllSprites[curTarget.id]) {
-            triangleAttributesOfAllSprites[curTarget.id][5] = 1;
-            triangleAttributesOfAllSprites[curTarget.id][13] = 1;
-            triangleAttributesOfAllSprites[curTarget.id][21] = 1;
-          }
 
           //trying my best to reduce memory usage
           gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
@@ -1910,15 +2433,15 @@ Though this may come off as rude.
             Scratch.Cast.toString(costume)
           );
           if (costIndex >= 0) {
-            const curCostume = curTarget.sprite.costumes_[costIndex].asset.encodeDataURI();
+            const curCostume =
+              curTarget.sprite.costumes_[costIndex].asset.encodeDataURI();
             return curCostume;
           }
         }
       )
-      .addArgument("costume", null, null,
-      () => {
+      .addArgument("costume", null, null, () => {
         const myCostumes = runtime._editingTarget.sprite.costumes;
-  
+
         let readCostumes = [];
         for (
           let curCostumeID = 0;
@@ -1928,7 +2451,7 @@ Though this may come off as rude.
           const currentCostume = myCostumes[curCostumeID].name;
           readCostumes.push(currentCostume);
         }
-  
+
         return readCostumes;
       })
       .setFilter();
@@ -1936,25 +2459,47 @@ Though this may come off as rude.
     extension.addLabel("Advanced options");
 
     extension
-    .addBlock(
-      "turn advanced setting [Setting] [onOrOff]",
-      "turnAdvancedSettingOff",
-      Scratch.BlockType.COMMAND,
-      ({ Setting, onOrOff }) => {
-        if (onOrOff == "on"){
-          penPlusAdvancedSettings[Setting] = true;
-          return;
+      .addBlock(
+        "turn advanced setting [Setting] [onOrOff]",
+        "turnAdvancedSettingOff",
+        Scratch.BlockType.COMMAND,
+        ({ Setting, onOrOff }) => {
+          if (onOrOff == "on") {
+            penPlusAdvancedSettings[Setting] = true;
+            return;
+          }
+          penPlusAdvancedSettings[Setting] = false;
         }
-        penPlusAdvancedSettings[Setting] = false;
-      }
-    )
-    .addArgument("Setting", null, null,"advancedSettingsMenu")
-    .addArgument("onOrOff", null, null,"onOffMenu");
+      )
+      .addArgument("Setting", null, null, "advancedSettingsMenu")
+      .addArgument("onOrOff", null, null, "onOffMenu");
+
+    extension
+      .addBlock(
+        "set [setting] to [value]",
+        "setAdvancedOptionValueTo",
+        Scratch.BlockType.COMMAND,
+        ({ setting, value }) => {
+          switch (setting) {
+            case "depthMax":
+              _maxDepth = Math.max(value, 100);
+              break;
+
+            default:
+              break;
+          }
+        }
+      )
+      .addArgument("setting", null, null, "advancedSettingValuesMenu")
+      .addArgument("value", "1000");
   };
 
   addBlocks();
 
   //? A small hack to stop the renderer from immediatly dying. And to allow for immediate use
+  if (!Scratch.vm.renderer._penSkinId) {
+    window.vm.renderer.createPenSkin();
+  }
   renderer.penClear(Scratch.vm.renderer._penSkinId);
   Scratch.vm.renderer.penLine(
     Scratch.vm.renderer._penSkinId,
@@ -1968,6 +2513,7 @@ Though this may come off as rude.
     0
   );
 
+  penPlusShaders.pen.program = shaderManager._shaderCache.line[0].program;
 
   extension.addDocs("https://extensions.turbowarp.org/penplus");
 
