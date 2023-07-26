@@ -28,7 +28,194 @@ Though this may come off as rude.
   //?Also I really like the syntax compared to JSON.
 
   /* eslint-disable */
-  class ExtensionBuilder{constructor(t,n,i,e){this.internal={},this.internal.JSON={blocks:[],menus:{}},this.runtime=Scratch.vm.runtime,this.internal.defaultFunction={code(){console.log("This block has no code")},arguments:{}},this.addDocs=t=>{this.internal.JSON.docsURI=t},this.addBlock=(t,n,i,e,l,s)=>{e=e||this.internal.defaultFunction.code,this[n]=e,s=s||{};let o=s;o.disableMonitor||(o.disableMonitor=!0),o.opcode=n,o.blockType=i,o.text=t,o.arguments=l||JSON.parse(JSON.stringify(this.internal.defaultFunction.arguments));let r=this.internal.JSON.blocks.length;return this.internal.JSON.blocks.push(o),this.internal.JSON.blocks[r].addArgument=(t,i,e,l)=>{if(null==(e=e||null))switch(typeof i){case"string":default:e=Scratch.ArgumentType.STRING;break;case"boolean":e=Scratch.ArgumentType.BOOLEAN;break;case"number":case"bigint":e=Scratch.ArgumentType.NUMBER}return null==i?this.internal.JSON.blocks[r].arguments[t]={type:e}:this.internal.JSON.blocks[r].arguments[t]={type:e,defaultValue:i},(l=l||null)&&("string"==typeof l?this.internal.JSON.blocks[r].arguments[t].menu=l:"function"==typeof l||"object"==typeof l?(this.addMenu(n+"_"+t+"_Menu",l,!0),this.internal.JSON.blocks[r].arguments[t].menu=n+"_"+t+"_Menu"):console.error("Menu '"+n+"_"+t+"_Menu'is not valid!")),this.internal.JSON.blocks[r]},this.internal.JSON.blocks[r].setIcon=t=>(this.internal.JSON.blocks[r].blockIconURI=t,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].setFilter=t=>(t=t||Scratch.TargetType.SPRITE,this.internal.JSON.blocks[r].filter=t,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].hideBlock=()=>(this.internal.JSON.blocks[r].hideFromPalette=!0,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].stopMoniter=()=>(this.internal.JSON.blocks[r].disableMonitor=!0,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].setEdgeActivation=t=>(this.internal.JSON.blocks[r].isEdgeActivated=t,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].addImage=(t,n,i)=>{i=i||!1;let e={type:Scratch.ArgumentType.IMAGE,dataURI:n,flipRTL:i};return this.internal.JSON.blocks[r].arguments[t]=e,this.internal.JSON.blocks[r]},this.internal.JSON.blocks[r]},this.addMenu=(t,n,i)=>{i=i||!1,"function"==typeof n?(this[t+"Function"]=n,this.internal.JSON.menus[t]={items:t+"Function"}):this.internal.JSON.menus[t]={items:n},this.internal.JSON.menus[t].acceptReporters=i},this.addButton=(t,n,i)=>{n=n||this.internal.defaultFunction.code,i=i||"Button",this["button_"+t]=n;let e={};e.func="button_"+t,e.blockType=Scratch.BlockType.BUTTON,e.text=i;let l=this.internal.JSON.blocks.length;return this.internal.JSON.blocks[l]=e,this.internal.JSON.blocks[l]},this.addDivider=()=>{this.internal.JSON.blocks.push("---")},this.addLabel=t=>{t=t||"N/A";let n={opcode:"__NOUSEOPCODE",blockType:"label",text:t};this.internal.JSON.blocks.push(n)},this.__NOUSEOPCODE=()=>{},this.internal.createBase=()=>{if(t=t||"Extension",n=n||"extension",this.internal.JSON.name=t,this.internal.JSON.id=n,(i=i||{}).blockColor=i.blockColor||null,i.inputColor=i.inputColor||null,i.outlineColor=i.outlineColor||null,null!=i.blockColor){let l=i.blockColor;l>8947848?this.internal.colors=[l,l-197379,l-394758,]:this.internal.colors=[l,l+197379,l+394758,],i.inputColor,this.internal.colors[1]=i.inputColor,i.outlineColor,this.internal.colors[2]=i.outlineColor,this.internal.JSON.color1=this.internal.colors[0],this.internal.JSON.color2=this.internal.colors[1],this.internal.JSON.color3=this.internal.colors[2]}(e=e||{}).blockIconUri=e.blockIconUri||null,e.menuIconUri=e.menuIconUri||e.blockIconUri||null,this.menuUri=e.menuIconUri,this.blockIco=e.blockIconUri,this.docsUri=null},this.internal.createBase(),this.setColors=(t,n,i)=>{t="string"==typeof t?t:(t+0).toString(16),n="string"==typeof n?n:(n+0).toString(16),i="string"==typeof i?i:(i+0).toString(16),this.internal.colors=[0,0,0],this.internal.colors[0]=t,this.internal.colors[1]=n,this.internal.colors[2]=i,this.internal.JSON.color1=t,this.internal.JSON.color2=n,this.internal.JSON.color3=i},this.setMenuIcon=t=>{this.internal.JSON.menuIconURI=t},this.setGlobalBlockIcon=t=>{this.internal.JSON.blockIconURI=t},this.runHat=t=>{this.runtime.startHats(this.internal.JSON.id+"_"+t)},this.getInfo=()=>this.internal.JSON,this.register=()=>{Scratch.extensions.register(this)}}}
+  class ExtensionBuilder {
+    constructor(t, n, i, e) {
+      (this.internal = {}),
+        (this.internal.JSON = { blocks: [], menus: {} }),
+        (this.runtime = Scratch.vm.runtime),
+        (this.internal.defaultFunction = {
+          code() {
+            console.log("This block has no code");
+          },
+          arguments: {},
+        }),
+        (this.addDocs = (t) => {
+          this.internal.JSON.docsURI = t;
+        }),
+        (this.addBlock = (t, n, i, e, l, s) => {
+          (e = e || this.internal.defaultFunction.code),
+            (this[n] = e),
+            (s = s || {});
+          let o = s;
+          o.disableMonitor || (o.disableMonitor = !0),
+            (o.opcode = n),
+            (o.blockType = i),
+            (o.text = t),
+            (o.arguments =
+              l ||
+              JSON.parse(
+                JSON.stringify(this.internal.defaultFunction.arguments)
+              ));
+          let r = this.internal.JSON.blocks.length;
+          return (
+            this.internal.JSON.blocks.push(o),
+            (this.internal.JSON.blocks[r].addArgument = (t, i, e, l) => {
+              if (null == (e = e || null))
+                switch (typeof i) {
+                  case "string":
+                  default:
+                    e = Scratch.ArgumentType.STRING;
+                    break;
+                  case "boolean":
+                    e = Scratch.ArgumentType.BOOLEAN;
+                    break;
+                  case "number":
+                  case "bigint":
+                    e = Scratch.ArgumentType.NUMBER;
+                }
+              return (
+                null == i
+                  ? (this.internal.JSON.blocks[r].arguments[t] = { type: e })
+                  : (this.internal.JSON.blocks[r].arguments[t] = {
+                      type: e,
+                      defaultValue: i,
+                    }),
+                (l = l || null) &&
+                  ("string" == typeof l
+                    ? (this.internal.JSON.blocks[r].arguments[t].menu = l)
+                    : "function" == typeof l || "object" == typeof l
+                    ? (this.addMenu(n + "_" + t + "_Menu", l, !0),
+                      (this.internal.JSON.blocks[r].arguments[t].menu =
+                        n + "_" + t + "_Menu"))
+                    : console.error(
+                        "Menu '" + n + "_" + t + "_Menu'is not valid!"
+                      )),
+                this.internal.JSON.blocks[r]
+              );
+            }),
+            (this.internal.JSON.blocks[r].setIcon = (t) => (
+              (this.internal.JSON.blocks[r].blockIconURI = t),
+              this.internal.JSON.blocks[r]
+            )),
+            (this.internal.JSON.blocks[r].setFilter = (t) => (
+              (t = t || Scratch.TargetType.SPRITE),
+              (this.internal.JSON.blocks[r].filter = t),
+              this.internal.JSON.blocks[r]
+            )),
+            (this.internal.JSON.blocks[r].hideBlock = () => (
+              (this.internal.JSON.blocks[r].hideFromPalette = !0),
+              this.internal.JSON.blocks[r]
+            )),
+            (this.internal.JSON.blocks[r].stopMoniter = () => (
+              (this.internal.JSON.blocks[r].disableMonitor = !0),
+              this.internal.JSON.blocks[r]
+            )),
+            (this.internal.JSON.blocks[r].setEdgeActivation = (t) => (
+              (this.internal.JSON.blocks[r].isEdgeActivated = t),
+              this.internal.JSON.blocks[r]
+            )),
+            (this.internal.JSON.blocks[r].addImage = (t, n, i) => {
+              i = i || !1;
+              let e = {
+                type: Scratch.ArgumentType.IMAGE,
+                dataURI: n,
+                flipRTL: i,
+              };
+              return (
+                (this.internal.JSON.blocks[r].arguments[t] = e),
+                this.internal.JSON.blocks[r]
+              );
+            }),
+            this.internal.JSON.blocks[r]
+          );
+        }),
+        (this.addMenu = (t, n, i) => {
+          (i = i || !1),
+            "function" == typeof n
+              ? ((this[t + "Function"] = n),
+                (this.internal.JSON.menus[t] = { items: t + "Function" }))
+              : (this.internal.JSON.menus[t] = { items: n }),
+            (this.internal.JSON.menus[t].acceptReporters = i);
+        }),
+        (this.addButton = (t, n, i) => {
+          (n = n || this.internal.defaultFunction.code),
+            (i = i || "Button"),
+            (this["button_" + t] = n);
+          let e = {};
+          (e.func = "button_" + t),
+            (e.blockType = Scratch.BlockType.BUTTON),
+            (e.text = i);
+          let l = this.internal.JSON.blocks.length;
+          return (
+            (this.internal.JSON.blocks[l] = e), this.internal.JSON.blocks[l]
+          );
+        }),
+        (this.addDivider = () => {
+          this.internal.JSON.blocks.push("---");
+        }),
+        (this.addLabel = (t) => {
+          t = t || "N/A";
+          let n = { opcode: "__NOUSEOPCODE", blockType: "label", text: t };
+          this.internal.JSON.blocks.push(n);
+        }),
+        (this.__NOUSEOPCODE = () => {}),
+        (this.internal.createBase = () => {
+          if (
+            ((t = t || "Extension"),
+            (n = n || "extension"),
+            (this.internal.JSON.name = t),
+            (this.internal.JSON.id = n),
+            ((i = i || {}).blockColor = i.blockColor || null),
+            (i.inputColor = i.inputColor || null),
+            (i.outlineColor = i.outlineColor || null),
+            null != i.blockColor)
+          ) {
+            let l = i.blockColor;
+            l > 8947848
+              ? (this.internal.colors = [l, l - 197379, l - 394758])
+              : (this.internal.colors = [l, l + 197379, l + 394758]),
+              i.inputColor,
+              (this.internal.colors[1] = i.inputColor),
+              i.outlineColor,
+              (this.internal.colors[2] = i.outlineColor),
+              (this.internal.JSON.color1 = this.internal.colors[0]),
+              (this.internal.JSON.color2 = this.internal.colors[1]),
+              (this.internal.JSON.color3 = this.internal.colors[2]);
+          }
+          ((e = e || {}).blockIconUri = e.blockIconUri || null),
+            (e.menuIconUri = e.menuIconUri || e.blockIconUri || null),
+            (this.menuUri = e.menuIconUri),
+            (this.blockIco = e.blockIconUri),
+            (this.docsUri = null);
+        }),
+        this.internal.createBase(),
+        (this.setColors = (t, n, i) => {
+          (t = "string" == typeof t ? t : (t + 0).toString(16)),
+            (n = "string" == typeof n ? n : (n + 0).toString(16)),
+            (i = "string" == typeof i ? i : (i + 0).toString(16)),
+            (this.internal.colors = [0, 0, 0]),
+            (this.internal.colors[0] = t),
+            (this.internal.colors[1] = n),
+            (this.internal.colors[2] = i),
+            (this.internal.JSON.color1 = t),
+            (this.internal.JSON.color2 = n),
+            (this.internal.JSON.color3 = i);
+        }),
+        (this.setMenuIcon = (t) => {
+          this.internal.JSON.menuIconURI = t;
+        }),
+        (this.setGlobalBlockIcon = (t) => {
+          this.internal.JSON.blockIconURI = t;
+        }),
+        (this.runHat = (t) => {
+          this.runtime.startHats(this.internal.JSON.id + "_" + t);
+        }),
+        (this.getInfo = () => this.internal.JSON),
+        (this.register = () => {
+          Scratch.extensions.register(this);
+        });
+    }
+  }
   /* eslint-enable */
 
   //?set up extension
@@ -96,7 +283,6 @@ Though this may come off as rude.
     gl.activeTexture(gl.TEXTURE1);
     gl.bindTexture(gl.TEXTURE_2D, depthBufferTexture);
     gl.activeTexture(gl.TEXTURE0);
-
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, depthFrameBuffer);
     gl.framebufferTexture2D(
@@ -378,10 +564,11 @@ Though this may come off as rude.
 
   //? Create program info
   {
-    penPlusShaders.untextured.ProgramInf = penPlusShaders.createAndCompileShaders(
-      penPlusShaders.untextured.Shaders.vert,
-      penPlusShaders.untextured.Shaders.frag
-    );
+    penPlusShaders.untextured.ProgramInf =
+      penPlusShaders.createAndCompileShaders(
+        penPlusShaders.untextured.Shaders.vert,
+        penPlusShaders.untextured.Shaders.frag
+      );
     penPlusShaders.textured.ProgramInf = penPlusShaders.createAndCompileShaders(
       penPlusShaders.textured.Shaders.vert,
       penPlusShaders.textured.Shaders.frag
@@ -492,7 +679,7 @@ Though this may come off as rude.
   //I plan to add more later
   const penPlusAdvancedSettings = {
     wValueUnderFlow: false,
-    _maxDepth: 1000
+    _maxDepth: 1000,
   };
 
   //?Have this here for ez pz tri drawing on the canvas
@@ -597,17 +784,7 @@ Though this may come off as rude.
       gl.useProgram(penPlusShaders.pen.program);
     },
 
-    drawTextTri: (
-      curProgram,
-      x1,
-      y1,
-      x2,
-      y2,
-      x3,
-      y3,
-      targetID,
-      texture
-    ) => {
+    drawTextTri: (curProgram, x1, y1, x2, y2, x3, y3, targetID, texture) => {
       //? get triangle attributes for current sprite.
       const triAttribs = triangleAttributesOfAllSprites[targetID];
 
@@ -792,7 +969,7 @@ Though this may come off as rude.
       gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
     },
 
-    setValueAccordingToCaseTriangle:(
+    setValueAccordingToCaseTriangle: (
       targetId,
       attribute,
       value,
@@ -810,7 +987,7 @@ Though this may come off as rude.
         case 1:
           valuetoSet = value;
           break;
-  
+
         //100 since that is what scratch users are accustomed to.
         //R
         case 2:
@@ -824,7 +1001,7 @@ Though this may come off as rude.
         case 4:
           valuetoSet = Math.min(Math.max(value, 0), 100) * 0.01;
           break;
-  
+
         //Clamp to 0 so we can't go behind the stage.
         //Z
         case 5:
@@ -834,7 +1011,7 @@ Though this may come off as rude.
           }
           valuetoSet = Math.min(value / penPlusAdvancedSettings._maxDepth, 1);
           break;
-  
+
         //Clamp to 1 so we don't accidentally clip.
         //W
         case 6:
@@ -849,7 +1026,7 @@ Though this may come off as rude.
         case 7:
           valuetoSet = Math.min(Math.max(value, 0), 1000) * 0.01;
           break;
-  
+
         //Just break if value isn't valid
         default:
           break;
@@ -864,7 +1041,7 @@ Though this may come off as rude.
           triangleAttributesOfAllSprites[targetId][offset] = valuetoSet;
         }
       }
-    }
+    },
   };
 
   const lilPenDabble = (nativeSize, curTarget, util) => {
@@ -887,7 +1064,7 @@ Though this may come off as rude.
 
   //?Color Library
   const colors = {
-    hexToRgb:(hex) => {
+    hexToRgb: (hex) => {
       if (typeof hex === "string") {
         const splitHex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return {
@@ -903,13 +1080,13 @@ Though this may come off as rude.
       };
     },
 
-    rgbtoSColor:({ R, G, B }) => {
+    rgbtoSColor: ({ R, G, B }) => {
       R = Math.min(Math.max(R, 0), 100) * 2.55;
       G = Math.min(Math.max(G, 0), 100) * 2.55;
       B = Math.min(Math.max(B, 0), 100) * 2.55;
       return (Math.floor(R) * 256 + Math.floor(G)) * 256 + Math.floor(B);
-    }
-  }
+    },
+  };
 
   const textureFunctions = {
     createPenPlusTextureInfo: async function (url, name, clamp) {
@@ -927,7 +1104,7 @@ Though this may come off as rude.
         gl.UNSIGNED_BYTE,
         new Uint8Array([0, 0, 255, 255])
       );
-  
+
       // Let's assume all images are not a power of 2
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, clamp);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, clamp);
@@ -950,9 +1127,9 @@ Though this may come off as rude.
               image
             );
             penPlusCostumeLibrary[name] = {
-              texture:texture,
-              width:image.width,
-              height:image.height
+              texture: texture,
+              width: image.width,
+              height: image.height,
             };
             resolve(texture);
           };
@@ -962,28 +1139,50 @@ Though this may come off as rude.
       });
     },
 
-    getTextureData:(texture,width,height) => {
+    getTextureData: (texture, width, height) => {
       //?Initilize the temp framebuffer and assign it
       const readBuffer = gl.createFramebuffer();
 
       lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
 
-      gl.bindFramebuffer(gl.FRAMEBUFFER,readBuffer);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, readBuffer);
 
-      gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,texture,0);
+      gl.framebufferTexture2D(
+        gl.FRAMEBUFFER,
+        gl.COLOR_ATTACHMENT0,
+        gl.TEXTURE_2D,
+        texture,
+        0
+      );
 
       //?make sure to unbind the framebuffer and delete it!
       const removeBuffer = () => {
-        gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,removalTexture,0);
-        gl.bindFramebuffer(gl.FRAMEBUFFER,lastFB);
+        gl.framebufferTexture2D(
+          gl.FRAMEBUFFER,
+          gl.COLOR_ATTACHMENT0,
+          gl.TEXTURE_2D,
+          removalTexture,
+          0
+        );
+        gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
         gl.deleteFramebuffer(readBuffer);
-      }
+      };
 
       //?if sucessful read
-      if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE){
+      if (
+        gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE
+      ) {
         //?Make an array to write the pixels onto
         let dataArray = new Uint8Array(width * height * 4);
-        gl.readPixels(0,0,width,height,gl.RGBA,gl.UNSIGNED_BYTE,dataArray);
+        gl.readPixels(
+          0,
+          0,
+          width,
+          height,
+          gl.RGBA,
+          gl.UNSIGNED_BYTE,
+          dataArray
+        );
 
         //?Remove Buffer data and return data
         removeBuffer();
@@ -993,8 +1192,8 @@ Though this may come off as rude.
       //?If not return undefined
       removeBuffer();
       return undefined;
-    }
-  }
+    },
+  };
 
   //Learned I could do this for code orginization
   //?Menus
@@ -1162,75 +1361,83 @@ Though this may come off as rude.
 
     extension.addMenu("pointMenu", ["1", "2", "3"], true);
 
-  extension.addMenu("onOffMenu", ["on", "off"], true);
+    extension.addMenu("onOffMenu", ["on", "off"], true);
 
-  extension.addMenu(
-    "costumeMenu",
-    () => {
-      const myCostumes = runtime._editingTarget.sprite.costumes;
+    extension.addMenu(
+      "costumeMenu",
+      () => {
+        const myCostumes = runtime._editingTarget.sprite.costumes;
 
-      let readCostumes = [];
-      for (
-        let curCostumeID = 0;
-        curCostumeID < myCostumes.length;
-        curCostumeID++
-      ) {
-        const currentCostume = myCostumes[curCostumeID].name;
-        readCostumes.push(currentCostume);
-      }
-
-      const keys = Object.keys(penPlusCostumeLibrary);
-      if (keys.length > 0) {
-        for (let curCostumeID = 0; curCostumeID < keys.length; curCostumeID++) {
-          const currentCostume = keys[curCostumeID];
+        let readCostumes = [];
+        for (
+          let curCostumeID = 0;
+          curCostumeID < myCostumes.length;
+          curCostumeID++
+        ) {
+          const currentCostume = myCostumes[curCostumeID].name;
           readCostumes.push(currentCostume);
         }
-      }
 
-      return readCostumes;
-    },
-    true
-  );
-
-  extension.addMenu(
-    "penPlusCostumes",
-    () => {
-      const readCostumes = [];
-      const keys = Object.keys(penPlusCostumeLibrary);
-      if (keys.length > 0) {
-        for (let curCostumeID = 0; curCostumeID < keys.length; curCostumeID++) {
-          const currentCostume = keys[curCostumeID];
-          readCostumes.push(currentCostume);
+        const keys = Object.keys(penPlusCostumeLibrary);
+        if (keys.length > 0) {
+          for (
+            let curCostumeID = 0;
+            curCostumeID < keys.length;
+            curCostumeID++
+          ) {
+            const currentCostume = keys[curCostumeID];
+            readCostumes.push(currentCostume);
+          }
         }
+
         return readCostumes;
-      }
-
-      return ["no pen+ costumes!"];
-    },
-    true
-  );
-
-  extension.addMenu(
-    "advancedSettingsMenu",
-    [
-      {
-        text: "allow 'Corner Pinch < 1'",
-        value: "wValueUnderFlow",
       },
-      {
-        text: "allow Z Buffer",
-        value: "wValueUnderFlow",
-      },
-    ],
-    true
-  );
+      true
+    );
 
-  extension.addMenu("advancedSettingValuesMenu", [
-    {
-      text: "maximum depth value",
-      value: "depthMax",
-    },
-  ]);
+    extension.addMenu(
+      "penPlusCostumes",
+      () => {
+        const readCostumes = [];
+        const keys = Object.keys(penPlusCostumeLibrary);
+        if (keys.length > 0) {
+          for (
+            let curCostumeID = 0;
+            curCostumeID < keys.length;
+            curCostumeID++
+          ) {
+            const currentCostume = keys[curCostumeID];
+            readCostumes.push(currentCostume);
+          }
+          return readCostumes;
+        }
+
+        return ["no pen+ costumes!"];
+      },
+      true
+    );
+
+    extension.addMenu(
+      "advancedSettingsMenu",
+      [
+        {
+          text: "allow 'Corner Pinch < 1'",
+          value: "wValueUnderFlow",
+        },
+        {
+          text: "allow Z Buffer",
+          value: "wValueUnderFlow",
+        },
+      ],
+      true
+    );
+
+    extension.addMenu("advancedSettingValuesMenu", [
+      {
+        text: "maximum depth value",
+        value: "depthMax",
+      },
+    ]);
   }
 
   //?Blocks
@@ -1708,7 +1915,10 @@ Though this may come off as rude.
           if (attributeNum >= 7) {
             if (attributeNum == 11) {
               squareAttributesOfAllSprites[curTarget.id][attributeNum] =
-                Math.min(Math.max(number / penPlusAdvancedSettings._maxDepth, 0), 1);
+                Math.min(
+                  Math.max(number / penPlusAdvancedSettings._maxDepth, 0),
+                  1
+                );
               return;
             }
             squareAttributesOfAllSprites[curTarget.id][attributeNum] =
@@ -2224,7 +2434,11 @@ Though this may come off as rude.
         Scratch.BlockType.COMMAND,
         ({ dataURI, name }, util) => {
           //Just a simple thing to allow for pen drawing
-          textureFunctions.createPenPlusTextureInfo(dataURI, "!" + name, penPlusImportWrapMode);
+          textureFunctions.createPenPlusTextureInfo(
+            dataURI,
+            "!" + name,
+            penPlusImportWrapMode
+          );
         }
       )
       .addArgument("dataURI", "https://extensions.turbowarp.org/dango.png")
@@ -2307,51 +2521,89 @@ Though this may come off as rude.
           }
         }
       )
-      .addArgument("dimension", null, null, [
-        "width",
-        "height"
-      ])
+      .addArgument("dimension", null, null, ["width", "height"])
       .addArgument("costume", null, null, "penPlusCostumes")
       .setFilter();
 
-    extension.addBlock("set pixel [x] [y]'s color to [color] in [costume]","setpixelcolor",Scratch.BlockType.COMMAND,({x,y,color,costume}) => {
+    extension
+      .addBlock(
+        "set pixel [x] [y]'s color to [color] in [costume]",
+        "setpixelcolor",
+        Scratch.BlockType.COMMAND,
+        ({ x, y, color, costume }) => {
           const curCostume = penPlusCostumeLibrary[costume];
           if (curCostume) {
-            const textureData = textureFunctions.getTextureData(curCostume.texture,curCostume.width,curCostume.height);
+            const textureData = textureFunctions.getTextureData(
+              curCostume.texture,
+              curCostume.width,
+              curCostume.height
+            );
             if (textureData) {
-              x = Math.floor(x-1);
-              y = Math.floor(y-1);
-              const colorIndex = (((y*curCostume.width)+x)*4)
-              if (textureData[colorIndex] && (x < curCostume.width && x >= 0)) {
+              x = Math.floor(x - 1);
+              y = Math.floor(y - 1);
+              const colorIndex = (y * curCostume.width + x) * 4;
+              if (textureData[colorIndex] && x < curCostume.width && x >= 0) {
                 const retColor = colors.hexToRgb(color);
                 textureData[colorIndex] = retColor.r;
-                textureData[colorIndex+1] = retColor.g;
-                textureData[colorIndex+2] = retColor.b;
-                textureData[colorIndex+3] = 255;
+                textureData[colorIndex + 1] = retColor.g;
+                textureData[colorIndex + 2] = retColor.b;
+                textureData[colorIndex + 3] = 255;
 
-                gl.bindTexture(gl.TEXTURE_2D,curCostume.texture);
-                gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,curCostume.width,curCostume.height,0,gl.RGBA,gl.UNSIGNED_BYTE,textureData);
+                gl.bindTexture(gl.TEXTURE_2D, curCostume.texture);
+                gl.texImage2D(
+                  gl.TEXTURE_2D,
+                  0,
+                  gl.RGBA,
+                  curCostume.width,
+                  curCostume.height,
+                  0,
+                  gl.RGBA,
+                  gl.UNSIGNED_BYTE,
+                  textureData
+                );
               }
             }
           }
-    }).addArgument("x", 1).addArgument("y", 1).addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR).addArgument("costume", null, null, "penPlusCostumes")
-
-    extension.addBlock("get pixel [x] [y]'s color in [costume]","getpixelcolor",Scratch.BlockType.REPORTER,({x,y,costume}) => {
-      const curCostume = penPlusCostumeLibrary[costume];
-      if (curCostume) {
-        const textureData = textureFunctions.getTextureData(curCostume.texture,curCostume.width,curCostume.height);
-        console.log(textureData)
-        if (textureData) {
-          x = Math.floor(x-1);
-          y = Math.floor(y-1);
-          const colorIndex = (((y*curCostume.width)+x)*4)
-          if (textureData[colorIndex] && (x < curCostume.width && x >= 0)) {
-            return colors.rgbtoSColor({ R: textureData[colorIndex]/2.55, G: textureData[colorIndex+1]/2.55, B: textureData[colorIndex+2]/2.55 });
-          }
-          return colors.rgbtoSColor({ R: 100, G: 100, B: 100 });
         }
-      }
-    }).addArgument("x", 1).addArgument("y", 1).addArgument("costume", null, null, "penPlusCostumes")
+      )
+      .addArgument("x", 1)
+      .addArgument("y", 1)
+      .addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR)
+      .addArgument("costume", null, null, "penPlusCostumes");
+
+    extension
+      .addBlock(
+        "get pixel [x] [y]'s color in [costume]",
+        "getpixelcolor",
+        Scratch.BlockType.REPORTER,
+        ({ x, y, costume }) => {
+          const curCostume = penPlusCostumeLibrary[costume];
+          if (curCostume) {
+            const textureData = textureFunctions.getTextureData(
+              curCostume.texture,
+              curCostume.width,
+              curCostume.height
+            );
+            console.log(textureData);
+            if (textureData) {
+              x = Math.floor(x - 1);
+              y = Math.floor(y - 1);
+              const colorIndex = (y * curCostume.width + x) * 4;
+              if (textureData[colorIndex] && x < curCostume.width && x >= 0) {
+                return colors.rgbtoSColor({
+                  R: textureData[colorIndex] / 2.55,
+                  G: textureData[colorIndex + 1] / 2.55,
+                  B: textureData[colorIndex + 2] / 2.55,
+                });
+              }
+              return colors.rgbtoSColor({ R: 100, G: 100, B: 100 });
+            }
+          }
+        }
+      )
+      .addArgument("x", 1)
+      .addArgument("y", 1)
+      .addArgument("costume", null, null, "penPlusCostumes");
 
     extension.addLabel("Advanced options");
 
