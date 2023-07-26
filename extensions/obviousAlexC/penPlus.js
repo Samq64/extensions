@@ -11,6 +11,7 @@
 // Geotale
 // Garbomuffin
 // CST1229
+// KryptoScratcher
 //
 //Thanks
 
@@ -49,9 +50,6 @@ Though this may come off as rude.
   const f32_10 = 10 * Float32Array.BYTES_PER_ELEMENT;
   const d2r = 0.0174533;
 
-  //? set up depth buffer stuff!
-  let _maxDepth = 1000;
-
   //?Declare most of the main repo's we are going to use around the scratch vm
   const vm = Scratch.vm;
   const runtime = vm.runtime;
@@ -67,26 +65,8 @@ Though this may come off as rude.
   //?create the depth buffer's texture
   //*Create it in scratch's gl so that we have it stored in there!
   let depthBufferTexture = gl.createTexture();
-  gl.bindTexture(gl.TEXTURE_2D, depthBufferTexture);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  gl.texImage2D(
-    gl.TEXTURE_2D,
-    0,
-    gl.RGBA,
-    nativeSize[0],
-    nativeSize[1],
-    0,
-    gl.RGBA,
-    gl.UNSIGNED_BYTE,
-    null
-  );
 
-  gl.activeTexture(gl.TEXTURE1);
-  gl.bindTexture(gl.TEXTURE_2D, depthBufferTexture);
-  gl.activeTexture(gl.TEXTURE0);
+  let removalTexture = gl.createTexture();
 
   //?Make a function for updating the depth canvas to fit the scratch stage
   const depthFrameBuffer = gl.createFramebuffer();
@@ -94,41 +74,39 @@ Though this may come off as rude.
 
   let lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
 
-  gl.bindFramebuffer(gl.FRAMEBUFFER, depthFrameBuffer);
-  gl.framebufferTexture2D(
-    gl.FRAMEBUFFER,
-    gl.COLOR_ATTACHMENT0,
-    gl.TEXTURE_2D,
-    depthBufferTexture,
-    0
-  );
+  //?Buffer handling and pen loading
+  {
+    gl.bindTexture(gl.TEXTURE_2D, depthBufferTexture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      nativeSize[0],
+      nativeSize[1],
+      0,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      null
+    );
 
-  gl.bindRenderbuffer(gl.RENDERBUFFER, depthDepthBuffer);
-  gl.renderbufferStorage(
-    gl.RENDERBUFFER,
-    gl.DEPTH_COMPONENT16,
-    nativeSize[0],
-    nativeSize[1]
-  );
-  gl.framebufferRenderbuffer(
-    gl.FRAMEBUFFER,
-    gl.DEPTH_ATTACHMENT,
-    gl.RENDERBUFFER,
-    depthDepthBuffer
-  );
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, depthBufferTexture);
+    gl.activeTexture(gl.TEXTURE0);
 
-  gl.enable(gl.DEPTH_TEST);
-
-  gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
-
-  const updateCanvasSize = () => {
-    nativeSize = renderer.useHighQualityRender
-      ? [canvas.width, canvas.height]
-      : renderer._nativeSize;
-
-    lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, depthFrameBuffer);
+    gl.framebufferTexture2D(
+      gl.FRAMEBUFFER,
+      gl.COLOR_ATTACHMENT0,
+      gl.TEXTURE_2D,
+      depthBufferTexture,
+      0
+    );
+
     gl.bindRenderbuffer(gl.RENDERBUFFER, depthDepthBuffer);
     gl.renderbufferStorage(
       gl.RENDERBUFFER,
@@ -136,20 +114,52 @@ Though this may come off as rude.
       nativeSize[0],
       nativeSize[1]
     );
+    gl.framebufferRenderbuffer(
+      gl.FRAMEBUFFER,
+      gl.DEPTH_ATTACHMENT,
+      gl.RENDERBUFFER,
+      depthDepthBuffer
+    );
+
+    gl.enable(gl.DEPTH_TEST);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
-  };
 
-  //?Call it to have it consistant
-  updateCanvasSize();
+    const updateCanvasSize = () => {
+      nativeSize = renderer.useHighQualityRender
+        ? [canvas.width, canvas.height]
+        : renderer._nativeSize;
 
-  //?Call every frame because I don't know of a way to detect when the stage is resized
-  vm.runtime.on("BEFORE_EXECUTE", () => {
+      lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+
+      gl.bindFramebuffer(gl.FRAMEBUFFER, depthFrameBuffer);
+      gl.bindRenderbuffer(gl.RENDERBUFFER, depthDepthBuffer);
+      gl.renderbufferStorage(
+        gl.RENDERBUFFER,
+        gl.DEPTH_COMPONENT16,
+        nativeSize[0],
+        nativeSize[1]
+      );
+
+      gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
+    };
+
+    //?Call it to have it consistant
     updateCanvasSize();
-  });
 
-  gl.enable(gl.DEPTH_TEST);
-  gl.depthFunc(gl.LEQUAL);
+    //?Call every frame because I don't know of a way to detect when the stage is resized
+    vm.runtime.on("BEFORE_EXECUTE", () => {
+      updateCanvasSize();
+    });
+
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthFunc(gl.LEQUAL);
+
+    //?Make sure pen is loaded!
+    if (!Scratch.vm.extensionManager.isExtensionLoaded("pen")) {
+      runtime.extensionManager.loadExtensionIdSync("pen");
+    }
+  }
 
   //?Ported from Pen+ version 5
   //?Just a costume library for data uris
@@ -158,11 +168,6 @@ Though this may come off as rude.
 
   //?Debug for depth
   //penPlusCostumeLibrary["!Debug_Depth"] = depthBufferTexture;
-
-  //?Make sure pen is loaded!
-  if (!Scratch.vm.extensionManager.isExtensionLoaded("pen")) {
-    runtime.extensionManager.loadExtensionIdSync("pen");
-  }
 
   const checkForPen = (util) => {
     const curTarget = util.target;
@@ -369,71 +374,24 @@ Though this may come off as rude.
         frag: fragShader,
       };
     },
-    createAndCompileDepthShaders: (vert, frag) => {
-      //? compile vertex Shader
-      const vertShader = gl.createShader(gl.VERTEX_SHADER);
-      try {
-        gl.shaderSource(vertShader, vert.trim());
-        gl.compileShader(vertShader);
-        if (!gl.getShaderParameter(vertShader, gl.COMPILE_STATUS)) {
-          throw gl.getShaderInfoLog(vertShader);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-
-      //? compile fragment Shader
-      const fragShader = gl.createShader(gl.FRAGMENT_SHADER);
-      try {
-        gl.shaderSource(fragShader, frag.trim());
-        gl.compileShader(fragShader);
-        if (!gl.getShaderParameter(fragShader, gl.COMPILE_STATUS)) {
-          throw gl.getShaderInfoLog(fragShader);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-
-      //? compile program
-      const program = gl.createProgram();
-      try {
-        gl.attachShader(program, vertShader);
-        gl.attachShader(program, fragShader);
-        gl.linkProgram(program);
-        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-          throw gl.getProgramInfoLog(program);
-        }
-
-        gl.validateProgram(program);
-        if (!gl.getProgramParameter(program, gl.VALIDATE_STATUS)) {
-          throw gl.getProgramInfoLog(program);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-
-      return {
-        program: program,
-        vert: vertShader,
-        frag: fragShader,
-      };
-    },
   };
 
   //? Create program info
-  penPlusShaders.untextured.ProgramInf = penPlusShaders.createAndCompileShaders(
-    penPlusShaders.untextured.Shaders.vert,
-    penPlusShaders.untextured.Shaders.frag
-  );
-  penPlusShaders.textured.ProgramInf = penPlusShaders.createAndCompileShaders(
-    penPlusShaders.textured.Shaders.vert,
-    penPlusShaders.textured.Shaders.frag
-  );
+  {
+    penPlusShaders.untextured.ProgramInf = penPlusShaders.createAndCompileShaders(
+      penPlusShaders.untextured.Shaders.vert,
+      penPlusShaders.untextured.Shaders.frag
+    );
+    penPlusShaders.textured.ProgramInf = penPlusShaders.createAndCompileShaders(
+      penPlusShaders.textured.Shaders.vert,
+      penPlusShaders.textured.Shaders.frag
+    );
 
-  penPlusShaders.depth.ProgramInf = penPlusShaders.createAndCompileShaders(
-    penPlusShaders.depth.Shaders.vert,
-    penPlusShaders.depth.Shaders.frag
-  );
+    penPlusShaders.depth.ProgramInf = penPlusShaders.createAndCompileShaders(
+      penPlusShaders.depth.Shaders.vert,
+      penPlusShaders.depth.Shaders.frag
+    );
+  }
 
   //?Untextured
   const a_position_Location_untext = gl.getAttribLocation(
@@ -492,24 +450,22 @@ Though this may come off as rude.
   );
 
   //?Enables Attributes
-  gl.enableVertexAttribArray(a_position_Location_untext);
-  gl.enableVertexAttribArray(a_color_Location_untext);
-  gl.enableVertexAttribArray(a_position_Location_text);
-  gl.enableVertexAttribArray(a_color_Location_text);
-  gl.enableVertexAttribArray(a_textCoord_Location_text);
-  gl.enableVertexAttribArray(a_position_Location_depth);
-
   const vertexBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-  gl.bindBuffer(gl.ARRAY_BUFFER, null);
-
   const depthVertexBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, depthVertexBuffer);
-  gl.bindBuffer(gl.ARRAY_BUFFER, null);
+  let vertexBufferData = null;
 
-  //?Set the depth gl to use the depth shader
-  //depthGL.useProgram(penPlusShaders.depth.ProgramInf.program);
-  //depthGL.clearColor(1, 1, 1, 1)
+  {
+    gl.enableVertexAttribArray(a_position_Location_untext);
+    gl.enableVertexAttribArray(a_color_Location_untext);
+    gl.enableVertexAttribArray(a_position_Location_text);
+    gl.enableVertexAttribArray(a_color_Location_text);
+    gl.enableVertexAttribArray(a_textCoord_Location_text);
+    gl.enableVertexAttribArray(a_position_Location_depth);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    gl.bindBuffer(gl.ARRAY_BUFFER, depthVertexBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+  }
 
   //?Override pen Clear with pen+
   renderer.penClear = (penSkinID) => {
@@ -532,308 +488,383 @@ Though this may come off as rude.
     skin.clear();
   };
 
-  let vertexBufferData = null;
-
   //Pen+ advanced options update
   //I plan to add more later
   const penPlusAdvancedSettings = {
     wValueUnderFlow: false,
+    _maxDepth: 1000
   };
 
   //?Have this here for ez pz tri drawing on the canvas
-  const drawTri = (curProgram, x1, y1, x2, y2, x3, y3, penColor, targetID) => {
-    //? get triangle attributes for current sprite.
-    const triAttribs = triangleAttributesOfAllSprites[targetID];
+  const triFunctions = {
+    drawTri: (curProgram, x1, y1, x2, y2, x3, y3, penColor, targetID) => {
+      //? get triangle attributes for current sprite.
+      const triAttribs = triangleAttributesOfAllSprites[targetID];
 
-    if (triAttribs) {
-      vertexBufferData = new Float32Array([
-        x1,
-        -y1,
-        triAttribs[5],
-        triAttribs[6],
-        penColor[0] * triAttribs[2],
-        penColor[1] * triAttribs[3],
-        penColor[2] * triAttribs[4],
-        penColor[3] * triAttribs[7],
+      if (triAttribs) {
+        vertexBufferData = new Float32Array([
+          x1,
+          -y1,
+          triAttribs[5],
+          triAttribs[6],
+          penColor[0] * triAttribs[2],
+          penColor[1] * triAttribs[3],
+          penColor[2] * triAttribs[4],
+          penColor[3] * triAttribs[7],
 
-        x2,
-        -y2,
-        triAttribs[13],
-        triAttribs[14],
-        penColor[0] * triAttribs[10],
-        penColor[1] * triAttribs[11],
-        penColor[2] * triAttribs[12],
-        penColor[3] * triAttribs[15],
+          x2,
+          -y2,
+          triAttribs[13],
+          triAttribs[14],
+          penColor[0] * triAttribs[10],
+          penColor[1] * triAttribs[11],
+          penColor[2] * triAttribs[12],
+          penColor[3] * triAttribs[15],
 
-        x3,
-        -y3,
-        triAttribs[21],
-        triAttribs[22],
-        penColor[0] * triAttribs[18],
-        penColor[1] * triAttribs[19],
-        penColor[2] * triAttribs[20],
-        penColor[3] * triAttribs[23],
-      ]);
-    } else {
-      vertexBufferData = new Float32Array([
-        x1,
-        -y1,
-        1,
-        1,
-        penColor[0],
-        penColor[1],
-        penColor[2],
-        penColor[3],
+          x3,
+          -y3,
+          triAttribs[21],
+          triAttribs[22],
+          penColor[0] * triAttribs[18],
+          penColor[1] * triAttribs[19],
+          penColor[2] * triAttribs[20],
+          penColor[3] * triAttribs[23],
+        ]);
+      } else {
+        vertexBufferData = new Float32Array([
+          x1,
+          -y1,
+          1,
+          1,
+          penColor[0],
+          penColor[1],
+          penColor[2],
+          penColor[3],
 
-        x2,
-        -y2,
-        1,
-        1,
-        penColor[0],
-        penColor[1],
-        penColor[2],
-        penColor[3],
+          x2,
+          -y2,
+          1,
+          1,
+          penColor[0],
+          penColor[1],
+          penColor[2],
+          penColor[3],
 
-        x3,
-        -y3,
-        1,
-        1,
-        penColor[0],
-        penColor[1],
-        penColor[2],
-        penColor[3],
-      ]);
+          x3,
+          -y3,
+          1,
+          1,
+          penColor[0],
+          penColor[1],
+          penColor[2],
+          penColor[3],
+        ]);
+      }
+
+      //? Bind Positional Data
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.STATIC_DRAW);
+      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+
+      gl.vertexAttribPointer(
+        a_position_Location_untext,
+        4,
+        gl.FLOAT,
+        false,
+        f32_8,
+        0
+      );
+      gl.vertexAttribPointer(
+        a_color_Location_untext,
+        4,
+        gl.FLOAT,
+        false,
+        f32_8,
+        f32_4
+      );
+
+      gl.useProgram(penPlusShaders.untextured.ProgramInf.program);
+
+      gl.uniform1i(u_depthTexture_Location_untext, 1);
+
+      gl.uniform2fv(u_res_Location_untext, nativeSize);
+
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      //? Hacky fix but it works.
+
+      triFunctions.drawDepthTri(targetID, x1, y1, x2, y2, x3, y3);
+      gl.useProgram(penPlusShaders.pen.program);
+    },
+
+    drawTextTri: (
+      curProgram,
+      x1,
+      y1,
+      x2,
+      y2,
+      x3,
+      y3,
+      targetID,
+      texture
+    ) => {
+      //? get triangle attributes for current sprite.
+      const triAttribs = triangleAttributesOfAllSprites[targetID];
+
+      if (triAttribs) {
+        vertexBufferData = new Float32Array([
+          x1,
+          -y1,
+          triAttribs[5],
+          triAttribs[6],
+          triAttribs[2],
+          triAttribs[3],
+          triAttribs[4],
+          triAttribs[7],
+          triAttribs[0],
+          triAttribs[1],
+
+          x2,
+          -y2,
+          triAttribs[13],
+          triAttribs[14],
+          triAttribs[10],
+          triAttribs[11],
+          triAttribs[12],
+          triAttribs[15],
+          triAttribs[8],
+          triAttribs[9],
+
+          x3,
+          -y3,
+          triAttribs[21],
+          triAttribs[22],
+          triAttribs[18],
+          triAttribs[19],
+          triAttribs[20],
+          triAttribs[23],
+          triAttribs[16],
+          triAttribs[17],
+        ]);
+      } else {
+        vertexBufferData = new Float32Array([
+          x1,
+          -y1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+
+          x2,
+          -y2,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+
+          x3,
+          -y3,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+        ]);
+      }
+      //? Bind Positional Data
+      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.DYNAMIC_DRAW);
+
+      gl.vertexAttribPointer(
+        a_position_Location_text,
+        4,
+        gl.FLOAT,
+        false,
+        f32_10,
+        0
+      );
+      gl.vertexAttribPointer(
+        a_color_Location_text,
+        4,
+        gl.FLOAT,
+        false,
+        f32_10,
+        f32_4
+      );
+      gl.vertexAttribPointer(
+        a_textCoord_Location_text,
+        2,
+        gl.FLOAT,
+        false,
+        f32_10,
+        f32_8
+      );
+
+      gl.useProgram(penPlusShaders.textured.ProgramInf.program);
+
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, currentFilter);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, currentFilter);
+      gl.uniform1i(u_texture_Location_text, 0);
+
+      gl.uniform1i(u_depthTexture_Location_text, 1);
+
+      gl.uniform2fv(u_res_Location_text, nativeSize);
+
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      //? Hacky fix but it works.
+      triFunctions.drawDepthTri(targetID, x1, y1, x2, y2, x3, y3);
+      gl.useProgram(penPlusShaders.pen.program);
+    },
+
+    //? this is so I don't have to go through the hassle of replacing default scratch shaders
+    //? many of curse words where exchanged between me and a pillow while writing this extension
+    //? but I have previaled!
+    drawDepthTri: (targetID, x1, y1, x2, y2, x3, y3) => {
+      lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+      const triAttribs = triangleAttributesOfAllSprites[targetID];
+      gl.bindFramebuffer(gl.FRAMEBUFFER, depthFrameBuffer);
+
+      if (triAttribs) {
+        vertexBufferData = new Float32Array([
+          x1,
+          -y1,
+          triAttribs[5],
+          triAttribs[6],
+
+          x2,
+          -y2,
+          triAttribs[13],
+          triAttribs[14],
+
+          x3,
+          -y3,
+          triAttribs[21],
+          triAttribs[22],
+        ]);
+      } else {
+        vertexBufferData = new Float32Array([
+          x1,
+          -y1,
+          0,
+          1,
+
+          x2,
+          -y2,
+          0,
+          1,
+
+          x3,
+          -y3,
+          0,
+          1,
+        ]);
+      }
+
+      //? Bind Positional Data
+      gl.bindBuffer(gl.ARRAY_BUFFER, depthVertexBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.DYNAMIC_DRAW);
+
+      gl.vertexAttribPointer(
+        a_position_Location_depth,
+        4,
+        gl.FLOAT,
+        false,
+        f32_4,
+        0
+      );
+
+      gl.useProgram(penPlusShaders.depth.ProgramInf.program);
+
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+      gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
+    },
+
+    setValueAccordingToCaseTriangle:(
+      targetId,
+      attribute,
+      value,
+      wholeTri,
+      offset
+    ) => {
+      offset = offset + attribute || attribute;
+      let valuetoSet = 0;
+      switch (attribute) {
+        //U
+        case 0:
+          valuetoSet = value;
+          break;
+        //V
+        case 1:
+          valuetoSet = value;
+          break;
+  
+        //100 since that is what scratch users are accustomed to.
+        //R
+        case 2:
+          valuetoSet = Math.min(Math.max(value, 0), 100) * 0.01;
+          break;
+        //G
+        case 3:
+          valuetoSet = Math.min(Math.max(value, 0), 100) * 0.01;
+          break;
+        //B
+        case 4:
+          valuetoSet = Math.min(Math.max(value, 0), 100) * 0.01;
+          break;
+  
+        //Clamp to 0 so we can't go behind the stage.
+        //Z
+        case 5:
+          if (value < 0) {
+            valuetoSet = 0;
+            break;
+          }
+          valuetoSet = Math.min(value / penPlusAdvancedSettings._maxDepth, 1);
+          break;
+  
+        //Clamp to 1 so we don't accidentally clip.
+        //W
+        case 6:
+          if (penPlusAdvancedSettings.wValueUnderFlow == true) {
+            valuetoSet = value;
+          } else {
+            valuetoSet = Math.max(value, 1);
+          }
+          break;
+        //Transparency
+        //Same story as color
+        case 7:
+          valuetoSet = Math.min(Math.max(value, 0), 1000) * 0.01;
+          break;
+  
+        //Just break if value isn't valid
+        default:
+          break;
+      }
+      //Check if the index even exists.
+      if (attribute >= 0 && attribute <= 7) {
+        if (wholeTri) {
+          triangleAttributesOfAllSprites[targetId][attribute] = valuetoSet;
+          triangleAttributesOfAllSprites[targetId][attribute + 8] = valuetoSet;
+          triangleAttributesOfAllSprites[targetId][attribute + 16] = valuetoSet;
+        } else {
+          triangleAttributesOfAllSprites[targetId][offset] = valuetoSet;
+        }
+      }
     }
-
-    //? Bind Positional Data
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.STATIC_DRAW);
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-
-    gl.vertexAttribPointer(
-      a_position_Location_untext,
-      4,
-      gl.FLOAT,
-      false,
-      f32_8,
-      0
-    );
-    gl.vertexAttribPointer(
-      a_color_Location_untext,
-      4,
-      gl.FLOAT,
-      false,
-      f32_8,
-      f32_4
-    );
-
-    gl.useProgram(penPlusShaders.untextured.ProgramInf.program);
-
-    gl.uniform1i(u_depthTexture_Location_untext, 1);
-
-    gl.uniform2fv(u_res_Location_untext, nativeSize);
-
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-    //? Hacky fix but it works.
-
-    drawDepthTri(targetID, x1, y1, x2, y2, x3, y3);
-    gl.useProgram(penPlusShaders.pen.program);
-  };
-
-  const drawTextTri = (
-    curProgram,
-    x1,
-    y1,
-    x2,
-    y2,
-    x3,
-    y3,
-    targetID,
-    texture
-  ) => {
-    //? get triangle attributes for current sprite.
-    const triAttribs = triangleAttributesOfAllSprites[targetID];
-
-    if (triAttribs) {
-      vertexBufferData = new Float32Array([
-        x1,
-        -y1,
-        triAttribs[5],
-        triAttribs[6],
-        triAttribs[2],
-        triAttribs[3],
-        triAttribs[4],
-        triAttribs[7],
-        triAttribs[0],
-        triAttribs[1],
-
-        x2,
-        -y2,
-        triAttribs[13],
-        triAttribs[14],
-        triAttribs[10],
-        triAttribs[11],
-        triAttribs[12],
-        triAttribs[15],
-        triAttribs[8],
-        triAttribs[9],
-
-        x3,
-        -y3,
-        triAttribs[21],
-        triAttribs[22],
-        triAttribs[18],
-        triAttribs[19],
-        triAttribs[20],
-        triAttribs[23],
-        triAttribs[16],
-        triAttribs[17],
-      ]);
-    } else {
-      vertexBufferData = new Float32Array([
-        x1,
-        -y1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        0,
-        0,
-
-        x2,
-        -y2,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-
-        x3,
-        -y3,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        0,
-      ]);
-    }
-    //? Bind Positional Data
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.DYNAMIC_DRAW);
-
-    gl.vertexAttribPointer(
-      a_position_Location_text,
-      4,
-      gl.FLOAT,
-      false,
-      f32_10,
-      0
-    );
-    gl.vertexAttribPointer(
-      a_color_Location_text,
-      4,
-      gl.FLOAT,
-      false,
-      f32_10,
-      f32_4
-    );
-    gl.vertexAttribPointer(
-      a_textCoord_Location_text,
-      2,
-      gl.FLOAT,
-      false,
-      f32_10,
-      f32_8
-    );
-
-    gl.useProgram(penPlusShaders.textured.ProgramInf.program);
-
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, currentFilter);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, currentFilter);
-    gl.uniform1i(u_texture_Location_text, 0);
-
-    gl.uniform1i(u_depthTexture_Location_text, 1);
-
-    gl.uniform2fv(u_res_Location_text, nativeSize);
-
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-    //? Hacky fix but it works.
-    drawDepthTri(targetID, x1, y1, x2, y2, x3, y3);
-    gl.useProgram(penPlusShaders.pen.program);
-  };
-
-  //? this is so I don't have to go through the hassle of replacing default scratch shaders
-  //? many of curse words where exchanged between me and a pillow while writing this extension
-  //? but I have previaled!
-  const drawDepthTri = (targetID, x1, y1, x2, y2, x3, y3) => {
-    lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
-    const triAttribs = triangleAttributesOfAllSprites[targetID];
-    gl.bindFramebuffer(gl.FRAMEBUFFER, depthFrameBuffer);
-
-    if (triAttribs) {
-      vertexBufferData = new Float32Array([
-        x1,
-        -y1,
-        triAttribs[5],
-        triAttribs[6],
-
-        x2,
-        -y2,
-        triAttribs[13],
-        triAttribs[14],
-
-        x3,
-        -y3,
-        triAttribs[21],
-        triAttribs[22],
-      ]);
-    } else {
-      vertexBufferData = new Float32Array([
-        x1,
-        -y1,
-        0,
-        1,
-
-        x2,
-        -y2,
-        0,
-        1,
-
-        x3,
-        -y3,
-        0,
-        1,
-      ]);
-    }
-
-    //? Bind Positional Data
-    gl.bindBuffer(gl.ARRAY_BUFFER, depthVertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.DYNAMIC_DRAW);
-
-    gl.vertexAttribPointer(
-      a_position_Location_depth,
-      4,
-      gl.FLOAT,
-      false,
-      f32_4,
-      0
-    );
-
-    gl.useProgram(penPlusShaders.depth.ProgramInf.program);
-
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-    gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
   };
 
   const lilPenDabble = (nativeSize, curTarget, util) => {
@@ -854,312 +885,282 @@ Though this may come off as rude.
     );
   };
 
-  const setValueAccordingToCaseTriangle = (
-    targetId,
-    attribute,
-    value,
-    wholeTri,
-    offset
-  ) => {
-    offset = offset + attribute || attribute;
-    let valuetoSet = 0;
-    switch (attribute) {
-      //U
-      case 0:
-        valuetoSet = value;
-        break;
-      //V
-      case 1:
-        valuetoSet = value;
-        break;
-
-      //100 since that is what scratch users are accustomed to.
-      //R
-      case 2:
-        valuetoSet = Math.min(Math.max(value, 0), 100) * 0.01;
-        break;
-      //G
-      case 3:
-        valuetoSet = Math.min(Math.max(value, 0), 100) * 0.01;
-        break;
-      //B
-      case 4:
-        valuetoSet = Math.min(Math.max(value, 0), 100) * 0.01;
-        break;
-
-      //Clamp to 0 so we can't go behind the stage.
-      //Z
-      case 5:
-        if (value < 0) {
-          valuetoSet = 0;
-          break;
-        }
-        valuetoSet = Math.min(value / _maxDepth, 1);
-        break;
-
-      //Clamp to 1 so we don't accidentally clip.
-      //W
-      case 6:
-        if (penPlusAdvancedSettings.wValueUnderFlow == true) {
-          valuetoSet = value;
-        } else {
-          valuetoSet = Math.max(value, 1);
-        }
-        break;
-      //Transparency
-      //Same story as color
-      case 7:
-        valuetoSet = Math.min(Math.max(value, 0), 1000) * 0.01;
-        break;
-
-      //Just break if value isn't valid
-      default:
-        break;
-    }
-    //Check if the index even exists.
-    if (attribute >= 0 && attribute <= 7) {
-      if (wholeTri) {
-        triangleAttributesOfAllSprites[targetId][attribute] = valuetoSet;
-        triangleAttributesOfAllSprites[targetId][attribute + 8] = valuetoSet;
-        triangleAttributesOfAllSprites[targetId][attribute + 16] = valuetoSet;
-      } else {
-        triangleAttributesOfAllSprites[targetId][offset] = valuetoSet;
+  //?Color Library
+  const colors = {
+    hexToRgb:(hex) => {
+      if (typeof hex === "string") {
+        const splitHex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return {
+          r: parseInt(splitHex[1], 16),
+          g: parseInt(splitHex[2], 16),
+          b: parseInt(splitHex[3], 16),
+        };
       }
-    }
-  };
+      return {
+        r: Math.floor(hex / 65536),
+        g: Math.floor(hex / 256) % 256,
+        b: hex % 256,
+      };
+    },
 
-  const createPenPlusTextureInfo = async function (url, name, clamp) {
-    const texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    // Fill the texture with a 1x1 blue pixel.
-    gl.texImage2D(
-      gl.TEXTURE_2D,
-      0,
-      gl.RGBA,
-      1,
-      1,
-      0,
-      gl.RGBA,
-      gl.UNSIGNED_BYTE,
-      new Uint8Array([0, 0, 255, 255])
+    rgbtoSColor:({ R, G, B }) => {
+      R = Math.min(Math.max(R, 0), 100) * 2.55;
+      G = Math.min(Math.max(G, 0), 100) * 2.55;
+      B = Math.min(Math.max(B, 0), 100) * 2.55;
+      return (Math.floor(R) * 256 + Math.floor(G)) * 256 + Math.floor(B);
+    }
+  }
+
+  const textureFunctions = {
+    createPenPlusTextureInfo: async function (url, name, clamp) {
+      const texture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      // Fill the texture with a 1x1 blue pixel.
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        1,
+        1,
+        0,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        new Uint8Array([0, 0, 255, 255])
+      );
+  
+      // Let's assume all images are not a power of 2
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, clamp);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, clamp);
+      return new Promise((resolve, reject) => {
+        Scratch.canFetch(url).then((allowed) => {
+          if (!allowed) {
+            reject(false);
+          }
+          // Permission is checked earlier.
+          // eslint-disable-next-line no-restricted-syntax
+          const image = new Image();
+          image.onload = function () {
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.texImage2D(
+              gl.TEXTURE_2D,
+              0,
+              gl.RGBA,
+              gl.RGBA,
+              gl.UNSIGNED_BYTE,
+              image
+            );
+            penPlusCostumeLibrary[name] = {
+              texture:texture,
+              width:image.width,
+              height:image.height
+            };
+            resolve(texture);
+          };
+          image.crossOrigin = "anonymous";
+          image.src = url;
+        });
+      });
+    },
+
+    getTextureData:(texture,width,height) => {
+      //?Initilize the temp framebuffer and assign it
+      const readBuffer = gl.createFramebuffer();
+
+      lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+
+      gl.bindFramebuffer(gl.FRAMEBUFFER,readBuffer);
+
+      gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,texture,0);
+
+      //?make sure to unbind the framebuffer and delete it!
+      const removeBuffer = () => {
+        gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,removalTexture,0);
+        gl.bindFramebuffer(gl.FRAMEBUFFER,lastFB);
+        gl.deleteFramebuffer(readBuffer);
+      }
+
+      //?if sucessful read
+      if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE){
+        //?Make an array to write the pixels onto
+        let dataArray = new Uint8Array(width * height * 4);
+        gl.readPixels(0,0,width,height,gl.RGBA,gl.UNSIGNED_BYTE,dataArray);
+
+        //?Remove Buffer data and return data
+        removeBuffer();
+        return dataArray;
+      }
+
+      //?If not return undefined
+      removeBuffer();
+      return undefined;
+    }
+  }
+
+  //Learned I could do this for code orginization
+  //?Menus
+  {
+    //? Define the menus
+    extension.addMenu(
+      "hsvMenu",
+      ["color", "saturation", "brightness", "transparency", "size"],
+      true
     );
 
-    // Let's assume all images are not a power of 2
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, clamp);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, clamp);
-    return new Promise((resolve, reject) => {
-      Scratch.canFetch(url).then((allowed) => {
-        if (!allowed) {
-          reject(false);
-        }
-        // Permission is checked earlier.
-        // eslint-disable-next-line no-restricted-syntax
-        const image = new Image();
-        image.onload = function () {
-          gl.bindTexture(gl.TEXTURE_2D, texture);
-          gl.texImage2D(
-            gl.TEXTURE_2D,
-            0,
-            gl.RGBA,
-            gl.RGBA,
-            gl.UNSIGNED_BYTE,
-            image
-          );
-          penPlusCostumeLibrary[name] = texture;
-          resolve(texture);
-        };
-        image.crossOrigin = "anonymous";
-        image.src = url;
-      });
-    });
-  };
+    extension.addMenu(
+      "stampSquare",
+      [
+        {
+          text: "Width",
+          value: "0",
+        },
+        {
+          text: "Height",
+          value: "1",
+        },
+        {
+          text: "Rotation",
+          value: "2",
+        },
+        {
+          text: "U-Multiplier",
+          value: "3",
+        },
+        {
+          text: "U-Offset",
+          value: "4",
+        },
+        {
+          text: "V-Multiplier",
+          value: "5",
+        },
+        {
+          text: "V-Offset",
+          value: "6",
+        },
+        {
+          text: "Red Tint",
+          value: "7",
+        },
+        {
+          text: "Green Tint",
+          value: "8",
+        },
+        {
+          text: "Blue Tint",
+          value: "9",
+        },
+        {
+          text: "Transparency",
+          value: "10",
+        },
+        {
+          text: "depth value",
+          value: "11",
+        },
+      ],
+      true
+    );
+    extension.addMenu(
+      "triAttribute",
+      [
+        {
+          text: "U value",
+          value: "0",
+        },
+        {
+          text: "V value",
+          value: "1",
+        },
+        {
+          text: "red tint",
+          value: "2",
+        },
+        {
+          text: "green tint",
+          value: "3",
+        },
+        {
+          text: "blue tint",
+          value: "4",
+        },
+        {
+          text: "transparency",
+          value: "7",
+        },
+        {
+          text: "corner pinch",
+          value: "6",
+        },
+        {
+          text: "depth value",
+          value: "5",
+        },
+      ],
+      true
+    );
 
-  //?Color Library
-  const hexToRgb = (hex) => {
-    if (typeof hex === "string") {
-      const splitHex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      return {
-        r: parseInt(splitHex[1], 16),
-        g: parseInt(splitHex[2], 16),
-        b: parseInt(splitHex[3], 16),
-      };
-    }
-    return {
-      r: Math.floor(hex / 65536),
-      g: Math.floor(hex / 256) % 256,
-      b: hex % 256,
-    };
-  };
+    extension.addMenu(
+      "wholeTriAttribute",
+      [
+        {
+          text: "red tint",
+          value: "2",
+        },
+        {
+          text: "green tint",
+          value: "3",
+        },
+        {
+          text: "blue tint",
+          value: "4",
+        },
+        {
+          text: "transparency",
+          value: "7",
+        },
+        {
+          text: "depth value",
+          value: "5",
+        },
+      ],
+      true
+    );
 
-  const rgbtoSColor = ({ R, G, B }) => {
-    R = Math.min(Math.max(R, 0), 100) * 2.55;
-    G = Math.min(Math.max(G, 0), 100) * 2.55;
-    B = Math.min(Math.max(B, 0), 100) * 2.55;
-    return (Math.floor(R) * 256 + Math.floor(G)) * 256 + Math.floor(B);
-  };
+    extension.addMenu(
+      "filterType",
+      [
+        {
+          text: "Closest",
+          value: gl.NEAREST,
+        },
+        {
+          text: "Linear",
+          value: gl.LINEAR,
+        },
+      ],
+      true
+    );
 
-  //? Define the menus
-  extension.addMenu(
-    "hsvMenu",
-    ["color", "saturation", "brightness", "transparency", "size"],
-    true
-  );
+    extension.addMenu(
+      "wrapType",
+      [
+        {
+          text: "Clamp",
+          value: Scratch.Cast.toString(gl.CLAMP_TO_EDGE),
+        },
+        {
+          text: "Repeat",
+          value: Scratch.Cast.toString(gl.REPEAT),
+        },
+        {
+          text: "Mirrored",
+          value: Scratch.Cast.toString(gl.MIRRORED_REPEAT),
+        },
+      ],
+      true
+    );
 
-  extension.addMenu(
-    "stampSquare",
-    [
-      {
-        text: "Width",
-        value: "0",
-      },
-      {
-        text: "Height",
-        value: "1",
-      },
-      {
-        text: "Rotation",
-        value: "2",
-      },
-      {
-        text: "U-Multiplier",
-        value: "3",
-      },
-      {
-        text: "U-Offset",
-        value: "4",
-      },
-      {
-        text: "V-Multiplier",
-        value: "5",
-      },
-      {
-        text: "V-Offset",
-        value: "6",
-      },
-      {
-        text: "Red Tint",
-        value: "7",
-      },
-      {
-        text: "Green Tint",
-        value: "8",
-      },
-      {
-        text: "Blue Tint",
-        value: "9",
-      },
-      {
-        text: "Transparency",
-        value: "10",
-      },
-      {
-        text: "depth value",
-        value: "11",
-      },
-    ],
-    true
-  );
-  extension.addMenu(
-    "triAttribute",
-    [
-      {
-        text: "U value",
-        value: "0",
-      },
-      {
-        text: "V value",
-        value: "1",
-      },
-      {
-        text: "red tint",
-        value: "2",
-      },
-      {
-        text: "green tint",
-        value: "3",
-      },
-      {
-        text: "blue tint",
-        value: "4",
-      },
-      {
-        text: "transparency",
-        value: "7",
-      },
-      {
-        text: "corner pinch",
-        value: "6",
-      },
-      {
-        text: "depth value",
-        value: "5",
-      },
-    ],
-    true
-  );
-
-  extension.addMenu(
-    "wholeTriAttribute",
-    [
-      {
-        text: "red tint",
-        value: "2",
-      },
-      {
-        text: "green tint",
-        value: "3",
-      },
-      {
-        text: "blue tint",
-        value: "4",
-      },
-      {
-        text: "transparency",
-        value: "7",
-      },
-      {
-        text: "depth value",
-        value: "5",
-      },
-    ],
-    true
-  );
-
-  extension.addMenu(
-    "filterType",
-    [
-      {
-        text: "Closest",
-        value: gl.NEAREST,
-      },
-      {
-        text: "Linear",
-        value: gl.LINEAR,
-      },
-    ],
-    true
-  );
-
-  extension.addMenu(
-    "wrapType",
-    [
-      {
-        text: "Clamp",
-        value: Scratch.Cast.toString(gl.CLAMP_TO_EDGE),
-      },
-      {
-        text: "Repeat",
-        value: Scratch.Cast.toString(gl.REPEAT),
-      },
-      {
-        text: "Mirrored",
-        value: Scratch.Cast.toString(gl.MIRRORED_REPEAT),
-      },
-    ],
-    true
-  );
-
-  extension.addMenu("pointMenu", ["1", "2", "3"], true);
+    extension.addMenu("pointMenu", ["1", "2", "3"], true);
 
   extension.addMenu("onOffMenu", ["on", "off"], true);
 
@@ -1192,6 +1193,24 @@ Though this may come off as rude.
   );
 
   extension.addMenu(
+    "penPlusCostumes",
+    () => {
+      const readCostumes = [];
+      const keys = Object.keys(penPlusCostumeLibrary);
+      if (keys.length > 0) {
+        for (let curCostumeID = 0; curCostumeID < keys.length; curCostumeID++) {
+          const currentCostume = keys[curCostumeID];
+          readCostumes.push(currentCostume);
+        }
+        return readCostumes;
+      }
+
+      return ["no pen+ costumes!"];
+    },
+    true
+  );
+
+  extension.addMenu(
     "advancedSettingsMenu",
     [
       {
@@ -1212,9 +1231,10 @@ Though this may come off as rude.
       value: "depthMax",
     },
   ]);
+  }
 
-  //? Seperate blocks from the rest of the code to just clean up the workspace a bit
-  const addBlocks = () => {
+  //?Blocks
+  {
     extension.addLabel("Pen Properties");
 
     extension
@@ -1440,7 +1460,7 @@ Though this may come off as rude.
           triangleAttributesOfAllSprites[Attribute_ID][21] = myAttributes[11];
           triangleAttributesOfAllSprites[Attribute_ID][23] = myAttributes[10];
 
-          drawTri(
+          triFunctions.drawTri(
             gl.getParameter(gl.CURRENT_PROGRAM),
             x1,
             y1,
@@ -1452,7 +1472,7 @@ Though this may come off as rude.
             Attribute_ID
           );
 
-          drawTri(
+          triFunctions.drawTri(
             gl.getParameter(gl.CURRENT_PROGRAM),
             x1,
             y1,
@@ -1478,7 +1498,7 @@ Though this may come off as rude.
 
           let currentTexture = null;
           if (penPlusCostumeLibrary[tex]) {
-            currentTexture = penPlusCostumeLibrary[tex];
+            currentTexture = penPlusCostumeLibrary[tex].texture;
           } else {
             const costIndex = curTarget.getCostumeIndexByName(
               Scratch.Cast.toString(tex)
@@ -1628,7 +1648,7 @@ Though this may come off as rude.
             triangleAttributesOfAllSprites[Attribute_ID][21] = myAttributes[11];
             triangleAttributesOfAllSprites[Attribute_ID][23] = myAttributes[10];
 
-            drawTextTri(
+            triFunctions.drawTextTri(
               gl.getParameter(gl.CURRENT_PROGRAM),
               x1,
               y1,
@@ -1655,7 +1675,7 @@ Though this may come off as rude.
             triangleAttributesOfAllSprites[Attribute_ID][17] =
               (0 + myAttributes[6]) * myAttributes[5];
 
-            drawTextTri(
+            triFunctions.drawTextTri(
               gl.getParameter(gl.CURRENT_PROGRAM),
               x1,
               y1,
@@ -1688,7 +1708,7 @@ Though this may come off as rude.
           if (attributeNum >= 7) {
             if (attributeNum == 11) {
               squareAttributesOfAllSprites[curTarget.id][attributeNum] =
-                Math.min(Math.max(number / _maxDepth, 0), 1);
+                Math.min(Math.max(number / penPlusAdvancedSettings._maxDepth, 0), 1);
               return;
             }
             squareAttributesOfAllSprites[curTarget.id][attributeNum] =
@@ -1735,7 +1755,7 @@ Though this may come off as rude.
               squareDefaultAttributes;
           }
 
-          const calcColor = hexToRgb(color);
+          const calcColor = colors.hexToRgb(color);
 
           squareAttributesOfAllSprites[curTarget.id][7] = calcColor.r / 255;
           squareAttributesOfAllSprites[curTarget.id][8] = calcColor.g / 255;
@@ -1787,7 +1807,7 @@ Though this may come off as rude.
             triangleAttributesOfAllSprites[targetId] =
               triangleDefaultAttributes;
           }
-          setValueAccordingToCaseTriangle(
+          triFunctions.setValueAccordingToCaseTriangle(
             targetId,
             Scratch.Cast.toNumber(attribute),
             value,
@@ -1818,7 +1838,7 @@ Though this may come off as rude.
             triangleAttributesOfAllSprites[targetId] =
               triangleDefaultAttributes;
           }
-          setValueAccordingToCaseTriangle(
+          triFunctions.setValueAccordingToCaseTriangle(
             targetId,
             Scratch.Cast.toNumber(wholeAttribute),
             value,
@@ -1853,9 +1873,9 @@ Though this may come off as rude.
               triangleDefaultAttributes;
           }
 
-          const calcColor = hexToRgb(color);
+          const calcColor = colors.hexToRgb(color);
 
-          setValueAccordingToCaseTriangle(
+          triFunctions.setValueAccordingToCaseTriangle(
             targetId,
             2,
             calcColor.r / 2.55,
@@ -1863,7 +1883,7 @@ Though this may come off as rude.
             trianglePointStart
           );
 
-          setValueAccordingToCaseTriangle(
+          triFunctions.setValueAccordingToCaseTriangle(
             targetId,
             3,
             calcColor.g / 2.55,
@@ -1871,7 +1891,7 @@ Though this may come off as rude.
             trianglePointStart
           );
 
-          setValueAccordingToCaseTriangle(
+          triFunctions.setValueAccordingToCaseTriangle(
             targetId,
             4,
             calcColor.b / 2.55,
@@ -1901,9 +1921,9 @@ Though this may come off as rude.
               triangleDefaultAttributes;
           }
 
-          const calcColor = hexToRgb(color);
+          const calcColor = colors.hexToRgb(color);
 
-          setValueAccordingToCaseTriangle(
+          triFunctions.setValueAccordingToCaseTriangle(
             targetId,
             2,
             calcColor.r / 2.55,
@@ -1911,7 +1931,7 @@ Though this may come off as rude.
             trianglePointStart
           );
 
-          setValueAccordingToCaseTriangle(
+          triFunctions.setValueAccordingToCaseTriangle(
             targetId,
             3,
             calcColor.g / 2.55,
@@ -1919,7 +1939,7 @@ Though this may come off as rude.
             trianglePointStart
           );
 
-          setValueAccordingToCaseTriangle(
+          triFunctions.setValueAccordingToCaseTriangle(
             targetId,
             4,
             calcColor.b / 2.55,
@@ -2018,7 +2038,7 @@ Though this may come off as rude.
           y2 = Scratch.Cast.toNumber(y2) * dHeight * mul;
           y3 = Scratch.Cast.toNumber(y3) * dHeight * mul;
 
-          drawTri(
+          triFunctions.drawTri(
             gl.getParameter(gl.CURRENT_PROGRAM),
             x1,
             y1,
@@ -2048,7 +2068,7 @@ Though this may come off as rude.
           const curTarget = util.target;
           let currentTexture = null;
           if (penPlusCostumeLibrary[tex]) {
-            currentTexture = penPlusCostumeLibrary[tex];
+            currentTexture = penPlusCostumeLibrary[tex].texture;
           } else {
             const costIndex = curTarget.getCostumeIndexByName(
               Scratch.Cast.toString(tex)
@@ -2091,7 +2111,7 @@ Though this may come off as rude.
           y3 = Scratch.Cast.toNumber(y3) * dHeight * mul;
 
           if (currentTexture != null && typeof currentTexture != "undefined") {
-            drawTextTri(
+            triFunctions.drawTextTri(
               gl.getParameter(gl.CURRENT_PROGRAM),
               x1,
               y1,
@@ -2122,7 +2142,7 @@ Though this may come off as rude.
         "RGB2HEX",
         Scratch.BlockType.REPORTER,
         ({ R, G, B }) => {
-          return rgbtoSColor({ R: R, G: G, B: B });
+          return colors.rgbtoSColor({ R: R, G: G, B: B });
         }
       )
       .addArgument("R", 0)
@@ -2167,7 +2187,7 @@ Though this may come off as rude.
           Primes[0] = (Primes[0] + M) * 255;
           Primes[1] = (Primes[1] + M) * 255;
           Primes[2] = (Primes[2] + M) * 255;
-          return rgbtoSColor({
+          return colors.rgbtoSColor({
             R: Primes[0] / 2.55,
             G: Primes[1] / 2.55,
             B: Primes[2] / 2.55,
@@ -2204,7 +2224,7 @@ Though this may come off as rude.
         Scratch.BlockType.COMMAND,
         ({ dataURI, name }, util) => {
           //Just a simple thing to allow for pen drawing
-          createPenPlusTextureInfo(dataURI, "!" + name, penPlusImportWrapMode);
+          textureFunctions.createPenPlusTextureInfo(dataURI, "!" + name, penPlusImportWrapMode);
         }
       )
       .addArgument("dataURI", "https://extensions.turbowarp.org/dango.png")
@@ -2274,6 +2294,65 @@ Though this may come off as rude.
       })
       .setFilter();
 
+    extension
+      .addBlock(
+        "get the [dimension] of [costume] in pen+ costume library",
+        "getDimensionOf",
+        Scratch.BlockType.REPORTER,
+        ({ dimension, costume }, util) => {
+          //Just a simple thing to allow for pen drawing
+          const costIndex = penPlusCostumeLibrary[costume];
+          if (costIndex) {
+            return costIndex[dimension];
+          }
+        }
+      )
+      .addArgument("dimension", null, null, [
+        "width",
+        "height"
+      ])
+      .addArgument("costume", null, null, "penPlusCostumes")
+      .setFilter();
+
+    extension.addBlock("set pixel [x] [y]'s color to [color] in [costume]","setpixelcolor",Scratch.BlockType.COMMAND,({x,y,color,costume}) => {
+          const curCostume = penPlusCostumeLibrary[costume];
+          if (curCostume) {
+            const textureData = textureFunctions.getTextureData(curCostume.texture,curCostume.width,curCostume.height);
+            if (textureData) {
+              x = Math.floor(x-1);
+              y = Math.floor(y-1);
+              const colorIndex = (((y*curCostume.width)+x)*4)
+              if (textureData[colorIndex] && (x < curCostume.width && x >= 0)) {
+                const retColor = colors.hexToRgb(color);
+                textureData[colorIndex] = retColor.r;
+                textureData[colorIndex+1] = retColor.g;
+                textureData[colorIndex+2] = retColor.b;
+                textureData[colorIndex+3] = 255;
+
+                gl.bindTexture(gl.TEXTURE_2D,curCostume.texture);
+                gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,curCostume.width,curCostume.height,0,gl.RGBA,gl.UNSIGNED_BYTE,textureData);
+              }
+            }
+          }
+    }).addArgument("x", 1).addArgument("y", 1).addArgument("color", "#0000ff", Scratch.ArgumentType.COLOR).addArgument("costume", null, null, "penPlusCostumes")
+
+    extension.addBlock("get pixel [x] [y]'s color in [costume]","getpixelcolor",Scratch.BlockType.REPORTER,({x,y,costume}) => {
+      const curCostume = penPlusCostumeLibrary[costume];
+      if (curCostume) {
+        const textureData = textureFunctions.getTextureData(curCostume.texture,curCostume.width,curCostume.height);
+        console.log(textureData)
+        if (textureData) {
+          x = Math.floor(x-1);
+          y = Math.floor(y-1);
+          const colorIndex = (((y*curCostume.width)+x)*4)
+          if (textureData[colorIndex] && (x < curCostume.width && x >= 0)) {
+            return colors.rgbtoSColor({ R: textureData[colorIndex]/2.55, G: textureData[colorIndex+1]/2.55, B: textureData[colorIndex+2]/2.55 });
+          }
+          return colors.rgbtoSColor({ R: 100, G: 100, B: 100 });
+        }
+      }
+    }).addArgument("x", 1).addArgument("y", 1).addArgument("costume", null, null, "penPlusCostumes")
+
     extension.addLabel("Advanced options");
 
     extension
@@ -2300,7 +2379,7 @@ Though this may come off as rude.
         ({ setting, value }) => {
           switch (setting) {
             case "depthMax":
-              _maxDepth = Math.max(value, 100);
+              penPlusAdvancedSettings._maxDepth = Math.max(value, 100);
               break;
 
             default:
@@ -2310,28 +2389,28 @@ Though this may come off as rude.
       )
       .addArgument("setting", null, null, "advancedSettingValuesMenu")
       .addArgument("value", "1000");
-  };
-
-  addBlocks();
+  }
 
   //? A small hack to stop the renderer from immediatly dying. And to allow for immediate use
-  if (!Scratch.vm.renderer._penSkinId) {
-    window.vm.renderer.createPenSkin();
-  }
-  renderer.penClear(Scratch.vm.renderer._penSkinId);
-  Scratch.vm.renderer.penLine(
-    Scratch.vm.renderer._penSkinId,
-    {
-      color4f: [0, 0, 1, 1],
-      diameter: 1,
-    },
-    0,
-    0,
-    0,
-    0
-  );
+  {
+    if (!Scratch.vm.renderer._penSkinId) {
+      window.vm.renderer.createPenSkin();
+    }
+    renderer.penClear(Scratch.vm.renderer._penSkinId);
+    Scratch.vm.renderer.penLine(
+      Scratch.vm.renderer._penSkinId,
+      {
+        color4f: [0, 0, 1, 1],
+        diameter: 1,
+      },
+      0,
+      0,
+      0,
+      0
+    );
 
-  penPlusShaders.pen.program = shaderManager._shaderCache.line[0].program;
+    penPlusShaders.pen.program = shaderManager._shaderCache.line[0].program;
+  }
 
   extension.addDocs("https://extensions.turbowarp.org/penplus");
 
