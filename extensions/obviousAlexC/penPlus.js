@@ -2461,7 +2461,6 @@ Though this may come off as rude.
               x = Math.floor(x - 1);
               y = Math.floor(y - 1);
               const colorIndex = (y * curCostume.width + x) * 4;
-              console.log(curCostume)
               if (textureData[colorIndex] != undefined && x < curCostume.width && x >= 0) {
                 const retColor = colors.hexToRgb(color);
                 textureData[colorIndex] = retColor.r;
