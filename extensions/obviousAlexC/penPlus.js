@@ -66,8 +66,6 @@ Though this may come off as rude.
   //*Create it in scratch's gl so that we have it stored in there!
   let depthBufferTexture = gl.createTexture();
 
-  let removalTexture = gl.createTexture();
-
   //?Make a function for updating the depth canvas to fit the scratch stage
   const depthFrameBuffer = gl.createFramebuffer();
   const depthDepthBuffer = gl.createRenderbuffer();
@@ -1009,14 +1007,6 @@ Though this may come off as rude.
 
       //?make sure to unbind the framebuffer and delete it!
       const removeBuffer = () => {
-        gl.framebufferTexture2D(
-          gl.FRAMEBUFFER,
-          gl.COLOR_ATTACHMENT0,
-          gl.TEXTURE_2D,
-          removalTexture,
-          0
-        );
-        gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
         gl.deleteFramebuffer(readBuffer);
       };
 
@@ -1064,14 +1054,6 @@ Though this may come off as rude.
 
       //?make sure to unbind the framebuffer and delete it!
       const removeBuffer = () => {
-        gl.framebufferTexture2D(
-          gl.FRAMEBUFFER,
-          gl.COLOR_ATTACHMENT0,
-          gl.TEXTURE_2D,
-          removalTexture,
-          0
-        );
-        gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
         gl.deleteFramebuffer(readBuffer);
       };
 
@@ -2479,6 +2461,7 @@ Though this may come off as rude.
               x = Math.floor(x - 1);
               y = Math.floor(y - 1);
               const colorIndex = (y * curCostume.width + x) * 4;
+              console.log(curCostume)
               if (textureData[colorIndex] != undefined && x < curCostume.width && x >= 0) {
                 const retColor = colors.hexToRgb(color);
                 textureData[colorIndex] = retColor.r;
