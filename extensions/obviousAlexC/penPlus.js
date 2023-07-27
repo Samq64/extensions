@@ -878,7 +878,7 @@ Though this may come off as rude.
   //?Color Library
   const colors = {
     hexToRgb: (hex) => {
-      if (typeof hex === "string") {
+      if (typeof hex == "string") {
         const splitHex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return {
           r: parseInt(splitHex[1], 16),
@@ -886,6 +886,7 @@ Though this may come off as rude.
           b: parseInt(splitHex[3], 16),
         };
       }
+      hex = Scratch.Cast.toNumber(hex)
       return {
         r: Math.floor(hex / 65536),
         g: Math.floor(hex / 256) % 256,
@@ -902,8 +903,46 @@ Though this may come off as rude.
   };
 
   const textureFunctions = {
+    createBlankPenPlusTextureInfo: async function (width,height,color, name, clamp) {
+      const texture = (penPlusCostumeLibrary[name]) ? penPlusCostumeLibrary[name].texture :  gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      // Fill the texture with a 1x1 blue pixel.
+
+      const pixelData = new Uint8Array(width*height*4);
+
+      const decodedColor = colors.hexToRgb(color);
+
+
+      for (let pixelID = 0; pixelID < pixelData.length/4; pixelID++) {
+        pixelData[(pixelID*4)] = decodedColor.r;
+        pixelData[(pixelID*4)+1] = decodedColor.g;
+        pixelData[(pixelID*4)+2] = decodedColor.b;
+        pixelData[(pixelID*4)+3] = 255;
+      }
+
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, clamp);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, clamp);
+
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        width,
+        height,
+        0,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        pixelData
+      );
+
+      penPlusCostumeLibrary[name] = {
+        texture: texture,
+        width: width,
+        height: height,
+      };
+    },
     createPenPlusTextureInfo: async function (url, name, clamp) {
-      const texture = gl.createTexture();
+      const texture = (penPlusCostumeLibrary[name]) ? penPlusCostumeLibrary[name].texture :  gl.createTexture();
       gl.bindTexture(gl.TEXTURE_2D, texture);
       // Fill the texture with a 1x1 blue pixel.
       gl.texImage2D(
@@ -1006,6 +1045,72 @@ Though this may come off as rude.
       removeBuffer();
       return undefined;
     },
+
+    getTextureAsURI: (texture, width, height) => {
+      //?Initilize the temp framebuffer and assign it
+      const readBuffer = gl.createFramebuffer();
+
+      lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+
+      gl.bindFramebuffer(gl.FRAMEBUFFER, readBuffer);
+
+      gl.framebufferTexture2D(
+        gl.FRAMEBUFFER,
+        gl.COLOR_ATTACHMENT0,
+        gl.TEXTURE_2D,
+        texture,
+        0
+      );
+
+      //?make sure to unbind the framebuffer and delete it!
+      const removeBuffer = () => {
+        gl.framebufferTexture2D(
+          gl.FRAMEBUFFER,
+          gl.COLOR_ATTACHMENT0,
+          gl.TEXTURE_2D,
+          removalTexture,
+          0
+        );
+        gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
+        gl.deleteFramebuffer(readBuffer);
+      };
+
+      //?if sucessful read
+      if (
+        gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE
+      ) {
+        //?Make an array to write the pixels onto
+        let dataArray = new Uint8Array(width * height * 4);
+        gl.readPixels(
+          0,
+          0,
+          width,
+          height,
+          gl.RGBA,
+          gl.UNSIGNED_BYTE,
+          dataArray
+        );
+
+        //Make an invisible canvas
+        const dataURICanvas = document.createElement('canvas');
+        dataURICanvas.width = width;
+        dataURICanvas.height = height;
+        const dataURIContext = dataURICanvas.getContext('2d');
+
+        // Copy the pixels to a 2D canvas
+        const imageData = dataURIContext.createImageData(width, height);
+        imageData.data.set(dataArray);
+        dataURIContext.putImageData(imageData, 0, 0);
+
+        //?Remove Buffer data and return data
+        removeBuffer();
+        return dataURICanvas.toDataURL();
+      }
+
+      //?If not return undefined
+      removeBuffer();
+      return undefined;
+    }
   };
 
   //Learned I could do this for code orginization
@@ -2238,14 +2343,34 @@ Though this may come off as rude.
         Scratch.ArgumentType.STRING,
         "wrapType"
       )
-      .setFilter();
+
+    extension
+      .addBlock(
+        "add blank image that is [color] and the size of [width], [height] named [name] to Pen+ Library",
+        "addBlankIMG",
+        Scratch.BlockType.COMMAND,
+        ({ color, width, height, name }) => {
+          //Just a simple thing to allow for pen drawing
+          textureFunctions.createBlankPenPlusTextureInfo(
+            width,
+            height,
+            color,
+            "!" + name,
+            penPlusImportWrapMode
+          )
+        }
+      )
+      .addArgument("color", "#ffffff", Scratch.ArgumentType.COLOR)
+      .addArgument("width",128)
+      .addArgument("height",128)
+      .addArgument("name", "Image")
 
     extension
       .addBlock(
         "add image named [name] from [dataURI] to Pen+ Library",
         "addIMGfromDURI",
         Scratch.BlockType.COMMAND,
-        ({ dataURI, name }, util) => {
+        ({ dataURI, name }) => {
           //Just a simple thing to allow for pen drawing
           textureFunctions.createPenPlusTextureInfo(
             dataURI,
@@ -2256,7 +2381,6 @@ Though this may come off as rude.
       )
       .addArgument("dataURI", "https://extensions.turbowarp.org/dango.png")
       .addArgument("name", "Image")
-      .setFilter();
 
     extension
       .addBlock(
@@ -2355,7 +2479,7 @@ Though this may come off as rude.
               x = Math.floor(x - 1);
               y = Math.floor(y - 1);
               const colorIndex = (y * curCostume.width + x) * 4;
-              if (textureData[colorIndex] && x < curCostume.width && x >= 0) {
+              if (textureData[colorIndex] != undefined && x < curCostume.width && x >= 0) {
                 const retColor = colors.hexToRgb(color);
                 textureData[colorIndex] = retColor.r;
                 textureData[colorIndex + 1] = retColor.g;
@@ -2397,7 +2521,6 @@ Though this may come off as rude.
               curCostume.width,
               curCostume.height
             );
-            console.log(textureData);
             if (textureData) {
               x = Math.floor(x - 1);
               y = Math.floor(y - 1);
@@ -2416,6 +2539,28 @@ Though this may come off as rude.
       )
       .addArgument("x", 1)
       .addArgument("y", 1)
+      .addArgument("costume", null, null, "penPlusCostumes");
+
+    extension
+      .addBlock(
+        "get data uri of [costume] in the pen+ costume library",
+        "getPenPlusCostumeURI",
+        Scratch.BlockType.REPORTER,
+        ({ costume }) => {
+          const curCostume = penPlusCostumeLibrary[costume];
+          if (curCostume) {
+            const textureData = textureFunctions.getTextureAsURI(
+              curCostume.texture,
+              curCostume.width,
+              curCostume.height
+            );
+            if (textureData) {
+              return textureData
+            }
+            return ""
+          }
+        }
+      )
       .addArgument("costume", null, null, "penPlusCostumes");
 
     extension.addLabel("Advanced options");
