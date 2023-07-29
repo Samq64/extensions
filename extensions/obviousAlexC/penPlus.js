@@ -1520,10 +1520,6 @@ Though this may come off as rude.
           text: "allow 'Corner Pinch < 1'",
           value: "wValueUnderFlow",
         },
-        {
-          text: "allow Z Buffer",
-          value: "wValueUnderFlow",
-        },
       ],
       true
     );
