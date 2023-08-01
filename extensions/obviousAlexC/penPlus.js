@@ -247,7 +247,9 @@ Though this may come off as rude.
   const gl = renderer._gl;
   let currentFilter = gl.NEAREST;
 
-  let nativeSize = [480, 360];
+  let nativeSize = renderer.useHighQualityRender
+  ? [canvas.width, canvas.height]
+  : renderer._nativeSize;;
 
   //?create the depth buffer's texture
   //*Create it in scratch's gl so that we have it stored in there!
@@ -1053,10 +1055,10 @@ Though this may come off as rude.
         color4f: [1, 1, 1, 0.011],
         diameter: 1,
       },
-      InativeSize[0] / 2,
-      InativeSize[1] / 2,
-      InativeSize[0] / 2,
-      InativeSize[1] / 2
+      InativeSize[0]/2,
+      InativeSize[1]/2,
+      InativeSize[0]/2,
+      InativeSize[1]/2
     );
   };
 
