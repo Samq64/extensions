@@ -778,7 +778,7 @@ Though this may come off as rude.
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       //? Hacky fix but it works.
 
-      triFunctions.drawDepthTri(targetID, x1, y1, x2, y2, x3, y3);
+      //triFunctions.drawDepthTri(targetID, x1, y1, x2, y2, x3, y3);
       gl.useProgram(penPlusShaders.pen.program);
     },
 
@@ -1042,7 +1042,7 @@ Though this may come off as rude.
     },
   };
 
-  const lilPenDabble = (nativeSize, curTarget, util) => {
+  const lilPenDabble = (InativeSize, curTarget, util) => {
     checkForPen(util);
 
     const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
@@ -1050,13 +1050,13 @@ Though this may come off as rude.
     Scratch.vm.renderer.penLine(
       Scratch.vm.renderer._penSkinId,
       {
-        color4f: [0, 0, 1, 1],
+        color4f: [1, 1, 1, 0.011],
         diameter: 1,
       },
-      10000,
-      10000,
-      10000,
-      10000
+      InativeSize[0] / 2,
+      InativeSize[1] / 2,
+      InativeSize[0] / 2,
+      InativeSize[1] / 2
     );
   };
 
