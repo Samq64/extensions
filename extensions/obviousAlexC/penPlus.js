@@ -2618,4 +2618,4 @@ Though this may come off as rude.
   extension.addDocs("https://extensions.turbowarp.org/penplus");
 
   extension.register();
-})(window.Scratch);
+})(Scratch);
